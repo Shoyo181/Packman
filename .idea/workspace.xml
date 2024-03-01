@@ -5,48 +5,87 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a2a43c00-d9c6-44ef-a34a-6ac895b8a1eb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mvnw" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mvnw.cmd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/com/example/packman/hello-view.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/Elementer/Elementer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/Elementer/IkkeLevende/Cherry.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/Elementer/IkkeLevende/Dots.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/Elementer/IkkeLevende/IkkeLevende.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/Elementer/IkkeLevende/PowerUp.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/Elementer/Levende/Levende.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/Elementer/Levende/PacMan.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/Elementer/Levende/Spøkelser/Blinky.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/Elementer/Levende/Spøkelser/Clyde.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/Elementer/Levende/Spøkelser/Inky.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/Elementer/Levende/Spøkelser/Pinky.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/Elementer/Levende/Spøkelser/Spøkelser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/Elementer/Levende/Spøkelser/SpøkelsesModus.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/Elementer/Levende/Spøkelser/SpøkelsesType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/Rute/Dør.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/Rute/Gulv.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/Rute/Hjem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/Rute/Rute.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/Rute/Vegg.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
 }</component>
   <component name="ProjectId" id="2d2rQXIrWosYCCrZn536OjNVuGX" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Application.PackmanGui.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "mies",
+    "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="jdk-18.0.2-corretto-18.0.2-4caba194b151-5720f15e" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -57,6 +96,7 @@
       <updated>1709217000118</updated>
       <workItem from="1709217001250" duration="2000" />
       <workItem from="1709306942165" duration="928000" />
+      <workItem from="1709310840040" duration="3589000" />
     </task>
     <servers />
   </component>
