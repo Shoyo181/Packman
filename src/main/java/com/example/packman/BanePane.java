@@ -2,67 +2,121 @@ package com.example.packman;
 
 import com.example.packman.Rute.Rute;
 import com.example.packman.Rute.RuteSamling;
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Scanner;
+/* Egen klasse for å sette opp panel som setter igang spillet
+ *
+ *
+ */
 
-public class PackmanGui extends Application {
+public class BanePane extends BorderPane{
 
-    final int WIN = 1000;
-    BorderPane mainPane;
-    Rute[][] grid;
-    final String startLenke ="src/main/resources/com/example/packman/";
-    RuteSamling tileset;
+    private final String LENKE ="src/main/resources/com/example/packman/";
+    private int høyde;
+    private int bredde;
+    private int vinduStr;
+    private RuteSamling tileset;
+    private String filnavn;
+    private Rute[][] grid;
+    private double ruteStr;
+    private Timeline animasjon;
+    private StackPane banen;
 
-    @Override
-    public void start(Stage stage) throws IOException {
-        mainPane = new BorderPane();
-        mainPane.setCenter(new BanePane("test", WIN));
-        Scene scene = new Scene(mainPane, WIN, WIN);
-        stage.setTitle("Hello!");
-        stage.setScene(scene);
-        stage.show();
+    private Circle pacman; //midlertidlig, for en test
+
+
+
+    /***        Konstruktør        ***/
+    public BanePane(String filnavn, int vinduStr) {
+        this.filnavn = filnavn;
+        this.vinduStr = vinduStr;
+        setCenter(banen);
+
+        animasjon = new Timeline(
+                new KeyFrame(Duration.millis(100), e -> bevegelse())
+        );
+        animasjon.setCycleCount(Timeline.INDEFINITE);
+        animasjon.play();
+    }
+
+    /***      Metoder       ***/
+
+    public void bevegelse(){
+        // denne metoden kjører så mange ganger i sekundet som bestemt i duration i banePane konstruktøren
+        // tom nå, men her kommer bevegelsen til spøkelsene inn og sjekk om de treffer packman sampt om packman spiser de opp
+
+    }
+
+    public void start(){
+        animasjon.play();
+    }
+    public void stop(){
+        animasjon.stop();
+    }
+    public void pause(){
+        animasjon.pause();
+    }
+
+    public void resume(){
+        animasjon.play();
+    }
+
+    public void packmanOpp(){
+        //bygg ferdig packman og lag metoder for bevegelse og slikt.
+        // trenger også en måte å sjekke om man kolliderer med veggruter
     }
 
 
-    /*
-    public GridPane mapSetUp(String baneNavn) {
+
+
+    /*  Bygger spillflaten.   */
+
+    public void banePlussSpiller() {
+        banen = new StackPane();
+        //legger inn selve banen
+        banen.getChildren().add(mapSetUp(filnavn));
+        //legger inn elementer til banen
+        banen.getChildren().add(pacman);
+
+    }
+    public GridPane mapSetUp(String baneFilnavn) {
         // setup, g returneres, grid to dim tabell som tar vare på alle rektangler for nå
         GridPane g = new GridPane();
         try {
             // åpner datastrøm
-            Scanner leser = new Scanner(new File(startLenke + "baner/" + baneNavn + ".txt"));
+            Scanner leser = new Scanner(new File(LENKE + "baner/" + baneFilnavn + ".txt"));
             //behandler starten av filen - info om banen
             String linje = leser.nextLine();
             System.out.println("Bane info: ");
             String[] datTab = linje.split(";");
-            int b = Integer.parseInt(datTab[0]);
-            int h = Integer.parseInt(datTab[1]);
-            String filnavn = datTab[2];
-            System.out.println("bredde - " + b + ", høyde - " + h + ", filnavn for tileset - " + filnavn);
+            bredde = Integer.parseInt(datTab[0]);
+            høyde = Integer.parseInt(datTab[1]);
+            String tileFilnavn = datTab[2];
+            System.out.println("bredde - " + bredde + ", høyde - " + høyde + ", filnavn for tileset - " + tileFilnavn);
 
             // lager tabell for banen
-            grid = new Rute[b][h];
+            grid = new Rute[bredde][høyde];
             // regner ut hvor stor en rute skal være
-            int rute;
-            if (h < b) {
-                rute = (WIN - 100) / b;
+            ruteStr = 0;
+            if (høyde < bredde) {
+                ruteStr = (vinduStr - 100) / bredde;
             } else {
-                rute = (WIN - 100) / h;
+                ruteStr = (vinduStr - 100) / høyde;
             }
-            System.out.println("rute størrelse: " + rute);
+            System.out.println("rute størrelse: " + ruteStr);
 
             // henter tileset med hjelp av filnavn og rute størrelse
-            tileset = hentTileset(filnavn, rute);
+            tileset = hentTileset(tileFilnavn);
 
             //behandler resten av filen - selve banen
             int linjeTeller = 0;
@@ -70,9 +124,9 @@ public class PackmanGui extends Application {
                 linje = leser.nextLine();
                 System.out.println("linje: " + linje);
                 String[] baneTab = linje.split(",");
-                for (int i = 0; i < b; i++) {
+                for (int i = 0; i < bredde; i++) {
                     int index = Integer.parseInt(baneTab[i]);
-                    System.out.print(index + ",");
+                    System.out.print("Index: " + index + "; ");
                     grid[i][linjeTeller] = tileset.getRute(index);
                     //grid[i][linjeTeller].setRuteX(rute*i);
                     //grid[i][linjeTeller].setRuteY(rute*linjeTeller);
@@ -104,12 +158,12 @@ public class PackmanGui extends Application {
         return g;
     }
 
-    public RuteSamling hentTileset(String filnavn, double r){
+    public RuteSamling hentTileset(String tileFilnavn){
         RuteSamling samling = new RuteSamling();
         System.out.println("Henter tilset");
         try{
             // åpner datastrøm for å hente tilset
-            Scanner leser = new Scanner(new File(startLenke + "tilesets/" + filnavn + ".txt"));
+            Scanner leser = new Scanner(new File(LENKE + "tilesets/" + tileFilnavn + ".txt"));
             // behandler datastrøm
             while(leser.hasNextLine()){
                 String linje = leser.nextLine();
@@ -124,7 +178,7 @@ public class PackmanGui extends Application {
 
                 int id = Integer.parseInt(datTab[0]);
                 Rute nyRute = new Rute(id, utsende, walkable, ghostWalk, door, home);
-                nyRute.setRuteStr(r);
+                nyRute.setRuteStr(ruteStr);
                 samling.leggTil(nyRute);
             }
             // lukker datastrøm
@@ -137,23 +191,8 @@ public class PackmanGui extends Application {
         System.out.println("Vellykket henting av tileset");
         return samling;
     }
-*/
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-    public static void main(String[] args) {
-        launch();
-    }
 }
