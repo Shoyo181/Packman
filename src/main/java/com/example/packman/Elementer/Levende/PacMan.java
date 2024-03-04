@@ -7,6 +7,7 @@ public class PacMan extends Levende{
 
 
 
+
     public PacMan(double startPosX, double startPosY, double currentPosX, double currentPosY, double speed) {
         super(startPosX, startPosY, currentPosX, currentPosY, speed);
     }
