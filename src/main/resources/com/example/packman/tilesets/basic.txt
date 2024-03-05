@@ -1,4 +1,4 @@
-0;WHITE;true;true;false;false
-1;BLACK;false;false;false;false
-2;BLUE;false;true;true;false
-3;GREEN;false;true;false;true
+0;WHITE;GULV
+1;BLACK;VEGG
+2;BLUE;DØR
+3;GREEN;HJEM

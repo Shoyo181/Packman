@@ -1,9 +1,11 @@
 package com.example.packman.Elementer.Levende.Spøkelser;
 
+import com.example.packman.Rute.Rute;
+
 public class Clyde extends Spøkelser {
 
-    public Clyde(SpøkelsesType type, double startPosX, double startPosY, double currentPosX, double currentPosY, double speed, SpøkelsesModus modus) {
-        super(type, startPosX, startPosY, currentPosX, currentPosY, speed, modus);
+    public Clyde(SpøkelsesType type, Rute[][] grid) {
+        super(type, grid);
 
     }
 }

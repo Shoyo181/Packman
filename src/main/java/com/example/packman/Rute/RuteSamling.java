@@ -15,4 +15,7 @@ public class RuteSamling {
     public Rute getRute(int index){
         return (Rute) samling.get(index);
     }
+    public int hentSamlingStr(){
+        return samling.size();
+    }
 }

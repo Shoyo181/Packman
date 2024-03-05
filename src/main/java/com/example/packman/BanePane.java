@@ -40,8 +40,11 @@ public class BanePane extends BorderPane{
     public BanePane(String filnavn, int vinduStr) {
         this.filnavn = filnavn;
         this.vinduStr = vinduStr;
+        // setter opp selve banen
+        banePlussSpiller();
         setCenter(banen);
 
+        // settter igang animasjon av spillet
         animasjon = new Timeline(
                 new KeyFrame(Duration.millis(100), e -> bevegelse())
         );
@@ -86,8 +89,12 @@ public class BanePane extends BorderPane{
         //legger inn selve banen
         banen.getChildren().add(mapSetUp(filnavn));
         //legger inn elementer til banen
-        banen.getChildren().add(pacman);
+        //banen.getChildren().add(pacman);
 
+
+
+        System.out.println("Banen er bygget");
+        System.out.println("Rute type test: " + grid[0][0].getType());
     }
     public GridPane mapSetUp(String baneFilnavn) {
         // setup, g returneres, grid to dim tabell som tar vare på alle rektangler for nå
@@ -128,6 +135,7 @@ public class BanePane extends BorderPane{
                     int index = Integer.parseInt(baneTab[i]);
                     System.out.print("Index: " + index + "; ");
                     grid[i][linjeTeller] = tileset.getRute(index);
+
                     //grid[i][linjeTeller].setRuteX(rute*i);
                     //grid[i][linjeTeller].setRuteY(rute*linjeTeller);
 
@@ -171,13 +179,21 @@ public class BanePane extends BorderPane{
                 Rectangle utsende = new Rectangle();
                 Paint farge = Paint.valueOf(datTab[1]);
                 utsende.setFill(farge);
-                boolean walkable = Boolean.parseBoolean(datTab[2]);
+                Rute.RuteType type = Rute.RuteType.valueOf(datTab[2]);
+
+                /*boolean walkable = Boolean.parseBoolean(datTab[2]);
                 boolean ghostWalk = Boolean.parseBoolean(datTab[3]);
                 boolean door = Boolean.parseBoolean(datTab[4]);
                 boolean home = Boolean.parseBoolean(datTab[5]);
 
                 int id = Integer.parseInt(datTab[0]);
                 Rute nyRute = new Rute(id, utsende, walkable, ghostWalk, door, home);
+                nyRute.setRuteStr(ruteStr);
+                samling.leggTil(nyRute);
+
+                 */
+                int id = Integer.parseInt(datTab[0]);
+                Rute nyRute = new Rute(id, utsende, type);
                 nyRute.setRuteStr(ruteStr);
                 samling.leggTil(nyRute);
             }
@@ -189,6 +205,7 @@ public class BanePane extends BorderPane{
             return null;
         }
         System.out.println("Vellykket henting av tileset");
+        System.out.println("Hentet " + samling.hentSamlingStr() + " forskjellige tiles");
         return samling;
     }
 

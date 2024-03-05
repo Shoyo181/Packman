@@ -1,6 +1,7 @@
 package com.example.packman.Elementer.Levende.Spøkelser;
 
 import com.example.packman.Elementer.Levende.Levende;
+import com.example.packman.Rute.Rute;
 
 public class Spøkelser extends Levende {
     protected SpøkelsesType type;
@@ -11,10 +12,9 @@ public class Spøkelser extends Levende {
 
 
 
-    public Spøkelser( SpøkelsesType type, double startPosX, double startPosY, double currentPosX, double currentPosY, double speed, SpøkelsesModus modus) {
-        super(startPosX, startPosY, currentPosX, currentPosY, speed);
+    public Spøkelser( SpøkelsesType type,  Rute[][] grid) {
+        super( grid);
         this.type = type;
-        this.modus = modus;
     }
 }
 
