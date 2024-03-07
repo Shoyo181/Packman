@@ -46,7 +46,7 @@ public class PacMan extends Levende{
 
         int midtDørX, midtDørY;
         int midtHjemX, midtHjemY;
-
+        int randomTall; // slik at hvis random så blir det riktig får både dør og hjem
         if(dørPlassering.size() == 1) {
             String linje = dørPlassering.get(0);
             String[] deler = linje.split(";");
@@ -54,16 +54,43 @@ public class PacMan extends Levende{
             midtDørY = Integer.parseInt(deler[1]);
         }else{
             // hvis det er flere dører, velger vi den som er i midten, hvis partall en random
+            if(dørPlassering.size() % 2 == 0){
+                // partall
+                // lager random tall 0 eller 1
+                randomTall = (int) (Math.random() * 2);
+                System.out.println("randomTall: " + randomTall);
+                // velger midten av listen, plusser på random tall
+                String linje = dørPlassering.get(dørPlassering.size()/2 + randomTall);
+                String[] deler = linje.split(";");
+                midtDørX = Integer.parseInt(deler[0]);
+                midtDørY = Integer.parseInt(deler[1]);
 
-            int dørPlasseringTall = (int) (Math.random() * dørPlassering.size());
+            }else{
+                // oddetall
+                // henter stringen i midten av lista. .size teller fra 1 i index så trenger bare å dele på 2
+                //                                    .get teller fra 0 i index, derfor trenger vi ikke -1 eller +1
+                String linje = dørPlassering.get(dørPlassering.size()/2);
+                String[] deler = linje.split(";");
+                midtDørX = Integer.parseInt(deler[0]);
+                midtDørY = Integer.parseInt(deler[1]);
+            }
         }
+        // nå som vi har posisjonen til midten av dør, sjekker vi om hjem er plassert under, over eller veder på banen.
 
+        // sjekker bare en linje - foreslått kode - sjekk det!
+        for(int i = 0; i < hjemPlassering.size(); i++){
+            String linje = hjemPlassering.get(i);
+            String[] deler = linje.split(";");
+            int tempMidtHjemX = Integer.parseInt(deler[0]);
+            int tempMidtHjemY = Integer.parseInt(deler[1]);
 
-
-
-        //lager to random tall
-        int dørPlasseringTall = (int) (Math.random() * dørPlassering.size());
-        int hjemPlasseringTall = (int) (Math.random() * hjemPlassering.size());
+            if(midtDørX == tempMidtHjemX && midtDørY == tempMidtHjemY){
+                randomTall = (int) (Math.random() * 3);
+                if(randomTall == 1){
+                    // veder
+                    midtHjemX = tempMidtHjemX - 1;
+                    midtHjemY = tempMidtHjemY;
+        }
 
 
 
