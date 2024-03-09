@@ -1,11 +1,14 @@
 package com.example.packman;
 
+import com.example.packman.Elementer.Levende.Levende;
+import com.example.packman.Elementer.Levende.PacMan;
 import com.example.packman.Rute.Rute;
 import com.example.packman.Rute.RuteSamling;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
@@ -31,8 +34,9 @@ public class BanePane extends BorderPane{
     private double ruteStr;
     private Timeline animasjon;
     private StackPane banen;
-
-    private Circle pacman; //midlertidlig, for en test
+    private Pane elementer;
+    private PacMan pac; //midlertidlig, for en test
+    private Levende.Retning nesteRetning;
 
 
 
@@ -57,7 +61,9 @@ public class BanePane extends BorderPane{
     public void bevegelse(){
         // denne metoden kjører så mange ganger i sekundet som bestemt i duration i banePane konstruktøren
         // tom nå, men her kommer bevegelsen til spøkelsene inn og sjekk om de treffer packman sampt om packman spiser de opp
-
+        if(pac.sjekkRetning(nesteRetning))
+            pac.setRetning(nesteRetning);
+        pac.flyttPacMan();
     }
 
     public void start(){
@@ -74,12 +80,10 @@ public class BanePane extends BorderPane{
         animasjon.play();
     }
 
-    public void packmanOpp(){
-        //bygg ferdig packman og lag metoder for bevegelse og slikt.
-        // trenger også en måte å sjekke om man kolliderer med veggruter
+    public void oppdaterPacManRetning(Levende.Retning r) {
+        // setter retning pacman vil gå
+        nesteRetning = r;
     }
-
-
 
 
     /*  Bygger spillflaten.   */
@@ -89,12 +93,20 @@ public class BanePane extends BorderPane{
         //legger inn selve banen
         banen.getChildren().add(mapSetUp(filnavn));
         //legger inn elementer til banen
-        //banen.getChildren().add(pacman);
+        elementer = new Pane();
+        elementer.setPrefSize(vinduStr, vinduStr);
 
+        pac = new PacMan(grid);
+        pac.plasserPacMan();
+
+        elementer.getChildren().add(pac.getPacMan());
+        banen.getChildren().add(elementer);
+        System.out.println("PacMan er plassert");
+        System.out.println("banen sin;");
+        System.out.println("       bredde - " + banen.getHeight() + ", høyde - " + banen.getWidth());
 
 
         System.out.println("Banen er bygget");
-        System.out.println("Rute type test: " + grid[0][0].getType());
     }
     public GridPane mapSetUp(String baneFilnavn) {
         // setup, g returneres, grid to dim tabell som tar vare på alle rektangler for nå
@@ -104,12 +116,12 @@ public class BanePane extends BorderPane{
             Scanner leser = new Scanner(new File(LENKE + "baner/" + baneFilnavn + ".txt"));
             //behandler starten av filen - info om banen
             String linje = leser.nextLine();
-            System.out.println("Bane info: ");
+            //System.out.println("Bane info: ");
             String[] datTab = linje.split(";");
             bredde = Integer.parseInt(datTab[0]);
             høyde = Integer.parseInt(datTab[1]);
             String tileFilnavn = datTab[2];
-            System.out.println("bredde - " + bredde + ", høyde - " + høyde + ", filnavn for tileset - " + tileFilnavn);
+            //System.out.println("bredde - " + bredde + ", høyde - " + høyde + ", filnavn for tileset - " + tileFilnavn);
 
             // lager tabell for banen
             grid = new Rute[bredde][høyde];
@@ -120,7 +132,7 @@ public class BanePane extends BorderPane{
             } else {
                 ruteStr = (vinduStr - 100) / høyde;
             }
-            System.out.println("rute størrelse: " + ruteStr);
+            //System.out.println("rute størrelse: " + ruteStr);
 
             // henter tileset med hjelp av filnavn og rute størrelse
             tileset = hentTileset(tileFilnavn);
@@ -129,25 +141,32 @@ public class BanePane extends BorderPane{
             int linjeTeller = 0;
             while (leser.hasNextLine()) {
                 linje = leser.nextLine();
-                System.out.println("linje: " + linje);
+                //System.out.println("linje: " + linje);
                 String[] baneTab = linje.split(",");
                 for (int i = 0; i < bredde; i++) {
                     int index = Integer.parseInt(baneTab[i]);
-                    System.out.print("Index: " + index + "; ");
-                    grid[i][linjeTeller] = tileset.getRute(index);
+                    //System.out.print("Index: " + index + "; ");
+                    grid[i][linjeTeller] = tileset.kopierFraRuteSamling(index);
 
-                    //grid[i][linjeTeller].setRuteX(rute*i);
-                    //grid[i][linjeTeller].setRuteY(rute*linjeTeller);
+                    // dette er ikke lovelig hvor det blir duplikater i gridet
+                    //grid[i][linjeTeller].setRuteX(ruteStr*i);
+                    //grid[i][linjeTeller].setRuteY(ruteStr*linjeTeller);
+                    //Rute nyRute = grid[i][linjeTeller].getRute();
+                    // to bort node i Rute
+
 
                     // lager kopi av rektanglet i ruteklassen, siden vi ikke får lov til å legge inn
                     // duplikater i grid
                     Rectangle nyRute = grid[i][linjeTeller].kopierTile();
-                    System.out.println("i: " + i + ", linjeTeller: " + linjeTeller);
+
+
+                    //System.out.println("i: " + i + ", linjeTeller: " + linjeTeller);
                     //      objekt,                       x,   y index
                     g.add(nyRute, i, linjeTeller);
+
                 }
                 linjeTeller++;
-                System.out.println();
+                //System.out.println();
             }
             leser.close();
 

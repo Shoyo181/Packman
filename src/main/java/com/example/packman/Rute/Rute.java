@@ -1,8 +1,10 @@
 package com.example.packman.Rute;
 
+import javafx.scene.Node;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 
-public class Rute {
+public class Rute extends Node {
     /***        Objekt variabler        ***/
     private int id;                             // ref til tilesets
     private Rectangle tile;                     // hvordan ruta ser ut
@@ -21,19 +23,22 @@ public class Rute {
     // Overload
     public Rute(int id, Rectangle tile, boolean walkable, boolean ghostWalk) {
         this.id = id;
-        this.tile = tile;
+        this.tile = new Rectangle(tile.getHeight(), tile.getWidth(), tile.getFill());
         this.walkable = walkable;
         this.ghostWalk = ghostWalk;
-
     }
 
     public Rute(int id, Rectangle tile, RuteType type) {
         this.id = id;
-        this.tile = tile;
+        this.tile = new Rectangle(tile.getHeight(), tile.getWidth(), tile.getFill());
         this.type = type;
         sorterVerdier(type);
     }
 
+
+    public int getRuteId(){
+        return id;
+    }
     public Rectangle getTile(){
         return tile;
     }
@@ -41,25 +46,34 @@ public class Rute {
         tile.setHeight(r);
         tile.setWidth(r);
     }
-    public Rute kopierRute(){
-        return new Rute(id, tile, type);
-    }
-    public Rute getRute(){
-        return this;
-    }
-    public Rectangle kopierTile(){
-        return new Rectangle(tile.getHeight(), tile.getWidth(), tile.getFill());
-    }
     public void setRuteX(double x){
         tile.setX(x);
     }
     public void setRuteY(double y){
         tile.setY(y);
     }
-
+    public Rute getRute(){
+        return this;
+    }
     public RuteType getType() {
         return type;
     }
+    public void setLedigForElement(boolean b){
+        ledigForElement = b;
+    }
+    public boolean getLedigForElement(){
+        return ledigForElement;
+    }
+
+
+    public Rute kopierRute(){
+        return new Rute(id, tile, type);
+    }
+
+    public Rectangle kopierTile(){
+        return new Rectangle(tile.getHeight(), tile.getWidth(), tile.getFill());
+    }
+
 
     // metode for å sortere boolean verdier basert på enum
     private void sorterVerdier(RuteType t){
@@ -85,6 +99,12 @@ public class Rute {
                 throw new IllegalStateException("Unexpected value: " + t);
         }
     }
+
+    @Override
+    public Node getStyleableNode() {
+        return super.getStyleableNode();
+    }
+
     public enum RuteType {
         INGEN,
         GULV,

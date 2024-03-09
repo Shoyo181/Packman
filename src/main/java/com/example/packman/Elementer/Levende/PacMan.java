@@ -2,6 +2,7 @@ package com.example.packman.Elementer.Levende;
 
 import com.example.packman.Rute.Rute;
 import javafx.scene.control.skin.TextInputControlSkin;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 
 import java.util.ArrayList;
@@ -9,12 +10,20 @@ import java.util.ArrayList;
 
 public class PacMan extends Levende{
 
-    Circle pac;
+    private Circle pac;
+    private double radius;
+
 
 
     public PacMan(Rute[][] grid) {
         super(grid);
         pac = new Circle();
+        pac.setFill(Paint.valueOf("yellow"));
+        radius = ruteStr/2;
+    }
+
+    public Circle getPacMan(){
+        return pac;
     }
 
     public void plasserPacMan(){
@@ -27,12 +36,15 @@ public class PacMan extends Levende{
         ArrayList<String> hjemPlassering = new ArrayList<>();
 
         for (int i = 0; i < grid.length; i++) {
+            System.out.println("i = " + i);
             for (int j = 0; j < grid[i].length; j++) {
-                if (grid[i][j].getType() == Rute.RuteType.DØR) {
+                System.out.println("j = " + j + ", " + grid[i][j].getType());
+                Rute.RuteType currType = grid[i][j].getType();
+                if (currType == Rute.RuteType.DØR) {
                     String nyDør = i + ";" + j;
                     dørPlassering.add(nyDør);
                 }
-                if (grid[i][j].getType() == Rute.RuteType.HJEM) {
+                if (currType == Rute.RuteType.HJEM) {
                     String nyHjem = i + ";" + j;
                     hjemPlassering.add(nyHjem);
                 }
@@ -46,7 +58,7 @@ public class PacMan extends Levende{
 
         int midtDørX, midtDørY;
         int midtHjemX, midtHjemY;
-        int randomTall; // slik at hvis random så blir det riktig får både dør og hjem
+        int randomTall = 0; // slik at hvis random så blir det riktig får både dør og hjem
         if(dørPlassering.size() == 1) {
             String linje = dørPlassering.get(0);
             String[] deler = linje.split(";");
@@ -75,8 +87,8 @@ public class PacMan extends Levende{
                 midtDørY = Integer.parseInt(deler[1]);
             }
         }
-        // nå som vi har posisjonen til midten av dør, sjekker vi om hjem er plassert under, over eller veder på banen.
-
+        // nå som vi har posisjonen til midten av dør, sjekker vi om hjem er plassert under, over eller ved siden av på banen.
+        // denne koden tar foruttar at det er en ledig plass under hjem for at pacman spawner, hvis ikke plass - ingen spawning
         // sjekker bare en linje - foreslått kode - sjekk det!
         for(int i = 0; i < hjemPlassering.size(); i++){
             String linje = hjemPlassering.get(i);
@@ -84,25 +96,161 @@ public class PacMan extends Levende{
             int tempMidtHjemX = Integer.parseInt(deler[0]);
             int tempMidtHjemY = Integer.parseInt(deler[1]);
 
-            if(midtDørX == tempMidtHjemX && midtDørY == tempMidtHjemY){
-                randomTall = (int) (Math.random() * 3);
-                if(randomTall == 1){
-                    // veder
-                    midtHjemX = tempMidtHjemX - 1;
-                    midtHjemY = tempMidtHjemY;
+
+            // finne ut hvilken retning pacman skal starte på banen.
+            System.out.println("");
+            System.out.println("Hjem er: x " + tempMidtHjemX + ", y " + tempMidtHjemY);
+            System.out.println("Dør er: x " + midtDørX + ", y " + midtDørY);
+            System.out.print("Pacman spawner - ");
+            if(midtDørX == tempMidtHjemX){
+                // over eller under hjem
+                if(midtDørY > tempMidtHjemY){
+                    System.out.println("over");
+                    // pac spawner over
+                    // sjekker om det er plass under til å spawne
+                    for(int j = tempMidtHjemY - 3; j >= 0; j--){
+                        // + 2 siden vi vil gjerne hoppe over en flate som er gulv
+                        System.out.println("For løkke for å sjekke om det er plass over: j - " + j + ", grid[midtDørX].length - " + grid[midtDørX].length );
+                        // sjekker alle rader under tempMidtHjemY
+                        if(grid[midtDørX][j].getType() == Rute.RuteType.GULV) {
+                            // sjekker om det er plass til å spawne
+                            startPosX = midtDørX * ruteStr;
+                            startPosY = j * ruteStr;
+                            currentRute = grid[midtDørX][j];
+
+                            grid[midtDørX][j].setLedigForElement(false);
+                            break;
+                        }
+                    }
+                    break;
+                }else{
+                    System.out.println("under");
+                    // under
+                    // sjekker om det er plass over til å spawne
+                    for(int j = tempMidtHjemY + 3; j < grid[midtDørX].length ; j++){
+                        // - 2 siden vi vil gjerne hoppe over en flate som er gulv
+                        System.out.println("For løkke for å sjekke om det er plass under: j - " + j + ", midtDørX - " + midtDørX );
+                        // sjekker alle rader under tempMidtHjemY
+                        if(grid[midtDørX][j].getType() == Rute.RuteType.GULV) {
+                            // sjekker om det er plass til å spawne
+
+                            System.out.println("j(y)        = " + j);
+                            System.out.println("midtDørX(x) = " + midtDørX);
+                            System.out.println("rute størrelse = " + ruteStr);
+
+                            startPosX = midtDørX * ruteStr;
+                            startPosY = j * ruteStr;
+                            currentRute = grid[midtDørX][j];
+
+                            System.out.println("currentPosX = " + currentPosX);
+                            System.out.println("currentPosY = " + currentPosY);
+                            grid[midtDørX][j].setLedigForElement(false);
+                            break;
+                        }
+                    }
+                    break;
+                }
+
+            }else if (midtDørY == tempMidtHjemY){
+                // venstre eller høyre
+                if(midtDørX > tempMidtHjemX){
+                    System.out.println("venstre");
+                    // venstre
+                    // sjekker om det er plass venstre til å spawne
+                    for(int j = tempMidtHjemX - 3; j >= 0; j--){
+                        // + 2 siden vi vil gjerne hoppe over en flate som er gulv
+                        System.out.println("For løkke for å sjekke om det er plass venstre: j - " + j + ", grid[midtDørX].length - " + grid[midtDørX].length );
+                        // sjekker alle rader under tempMidtHjemY
+                        if(grid[j][midtDørY].getType() == Rute.RuteType.GULV) {
+                            // sjekker om det er plass til å spawne
+                            startPosX = j * ruteStr;
+                            startPosY = midtDørY * ruteStr;
+                            currentRute = grid[j][midtDørY];
+                            grid[j][midtDørY].setLedigForElement(false);
+                            break;
+                        }
+                    }
+                    break;
+                }else{
+                    System.out.println("høyre");
+                    // høyre
+                    // sjekker om det er plass høyre til på spawne
+                    for(int j = tempMidtHjemX + 3; j < grid.length; j++){
+                        // - 2 siden vi vil gjerne hoppe over en flate som er gulv
+                        System.out.println("For løkke for på sjekke om det er plass høyre: j - " + j + ", grid[midtDørX].length - " + grid[midtDørX].length );
+                        // sjekker alle rader under tempMidtHjemY
+                        if(grid[j][midtDørY].getType() == Rute.RuteType.GULV) {
+                            // sjekker om det er plass til på spawne
+                            startPosX = j * ruteStr;
+                            startPosY = midtDørY * ruteStr;
+                            currentRute = grid[j][midtDørY];
+                            grid[j][midtDørY].setLedigForElement(false);
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
         }
+        // hopper ut av disse løkkene over så fort vi får ett treff
+        // utregning hvis det currentPosX og currentPosY ikke har verdi, altså fant ingen ledig plass
+        // skal vi finne randum plass da????
+        // TODO: finne random plass for pacman hvis det ikke er plass til å spawne
 
 
+        // legger til radius slik at plassering blir riktig
+        startPosX += radius;
+        startPosY += radius;
 
-        pac.setCenterX(currentPosX);
-        pac.setCenterY(currentPosY);
-        pac.setRadius(10);
+        // setter plassering til PACMAN
+        pac.setRadius(radius);
+        pac.setCenterX(startPosX);
+        pac.setCenterY(startPosY);
+        currentPosX = startPosX;
+        currentPosY = startPosY;
     }
 
-    public void erGulvLedig(String valg){
-        // en måte å gjøre det på
-        if(valg == "opp"){
 
+
+    public void flyttPacMan(){
+        if(retning == Retning.HØYRE){
+            flyttPacManHøyre();
+        }else if(retning == Retning.VENSTRE){
+            flyttPacManVenstre();
+        }else if(retning == Retning.NED){
+            flyttPacManNed();
+        }else if(retning == Retning.OPP){
+            flyttPacManOpp();
         }
+    }
+
+
+    public void flyttPacManOpp(){
+        if (sjekkRetning(retning)) {
+            currentPosY -= speed;
+            pac.setCenterY(currentPosY);
+        }
+        System.out.println("Pacman treffer en VEGG i retning: " + retning);
+    }
+    public void flyttPacManNed(){
+        if (sjekkRetning(retning)) {
+            currentPosY += speed;
+            pac.setCenterY(currentPosY);
+        }
+        System.out.println("Pacman treffer en VEGG i retning: " + retning);
+    }
+    public void flyttPacManVenstre(){
+        if (sjekkRetning(retning)) {
+            currentPosX -= speed;
+            pac.setCenterX(currentPosX);
+        }
+        System.out.println("Pacman treffer en VEGG i retning: " + retning);
+    }
+    public void flyttPacManHøyre(){
+        if (sjekkRetning(retning)) {
+            currentPosX += speed;
+            pac.setCenterX(currentPosX);
+        }
+        System.out.println("Pacman treffer en VEGG i retning: " + retning);
     }
 }

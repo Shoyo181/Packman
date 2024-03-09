@@ -15,6 +15,9 @@ public class RuteSamling {
     public Rute getRute(int index){
         return (Rute) samling.get(index);
     }
+    public Rute kopierFraRuteSamling(int index){
+        return new Rute(samling.get(index).getRuteId(), samling.get(index).getTile(), samling.get(index).getType());
+    }
     public int hentSamlingStr(){
         return samling.size();
     }
