@@ -19,7 +19,8 @@ import java.io.File;
 import java.util.Scanner;
 /* Egen klasse for å sette opp panel som setter igang spillet
  *
- *
+ * Mulige bugs:
+ * - når banen bygges kan det hende det ikke regnes ut riktig hvor stor rute størrelsen er (har ikk testet hvis banen er breiere enn den er høy
  */
 
 public class BanePane extends BorderPane{
@@ -27,7 +28,8 @@ public class BanePane extends BorderPane{
     private final String LENKE ="src/main/resources/com/example/packman/";
     private int høyde;
     private int bredde;
-    private int vinduStr;
+    private int vinduStrX;
+    private int vinduStrY;
     private RuteSamling tileset;
     private String filnavn;
     private Rute[][] grid;
@@ -41,16 +43,17 @@ public class BanePane extends BorderPane{
 
 
     /***        Konstruktør        ***/
-    public BanePane(String filnavn, int vinduStr) {
+    public BanePane(String filnavn, int vinduStrX, int vinduStrY) {
         this.filnavn = filnavn;
-        this.vinduStr = vinduStr;
+        this.vinduStrX = vinduStrX;
+        this.vinduStrY = vinduStrY;
         // setter opp selve banen
         banePlussSpiller();
         setCenter(banen);
 
         // settter igang animasjon av spillet
         animasjon = new Timeline(
-                new KeyFrame(Duration.millis(100), e -> bevegelse())
+                new KeyFrame(Duration.millis(40), e -> bevegelse())
         );
         animasjon.setCycleCount(Timeline.INDEFINITE);
         animasjon.play();
@@ -94,7 +97,7 @@ public class BanePane extends BorderPane{
         banen.getChildren().add(mapSetUp(filnavn));
         //legger inn elementer til banen
         elementer = new Pane();
-        elementer.setPrefSize(vinduStr, vinduStr);
+        elementer.setPrefSize(vinduStrX, vinduStrY);
 
         pac = new PacMan(grid);
         pac.plasserPacMan();
@@ -128,9 +131,9 @@ public class BanePane extends BorderPane{
             // regner ut hvor stor en rute skal være
             ruteStr = 0;
             if (høyde < bredde) {
-                ruteStr = (vinduStr - 100) / bredde;
+                ruteStr = (vinduStrX - 100) / bredde;
             } else {
-                ruteStr = (vinduStr - 100) / høyde;
+                ruteStr = (vinduStrY - 100) / høyde;
             }
             //System.out.println("rute størrelse: " + ruteStr);
 

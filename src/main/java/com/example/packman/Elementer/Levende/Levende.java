@@ -16,7 +16,7 @@ public class Levende extends Elementer {
     public Levende(Rute[][] grid) {
         super(grid);
         retning = Retning.INGEN;
-        speed = 3;
+        speed = 1;
     }
 
 
@@ -49,6 +49,10 @@ public class Levende extends Elementer {
                if( getTypeVenstre(x, y) == Rute.RuteType.GULV)
                    return true;
                break;
+           case INGEN:
+               break;
+           default:
+               System.out.println("Ugyldig retning");
        }
        return false;
    }
