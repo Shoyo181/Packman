@@ -14,7 +14,7 @@ public class RuteSamling {
     public void leggTil(Rute r){
         samling.add(r);
     }
-    public Rute getRute(int index){
+    public Rute getRuteFraSamling(int index){
         return (Rute) samling.get(index);
     }
     public Rute kopierFraRuteSamling(int index){
