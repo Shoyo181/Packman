@@ -2,10 +2,11 @@ package com.example.packman.Rute;
 
 import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
-public class Rute extends Node {
+public class Rute extends StackPane {
     /***        Objekt variabler        ***/
     private int id;                             // ref til tilesets
     private Rectangle tile;                     // hvordan ruta ser ut
@@ -18,18 +19,13 @@ public class Rute extends Node {
     private RuteType type;                      // type av rute (ingenting, gulv, vegg, dør, hjem)
     private Rectangle[][] utseende;              // utseende til rute
     private GridPane utseendePanel;
+    private double ruteStr;
 
 
     /***        Konstruktører        ***/
     public Rute() {
     }
     // Overload
-    public Rute(int id, Rectangle tile, boolean walkable, boolean ghostWalk) {
-        this.id = id;
-        this.tile = new Rectangle(tile.getHeight(), tile.getWidth(), tile.getFill());
-        this.walkable = walkable;
-        this.ghostWalk = ghostWalk;
-    }
 
     public Rute(int id, RuteType type, Rectangle tile) {
         this.id = id;
@@ -37,12 +33,36 @@ public class Rute extends Node {
         sorterVerdier(type);
         this.tile = new Rectangle(tile.getHeight(), tile.getWidth(), tile.getFill());
     }
-    public Rute(int id, RuteType type, Rectangle tile, Rectangle[][] utseende) {
+    public Rute(int id, RuteType type, Rectangle tile, Rectangle[][] utseende, double ruteStr) {
         this.id = id;
         this.type = type;
+        this.ruteStr = ruteStr;
         sorterVerdier(type);
         this.tile = new Rectangle(tile.getHeight(), tile.getWidth(), tile.getFill());
         this.utseende = utseende;
+        byggRute();
+        System.out.println("En ny Rute er bygget");
+    }
+
+    public void byggRute(){
+        //metode som setter igang stackpane og legger tile og utseende på plass
+
+        //først setter vi høyden til alle rektangler
+        tile.setHeight(ruteStr);
+        tile.setWidth(ruteStr);
+
+        System.out.println("ruteStr: " + ruteStr);
+        System.out.println("ruteStr/16: " + ruteStr/16);
+        System.out.println("ruteStr/16 * 16: " + (ruteStr/16) *16);
+
+        for(int i = 0; i < utseende.length; i++){
+            for(int j = 0; j < utseende[i].length; j++){
+                utseende[i][j].setHeight(ruteStr/16);
+                utseende[i][j].setWidth(ruteStr/16);
+                utseende[i][j].setStrokeWidth(0);
+            }
+        }
+
         utseendePanel = new GridPane();
         // setter utseende slik at det kan vise noe visuelt
         for (int i = 0; i < utseende.length; i++) {
@@ -50,6 +70,9 @@ public class Rute extends Node {
                 utseendePanel.add(utseende[i][j], i, j);
             }
         }
+        new StackPane();
+        getChildren().add(tile);
+        getChildren().add(utseendePanel);
     }
 
     public Rectangle[][] getUtseende(){

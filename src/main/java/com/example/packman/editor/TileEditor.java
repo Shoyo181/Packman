@@ -17,6 +17,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -36,13 +37,11 @@ public class TileEditor extends Editor {
 
     private Color leggTilfarge;
     private Color valgtfarge;
-    private int antFarger;
     private Button btNyFarge, btNyFargeSamling, btHentFargeSamling, btLagreRute, btNyTileSamling, btHentTileSamling;
     private ArrayList<Color> fargerSamling;
     private GridPane fargePallet, tilePallet;
     private HBox fargeInfo, testBox;
-    private int palletRader;
-    private int palletKolonner;
+    private int palletRader, palletKolonner, tileRuteStr, palettRuteStr;
     private TextField tfFargeSamling, tfTileSamling;
     private Label lFargeInfo, lTileInfo;
     private ComboBox<String> cbFargeSamling, cbTileSamling, cbTileType; //ComboBox
@@ -54,32 +53,52 @@ public class TileEditor extends Editor {
 
     public TileEditor(int vinduStrX, int vinduStrY) {
         super(vinduStrX, vinduStrY);
+        // tileRuteStr må være i 16 gangen
+        palettRuteStr = ruteStr;
+        tileRuteStr = 48;
+        ruteStr = ruteStr - 16;
 
         viderePallet();
         videreInfoPanel();
         byggTilePalett();
 
-        ruteStr = ruteStr - 10;
-        // 5*16 = 80
 
-
-        //gridPane.setOnMousePressed(e -> this.tileClick(e));
+        gridPane.setOnMousePressed(e -> this.tileClick(e));
         gridPane.setOnMouseDragged(e -> this.tileClick(e));
     }
 
     public void byggTilePalett(){
         tilePallet = new GridPane();
-        tilePallet.setHgap(10);
-        tilePallet.setVgap(10);
-        tilePallet.setPadding(new Insets(10, 10, 10, 10));
+        tilePallet.setHgap(1);
+        tilePallet.setVgap(1);
+        tilePallet.setPadding(new Insets(5, 5, 5, 5));
+        Rectangle test = new Rectangle(tileRuteStr, tileRuteStr, Color.RED);
+        StackPane stack = new StackPane();
+        stack.getChildren().add(test);
+
+        GridPane g = new GridPane();
+        Rectangle[][] testTable = new Rectangle[16][16];
+        for(int i = 0; i < 16; i++){
+            for(int j = 0; j < 16; j++){
+                testTable[i][j] = new Rectangle((ruteStr/16) - 1, (ruteStr/16)-1, Color.TRANSPARENT);
+                testTable[i][j].setStroke(Color.BLACK);
+                testTable[i][j].setStrokeWidth(1);
+                g.add(testTable[i][j], j, i);
+            }
+        }
+
+        stack.getChildren().add(g);
+
+        tilePallet.add(stack, 0, 0);
+
+
 
         testBox = new HBox();
         testBox.setStyle("-fx-background-color: lightgray; -fx-border-color: black; -fx-border-width: 1px;");
         testBox.setPadding(new Insets(10, 10, 10, 10));
         testBox.setSpacing(10);
         testBox.setMinHeight(200);
-
-
+        testBox.getChildren().add(tilePallet);
 
         byggCanvas();
         midt.getChildren().clear();
@@ -91,16 +110,16 @@ public class TileEditor extends Editor {
     public void oppdaterTilepalett(){
         // metode som oppdaterer hva som er i tilepallet, siden bruker skal kunne bytte mellom tilesets
         tilePallet.getChildren().clear();
-        int teller = 0, tellerKol = 0, tellerRad = 0;
-        while(tileset.hentSamlingStr() != teller){
-            if(tellerKol == 2){
-                tellerKol = 0;
-                tellerRad++;
-            }
+        int tellerKol = 0, tellerRad = 0;
 
-            tilePallet.add(tileset.getRute(teller).getUtseendePanel(), tellerRad, tellerKol);
-            teller++;
-            tellerKol++;
+        for(int i = 0; i < tileset.hentSamlingStr(); i++){
+           if(tellerKol == 2){
+               tellerKol = 0;
+               tellerRad++;
+           }
+           System.out.println("Prøver å vise frem tile id - " + tileset.getRuteFraSamling(i).getRuteId());
+           tilePallet.add(tileset.getRuteFraSamling(i), tellerRad, tellerKol);
+           tellerKol++;
         }
     }
 
@@ -114,7 +133,7 @@ public class TileEditor extends Editor {
 
         //System.out.println("Rektangel har høyde: " + tile[x][y].getHeight() + ", bredden: " + tile[x][y].getWidth());
         //System.out.println("ruteStr: " + ruteStr);
-        //System.out.println("X: " + x + ", Y: " + y);
+        System.out.println("X: " + x + ", Y: " + y);
         //System.out.println("e(getX): " + e.getX() + ", e(getY): " + e.getY());
 
         // farger valg rute
@@ -359,7 +378,7 @@ public class TileEditor extends Editor {
             }
             scanner.close();
             System.out.println("Rute legges inn i tileset, ruteId: " + ruteId);
-            return new Rute(ruteId, type, new Rectangle(), utseende);
+            return new Rute(ruteId, type, new Rectangle(), utseende, tileRuteStr);
 
         } catch (Exception e) {
             System.out.println("Klarte ikke å hente rute: " + ruteId);
@@ -380,6 +399,7 @@ public class TileEditor extends Editor {
         }
         if(cbTileType.getValue() == null){
             lTileInfo.setText("Velg en rute type");
+            System.out.println("Velg en rute type");
             return;
         }
         lTileInfo.setText("");
@@ -392,11 +412,21 @@ public class TileEditor extends Editor {
         System.out.println("idNr = " + idNr);
         Rute.RuteType type = Rute.RuteType.valueOf(cbTileType.getValue());
 
-        Rute nyRute = new Rute(idNr, type, placeholder, tile);
+        //vi kopierer det malte tilen til en annen tabell
+        Rectangle[][] utseende = new Rectangle[pxPerRute][pxPerRute];
+        for(int i = 0; i < utseende.length; i++){
+            for(int j = 0; j < utseende[i].length; j++){
+                utseende[i][j] = new Rectangle();
+                utseende[i][j].setFill(tile[i][j].getFill());
+            }
+        }
+
+        Rute nyRute = new Rute(idNr, type, placeholder, utseende, tileRuteStr);
         skrivRuteTilTileFil(nyRute, filnavn);
         System.out.println("Lagret rute");
         // vi legger ny rute inn i tileset
         tileset.leggTil(nyRute);
+        oppdaterTilepalett();
         System.out.println("Ruten ble lagret i tileset");
 
     }
@@ -708,7 +738,7 @@ public class TileEditor extends Editor {
         private Rectangle fargeRek;
         public Farge(Color farge) {
             this.farge = farge;
-            str = ruteStr - 5;      // -5 for litt rom i pallet
+            str = palettRuteStr - 5;      // -5 for litt rom i pallet
             setPrefSize(str, str);
             fargeRek = new Rectangle(str, str);
             fargeRek.setFill(farge);
