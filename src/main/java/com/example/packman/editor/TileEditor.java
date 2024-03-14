@@ -113,7 +113,7 @@ public class TileEditor extends Editor {
         int tellerKol = 0, tellerRad = 0;
 
         for(int i = 0; i < tileset.hentSamlingStr(); i++){
-           if(tellerKol == 2){
+            if(tellerKol == 3){
                tellerKol = 0;
                tellerRad++;
            }
