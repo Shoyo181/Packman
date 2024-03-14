@@ -215,7 +215,7 @@ public class BanePane extends BorderPane{
 
                  */
                 int id = Integer.parseInt(datTab[0]);
-                Rute nyRute = new Rute(id, utsende, type);
+                Rute nyRute = new Rute(id, type, utsende);
                 nyRute.setRuteStr(ruteStr);
                 samling.leggTil(nyRute);
             }
