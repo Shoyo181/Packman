@@ -91,15 +91,23 @@ public class TileEditor extends Editor {
         stack.getChildren().add(g);
 
         tilePallet.add(stack, 0, 0);
+        tilePallet.setStyle("-fx-background-color: white; -fx-border-width: 1px; -fx-border-color: black; -fx-border-radius: 5px;");
+        tilePallet.setAlignment(Pos.CENTER);
+        tilePallet.setMinWidth(500);
+        tilePallet.setMinHeight(180);
 
 
 
         testBox = new HBox();
-        testBox.setStyle("-fx-background-color: lightgray; -fx-border-color: black; -fx-border-width: 1px;");
+        testBox.setStyle("-fx-background-color: white; -fx-border-width: 1px;");
         testBox.setPadding(new Insets(10, 10, 10, 10));
         testBox.setSpacing(10);
         testBox.setMinHeight(200);
+        testBox.setAlignment(Pos.CENTER);
+        //testBox.setMinWidth(900);
         testBox.getChildren().add(tilePallet);
+        testBox.setStyle("-fx-background-color: #000046");
+
 
 
         byggCanvas();
