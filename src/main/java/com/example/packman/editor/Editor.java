@@ -10,28 +10,28 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+
 public class Editor extends BorderPane {
     protected int vinduStrX;
     protected int vinduStrY;
-    protected int pxPerRute = 16;
     protected int ruteStr;
     protected VBox pallet, info, midt;
 
     protected Rectangle[][] grid;         // for å vise grid
     protected Rectangle[][] tile;         // der hvor farge lagres
-
+    protected int pxPerRute = 16;
+    protected int bredde = 0, høyde = 0;
     protected GridPane gridPane;
     protected GridPane tilePane;
     protected StackPane canvas;
 
+    public Editor(){
+
+    }
 
     public Editor( int vinduStrX, int vinduStrY){
         this.vinduStrX = vinduStrX;
         this.vinduStrY = vinduStrY;
-
-        grid = new Rectangle[pxPerRute][pxPerRute];
-        tile = new Rectangle[pxPerRute][pxPerRute];
-        regnUtRuteStr();
 
         byggPallet();
         setLeft(pallet);
@@ -42,16 +42,22 @@ public class Editor extends BorderPane {
 
 
     public void regnUtRuteStr(){
+        //oppdater slik at den funker begge veier - gjør det ikke nå..
         int breddeIgjen = vinduStrX - 150 - 250;
-        ruteStr = breddeIgjen / pxPerRute;
+        ruteStr = breddeIgjen / bredde;
         System.out.println("ruteStr: " + ruteStr);
+
+
+        grid = new Rectangle[bredde][høyde];
+        tile = new Rectangle[bredde][høyde];
+
+
     }
 
     public void byggPallet(){
         // 150 x px
         pallet = new VBox();
         pallet.setMinWidth(150);
-        pallet.setMaxHeight(150);
         pallet.setStyle("-fx-background-color: lightgray; -fx-border-color: black; -fx-border-width: 1px;");
         pallet.setMaxHeight(vinduStrY);
 
@@ -62,6 +68,7 @@ public class Editor extends BorderPane {
 
     public void byggCanvas(){
         // 800 x px orginalt
+        // innparameter er hvor manger ruter den skal ha
         midt = new VBox();
         midt.setMinWidth(800);
 
@@ -82,8 +89,8 @@ public class Editor extends BorderPane {
     public void byggTileTab(){
         // bygger tabellen for tile tabellen
         System.out.println("ruteStr: " + ruteStr);
-        for(int i = 0; i < pxPerRute; i++){
-            for(int j = 0; j < pxPerRute; j++){
+        for(int i = 0; i < bredde; i++){
+            for(int j = 0; j < høyde; j++){
                 tile[i][j] = new Rectangle(ruteStr, ruteStr);
                 tile[i][j].setFill(Color.TRANSPARENT);
             }
@@ -93,14 +100,14 @@ public class Editor extends BorderPane {
 
     public void leggTilGrid(){
         // grid skal bare vise grid i editor
-        for(int i = 0; i < pxPerRute; i++){
-            for(int j = 0; j < pxPerRute; j++){
+        for(int i = 0; i < bredde; i++){
+            for(int j = 0; j < høyde; j++){
                 grid[i][j] = new Rectangle(ruteStr -1, ruteStr -1);
             }
         }
 
-        for(int i = 0; i < pxPerRute; i++){
-            for(int j = 0; j < pxPerRute; j++){
+        for(int i = 0; i < bredde; i++){
+            for(int j = 0; j < høyde; j++){
                 grid[i][j].setStroke(Color.BLACK);
                 grid[i][j].setFill(Color.TRANSPARENT);
                 grid[i][j].setStrokeWidth(1);
@@ -113,8 +120,8 @@ public class Editor extends BorderPane {
         // gris skal være 16 x 16 og alle rutene skal være like store
         GridPane g = new GridPane();
         // legger alle rutene inn i gridpane
-        for(int i = 0; i < pxPerRute; i++){
-            for(int j = 0; j < pxPerRute; j++){
+        for(int i = 0; i < t.length; i++){
+            for(int j = 0; j < t[i].length; j++){
                 g.add(t[i][j], i, j);
             }
         }
