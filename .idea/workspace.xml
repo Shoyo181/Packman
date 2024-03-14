@@ -5,15 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a2a43c00-d9c6-44ef-a34a-6ac895b8a1eb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/Meny.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/editor/Editor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/editor/MapEditor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/editor/TileEditor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/com/example/packman/Oversikter/fargeSamling.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/com/example/packman/Oversikter/tilesetSamling.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/packman/BanePane.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/BanePane.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/packman/Elementer/Levende/Levende.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/Elementer/Levende/Levende.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/packman/PackmanGui.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/PackmanGui.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/packman/Rute/Rute.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/Rute/Rute.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/packman/Rute/RuteSamling.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/Rute/RuteSamling.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/packman/editor/Editor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/editor/Editor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/packman/editor/TileEditor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/editor/TileEditor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/packman/Oversikter/fargeSamling.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/packman/Oversikter/fargeSamling.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,7 +93,7 @@
       <workItem from="1709982969996" duration="75000" />
       <workItem from="1710164803597" duration="6550000" />
       <workItem from="1710252623702" duration="17486000" />
-      <workItem from="1710288859557" duration="4596000" />
+      <workItem from="1710288859557" duration="30549000" />
     </task>
     <servers />
   </component>

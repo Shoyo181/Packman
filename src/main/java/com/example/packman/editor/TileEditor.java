@@ -6,9 +6,13 @@
 
 package com.example.packman.editor;
 
+import com.example.packman.Elementer.Levende.Levende;
+import com.example.packman.Rute.Rute;
+import com.example.packman.Rute.RuteSamling;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -22,25 +26,29 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.*;
 
 public class TileEditor extends Editor {
 
     private final String LENKE_FARGER = "src/main/resources/com/example/packman/fargeSamlinger/";
     private final String LENKE_OVERSIKT = "src/main/resources/com/example/packman/Oversikter/";
+    private final String LENKE_TILESET = "src/main/resources/com/example/packman/tilesets/";
 
     private Color leggTilfarge;
     private Color valgtfarge;
     private int antFarger;
-    private Button btNyFarge, btNyFargeSamling, btHentFargeSamling;
+    private Button btNyFarge, btNyFargeSamling, btHentFargeSamling, btLagreRute, btNyTileSamling, btHentTileSamling;
     private ArrayList<Color> fargerSamling;
-    private GridPane fargePallet;
-    private HBox fargeInfo;
+    private GridPane fargePallet, tilePallet;
+    private HBox fargeInfo, testBox;
     private int palletRader;
     private int palletKolonner;
-    private TextField tfFargeSamling;
-    private Label lFargeInfo;
-    private ComboBox<String> cbFargeSamling; //ComboBox
-    private String[] alleFargeSamlinger;
+    private TextField tfFargeSamling, tfTileSamling;
+    private Label lFargeInfo, lTileInfo;
+    private ComboBox<String> cbFargeSamling, cbTileSamling, cbTileType; //ComboBox
+    private String[] alleFargeSamlinger, alleTileSamlinger, alleTileTyper;
+    private CheckBox chRuteNett;
+    private RuteSamling tileset;
 
     final ColorPicker colorPicker = new ColorPicker();
 
@@ -48,8 +56,52 @@ public class TileEditor extends Editor {
         super(vinduStrX, vinduStrY);
 
         viderePallet();
+        videreInfoPanel();
+        byggTilePalett();
+
+        ruteStr = ruteStr - 10;
+        // 5*16 = 80
+
+
         //gridPane.setOnMousePressed(e -> this.tileClick(e));
         gridPane.setOnMouseDragged(e -> this.tileClick(e));
+    }
+
+    public void byggTilePalett(){
+        tilePallet = new GridPane();
+        tilePallet.setHgap(10);
+        tilePallet.setVgap(10);
+        tilePallet.setPadding(new Insets(10, 10, 10, 10));
+
+        testBox = new HBox();
+        testBox.setStyle("-fx-background-color: lightgray; -fx-border-color: black; -fx-border-width: 1px;");
+        testBox.setPadding(new Insets(10, 10, 10, 10));
+        testBox.setSpacing(10);
+        testBox.setMinHeight(200);
+
+
+
+        byggCanvas();
+        midt.getChildren().clear();
+        midt.getChildren().addAll(testBox, canvas);
+
+        setCenter(midt);
+    }
+
+    public void oppdaterTilepalett(){
+        // metode som oppdaterer hva som er i tilepallet, siden bruker skal kunne bytte mellom tilesets
+        tilePallet.getChildren().clear();
+        int teller = 0, tellerKol = 0, tellerRad = 0;
+        while(tileset.hentSamlingStr() != teller){
+            if(tellerKol == 2){
+                tellerKol = 0;
+                tellerRad++;
+            }
+
+            tilePallet.add(tileset.getRute(teller).getUtseendePanel(), tellerRad, tellerKol);
+            teller++;
+            tellerKol++;
+        }
     }
 
 
@@ -84,7 +136,345 @@ public class TileEditor extends Editor {
 
 
     public void videreInfoPanel(){
+        // knapper og slikt for infopanelet
+        hentCBinfo();
 
+        //legger til comboboxene i infopanelet
+        cbTileSamling = new ComboBox<>();
+        cbTileType = new ComboBox<>();
+        cbTileSamling.setPromptText("Velg tileset");
+        cbTileType.setPromptText("Velg rute type");
+        cbTileSamling.getItems().addAll(alleTileSamlinger);
+        cbTileType.getItems().addAll(alleTileTyper);
+
+        //lager knapp for å hente tilsamling
+        btHentTileSamling = new Button("Hent tileset");
+        btHentTileSamling.setOnAction(e -> hentTileset());
+
+        HBox infoTileset = new HBox();
+        infoTileset.setSpacing(10);
+        infoTileset.getChildren().addAll(cbTileSamling, btHentTileSamling);
+
+        //lager checkbox for å vise frem grid eller ikke
+        chRuteNett = new CheckBox("Vis rutenett");
+        chRuteNett.setSelected(true);
+        chRuteNett.setOnAction(e -> ruteNett());
+
+        //lager knapp slik at bruker kan lagre ruten de lagere
+        btLagreRute = new Button("Lagre ruten");
+        btLagreRute.setOnAction(e -> lagreRute());
+
+        //Legger inn teksboks og knapp for nye tileset-samlinger
+        tfTileSamling = new TextField();
+        btNyTileSamling = new Button("Nytt tileset");
+        btNyTileSamling.setOnAction(e -> nyTileSamling());
+
+        HBox infoTile = new HBox();
+        infoTile.setSpacing(10);
+        infoTile.getChildren().addAll(tfTileSamling, btNyTileSamling);
+
+        //lager label som gir tilbakemeld til bruker
+        lTileInfo = new Label();
+
+        info.getChildren().addAll(chRuteNett, infoTileset, cbTileType, btLagreRute, infoTile, lTileInfo);
+
+    }
+
+    public void nyTileSamling() {
+        System.out.println("Nytt tileset");
+        //sjekker om bruker har skrevet inn en navn
+        if (tfTileSamling.getText().equals("")) {
+            lTileInfo.setText("Skriv inn en navn");
+            return;
+        }
+        // tar vekk tidligere feilmeld
+        lTileInfo.setText("");
+
+        //sjekker om tilesetet allerede finnes
+        for (int i = 0; i < alleTileSamlinger.length; i++) {
+            if (tfTileSamling.getText().equals(alleTileSamlinger[i])) {
+                lTileInfo.setText("Tilesetet finnes allerede");
+                return;
+            }
+        }
+        lTileInfo.setText("");
+
+        //legger til tilesetet i arrayet
+        alleTileSamlinger = Arrays.copyOf(alleTileSamlinger, alleTileSamlinger.length + 1);
+        alleTileSamlinger[alleTileSamlinger.length - 1] = tfTileSamling.getText();
+
+        //legger til i comboboxen
+        cbTileSamling.getItems().add(tfTileSamling.getText());
+
+        //lagrer tilesetet
+        try{
+            // her skal vi bare lage en .txt som er tom (som vi senere legger info inn om)
+            // vi skal også oppdatere tilset-samling oversikten
+            PrintWriter writer = new PrintWriter(new FileWriter(LENKE_TILESET + tfTileSamling.getText() + ".txt"));
+            writer.close();
+
+            //skriver videre i txt-filen
+            writer = new PrintWriter(new FileWriter(LENKE_OVERSIKT + "tilesetSamling.txt", true));
+            writer.println(tfTileSamling.getText());
+            writer.close();
+
+        }catch (Exception e){
+            System.out.println("Klarte ikke å lagre tilesetet");
+            return;
+        }
+        tfTileSamling.clear();
+    }
+
+    public void hentTileset(){
+        System.out.println("Henter tileset");
+        //sjekker om bruker har valgt en tileset-samling
+        String filnavn = cbTileSamling.getValue();
+        if(filnavn == null || filnavn.equals("Velg tileset")){
+            lTileInfo.setText("Velg en tileset-samling");
+            return;
+        }
+        System.out.println("Henter inn tilesetet fra: " + filnavn);
+        tileset = new RuteSamling();
+        int teller = 0;
+        // vi sjekker hvor mange tils det er i samlingen
+        try{
+            Scanner scanner = new Scanner(new File(LENKE_TILESET + filnavn + ".txt"));
+
+            while(scanner.hasNextLine()){
+                //skal gå igjennom hele filen
+                String linje = scanner.nextLine();
+                String datTab[] = linje.split(":");
+                int id = Integer.parseInt(datTab[0]);
+                linje = scanner.nextLine();
+                Rute.RuteType type = Rute.RuteType.valueOf(linje);
+                // nå har vi hentet all info mangler bare hvordan ruta ser ut
+                Rectangle[][] utseende = new Rectangle[pxPerRute][pxPerRute];
+                int y = 0;
+                while (scanner.hasNextLine()) {
+                    linje = scanner.nextLine();
+                    if (linje.equals(":")) {
+                        break;
+                    }
+                    String dat[] = linje.split(";");
+                    System.out.println(linje);
+                    //hver linje er x aksen
+                    for(int i = 0; i < dat.length; i++){
+                        //hver linje er y aksen (teller)
+                        utseende[i][y] = new Rectangle(ruteStr - 1, ruteStr - 1);
+                        utseende[i][y].setFill(Color.valueOf(dat[i]));
+                    }
+                    y++;
+                    // hvis y er lik pxPerRute, må vi gå ut av siste whilen
+                    if (y == pxPerRute) {
+                        break;
+                    }
+
+                }
+                teller++;
+                String test = scanner.nextLine();
+                System.out.println(test);
+
+            }
+            scanner.close();
+
+        } catch (Exception e){
+            System.out.println("Klarte ikke å hente tilesetet");
+            return;
+        }
+        System.out.println("Det er " + teller + " ruter");
+        // vi legger inn alle rutene i samlingen
+        for(int i = 0; i < teller; i++){
+           tileset.leggTil( leggInnEnRute(i, filnavn) );
+           System.out.println("Lagt til rute nr: " + i);
+        }
+
+        System.out.println("Funker frem til hit");
+        oppdaterTilepalett();
+
+        System.out.println("Hentet tilesetet");
+    }
+    public Rute leggInnEnRute(int ruteId, String filnavn) {
+        // metode for å hente en rute fra en rutesamling
+        try {
+            Scanner scanner = new Scanner(new File(LENKE_TILESET + filnavn + ".txt"));
+            //sjekker hvor id ligger i samlingsfilen
+            int id = 0;
+            String linje = "";
+            while (scanner.hasNextLine()) {
+                linje = scanner.nextLine();
+                //System.out.println("Linje fra leggInnEnRute(): " + linje);
+                String[] datTab = linje.split(":");
+                id = Integer.parseInt(datTab[0]);
+                if (id == ruteId) {
+                    System.out.println("Fant ruten: " + ruteId);
+                    // funnet riktig plasering i tekstfil
+                    break;
+                }
+                // hvis ikke id er funnet, leter vi til neste gang en id kommer i tekstfil
+                // det er 1 rad med type info
+                linje = scanner.nextLine();
+                //System.out.println(linje);
+                // det er 16 linjer med utseende info
+                for (int i = 0; i < 16; i++) {
+                    linje = scanner.nextLine();
+                    //System.out.println(linje);
+                }
+                // det er en linje med : for å dele opp objektene
+                linje = scanner.nextLine();
+                //System.out.println(linje);
+
+            }
+
+            // hvis det ikke finnes en linje til må vi ut av metoden
+            if (!scanner.hasNextLine()) {
+                scanner.close();
+                System.out.println("Fant ikke ruten: " + ruteId);
+                return null;
+            }
+
+
+            // neste linje er rute type
+
+            linje = scanner.nextLine();
+            Rute.RuteType type = Rute.RuteType.valueOf(linje);
+            Rectangle[][] utseende = new Rectangle[pxPerRute][pxPerRute];
+            int teller = 0;
+            // neste linje etter type er info om utseende
+            while(scanner.hasNextLine()) {
+                linje = scanner.nextLine();
+                String[] datTab = linje.split(";");
+
+                //en linje her er en rad med utseende (x)
+                for(int i = 0; i < datTab.length; i++) {
+                    utseende[i][teller] = new Rectangle();
+                    utseende[i][teller].setFill(Color.valueOf(datTab[i]));
+                }
+                // teller er y verdien i 2dim tab
+                teller++;
+
+                // når vi har fylt opp hele utseende, må vi ut av while-løkken
+                if(teller >= pxPerRute){
+                    break;
+                }
+            }
+            scanner.close();
+            System.out.println("Rute legges inn i tileset, ruteId: " + ruteId);
+            return new Rute(ruteId, type, new Rectangle(), utseende);
+
+        } catch (Exception e) {
+            System.out.println("Klarte ikke å hente rute: " + ruteId);
+            return null;
+        }
+
+
+    }
+
+    public void lagreRute(){
+        System.out.println("Prøver å lagre rute");
+        //sjekker om bruker har valgt en tileset-samling
+        String filnavn = cbTileSamling.getValue();
+        // vet ikke om jeg må ha eller funksjonen her, men gjør det for å være sikker
+        if(filnavn == null || filnavn.equals("Velg tileset")){
+            lTileInfo.setText("Velg en tileset-samling");
+            return;
+        }
+        if(cbTileType.getValue() == null){
+            lTileInfo.setText("Velg en rute type");
+            return;
+        }
+        lTileInfo.setText("");
+
+        //lagrer rute info på den nye måten
+        Rectangle placeholder = new Rectangle();
+        placeholder.setFill(Color.TRANSPARENT);
+        // returnerer str på Rute Arraylist i RuteSamling
+        int idNr = tileset.hentSamlingStr();
+        System.out.println("idNr = " + idNr);
+        Rute.RuteType type = Rute.RuteType.valueOf(cbTileType.getValue());
+
+        Rute nyRute = new Rute(idNr, type, placeholder, tile);
+        skrivRuteTilTileFil(nyRute, filnavn);
+        System.out.println("Lagret rute");
+        // vi legger ny rute inn i tileset
+        tileset.leggTil(nyRute);
+        System.out.println("Ruten ble lagret i tileset");
+
+    }
+    public void skrivRuteTilTileFil(Rute rute, String filnavn){
+        //metode som skriver rute info til tilefilen
+        System.out.println("prøver å lagre en rute i metoden skrivRuteTilTileFil:");
+        Rectangle[][] utseende = rute.getUtseende();
+        System.out.println("krasj her?");
+        try {
+            PrintWriter writer = new PrintWriter(new FileWriter(LENKE_TILESET + filnavn + ".txt", true));
+            writer.print(rute.getRuteId());
+            System.out.print(rute.getRuteId());
+            writer.println(":");
+            System.out.println(":");
+            writer.println(rute.getType().toString());
+            System.out.println(rute.getType().toString());
+
+            for(int i = 0; i < pxPerRute; i++){
+                for(int j = 0; j < pxPerRute; j++){
+                    writer.print(utseende[i][j].getFill().toString());
+                    System.out.print( utseende[i][j].getFill().toString() );
+                    if(j < pxPerRute - 1){
+                        writer.print(";");
+                        System.out.print(";");
+                    }
+                }
+                System.out.println();
+                writer.println();
+            }
+            writer.println(":");
+            System.out.println(":");
+            writer.close();
+            System.out.println("Ruten ble lagret i tilefilen: " + filnavn);
+        }catch(Exception e){
+            System.out.println("Klarte ikke å lagre ruten");
+            return;
+        }
+    }
+
+    public void ruteNett(){
+        if(chRuteNett.isSelected()){
+            gridPane.setVisible(true);
+            //gridPane.setGridLinesVisible(true);
+        }else{
+            gridPane.setVisible(false);
+            //gridPane.setGridLinesVisible(false);
+        }
+    }
+
+    public void hentCBinfo(){
+        //henter infor til comboboxsene i infopanelet
+
+        // alle type ruter vi har
+        alleTileTyper = new String[]{ "GULV", "VEGG", "DØR", "HJEM" };
+
+        try{
+            //henter infor til tileset comboboxsen
+            Scanner sc = new Scanner(new File(LENKE_OVERSIKT + "tilesetSamling.txt"));
+            int teller = 0;
+            while(sc.hasNextLine()){
+                String linje = sc.nextLine();
+                teller++;
+            }
+            alleTileSamlinger = new String[teller];
+            teller = 0;
+            sc.close();
+            sc = new Scanner(new File(LENKE_OVERSIKT + "tilesetSamling.txt"));
+            while(sc.hasNextLine()){
+                String linje = sc.nextLine();
+                alleTileSamlinger[teller] = linje;
+                teller++;
+            }
+            sc.close();
+
+        }catch (Exception e){
+            System.out.println("Feil ved henting av tilesetSamling");
+            return;
+        }
 
 
     }
@@ -146,6 +536,14 @@ public class TileEditor extends Editor {
     public void nyFarge(){
         //legger ny farge inn i samling
         System.out.println("Ny farge!! " + colorPicker.getValue());
+        //sjekker om farge allerede er i samlingen
+
+        for(int i = 0; i < fargerSamling.size(); i++){
+            if(fargerSamling.get(i).equals(leggTilfarge)){
+                lFargeInfo.setText("Farge er allerede i samling!");
+                return;
+            }
+        }
         fargerSamling.add(leggTilfarge);
         if( (fargerSamling.size() - 1 )% 3 == 0){ // må ha -1 hvor size ikke tar med 0 som index
             palletRader++;

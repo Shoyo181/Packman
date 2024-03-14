@@ -6,6 +6,7 @@
 
 package com.example.packman.editor;
 
+import javafx.geometry.Pos;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -15,7 +16,7 @@ public class Editor extends BorderPane {
     protected int vinduStrY;
     protected int pxPerRute = 16;
     protected int ruteStr;
-    protected VBox pallet, info;
+    protected VBox pallet, info, midt;
 
     protected Rectangle[][] grid;         // for å vise grid
     protected Rectangle[][] tile;         // der hvor farge lagres
@@ -34,8 +35,6 @@ public class Editor extends BorderPane {
 
         byggPallet();
         setLeft(pallet);
-        byggCanvas();
-        setCenter(canvas);
         byggInfo();
         setRight(info);
 
@@ -59,7 +58,10 @@ public class Editor extends BorderPane {
 
 
     public void byggCanvas(){
-        // 800 x px
+        // 800 x px orginalt
+        midt = new VBox();
+        midt.setMinWidth(800);
+
         canvas = new StackPane();
         leggTilGrid();
         byggTileTab();
@@ -68,6 +70,9 @@ public class Editor extends BorderPane {
         gridPane = byggGrid(grid);
 
         canvas.getChildren().addAll(tilePane, gridPane);
+
+        midt.getChildren().add(canvas);
+
         System.out.println("Canvas er bygget");
 
     }

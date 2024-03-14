@@ -1,6 +1,7 @@
 package com.example.packman.Rute;
 
 import javafx.scene.Node;
+import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
@@ -15,6 +16,8 @@ public class Rute extends Node {
     //private boolean canContainIkkeLevende;    // om ruta har fått en rolle, har ett element i seg osv.
     private boolean ledigForElement;            // om rute er ledig for spawning av ett element
     private RuteType type;                      // type av rute (ingenting, gulv, vegg, dør, hjem)
+    private Rectangle[][] utseende;              // utseende til rute
+    private GridPane utseendePanel;
 
 
     /***        Konstruktører        ***/
@@ -28,13 +31,33 @@ public class Rute extends Node {
         this.ghostWalk = ghostWalk;
     }
 
-    public Rute(int id, Rectangle tile, RuteType type) {
+    public Rute(int id, RuteType type, Rectangle tile) {
         this.id = id;
-        this.tile = new Rectangle(tile.getHeight(), tile.getWidth(), tile.getFill());
         this.type = type;
         sorterVerdier(type);
+        this.tile = new Rectangle(tile.getHeight(), tile.getWidth(), tile.getFill());
+    }
+    public Rute(int id, RuteType type, Rectangle tile, Rectangle[][] utseende) {
+        this.id = id;
+        this.type = type;
+        sorterVerdier(type);
+        this.tile = new Rectangle(tile.getHeight(), tile.getWidth(), tile.getFill());
+        this.utseende = utseende;
+        utseendePanel = new GridPane();
+        // setter utseende slik at det kan vise noe visuelt
+        for (int i = 0; i < utseende.length; i++) {
+            for (int j = 0; j < utseende[i].length; j++) {
+                utseendePanel.add(utseende[i][j], i, j);
+            }
+        }
     }
 
+    public Rectangle[][] getUtseende(){
+        return utseende;
+    }
+    public GridPane getUtseendePanel(){
+        return utseendePanel;
+    }
 
     public int getRuteId(){
         return id;
@@ -67,7 +90,7 @@ public class Rute extends Node {
 
 
     public Rute kopierRute(){
-        return new Rute(id, tile, type);
+        return new Rute(id, type, tile);
     }
 
     public Rectangle kopierTile(){

@@ -1,5 +1,7 @@
 package com.example.packman.Rute;
 
+import javafx.scene.layout.GridPane;
+
 import java.util.ArrayList;
 
 public class RuteSamling {
@@ -16,8 +18,14 @@ public class RuteSamling {
         return (Rute) samling.get(index);
     }
     public Rute kopierFraRuteSamling(int index){
-        return new Rute(samling.get(index).getRuteId(), samling.get(index).getTile(), samling.get(index).getType());
+        return new Rute(samling.get(index).getRuteId(), samling.get(index).getType(), samling.get(index).getTile());
     }
+    public GridPane getUtseendePanelFraSamling(int index){
+        return samling.get(index).getUtseendePanel();
+    }
+    //public GridPane kopierUtseendePanelFraSamling(int index){
+        //return new Rute(samling.get(index).getRuteId(), samling.get(index).getType(), samling.get(index).getTile(),samling.get(index).getTile().getUtseendePanel());
+    //}
     public int hentSamlingStr(){
         return samling.size();
     }
