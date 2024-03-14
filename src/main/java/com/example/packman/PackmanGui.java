@@ -133,10 +133,10 @@ public class PackmanGui extends Application {
             goBack3.setOnAction(e1 -> {
                 mainPane.setCenter(editorMenu);
                 mainPane.setTop(null);
-        });
+            });
         mainPane.setTop(goBack3);
 
-    });
+        });
 
 
 
