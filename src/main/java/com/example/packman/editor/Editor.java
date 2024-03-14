@@ -6,6 +6,7 @@
 
 package com.example.packman.editor;
 
+import javafx.geometry.Pos;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -23,6 +24,7 @@ public class Editor extends BorderPane {
     protected GridPane gridPane;
     protected GridPane tilePane;
     protected StackPane canvas;
+
 
 
     public Editor( int vinduStrX, int vinduStrY){
@@ -52,8 +54,9 @@ public class Editor extends BorderPane {
         pallet = new VBox();
         pallet.setMinWidth(150);
         pallet.setMaxHeight(150);
-        pallet.setStyle("-fx-background-color: lightgray; -fx-border-color: black; -fx-border-width: 1px;");
+        pallet.setStyle("-fx-background-color: #000046; -fx-border-width: 1px; -fx-text-fill: white; -fx-font-family: Consolas");
         pallet.setMaxHeight(vinduStrY);
+        pallet.setSpacing(10);
 
 
         //hva pallet viser er definert i subklasser
@@ -63,7 +66,7 @@ public class Editor extends BorderPane {
     public void byggCanvas(){
         // 800 x px orginalt
         midt = new VBox();
-        midt.setMinWidth(800);
+
 
         canvas = new StackPane();
         leggTilGrid();
@@ -72,9 +75,15 @@ public class Editor extends BorderPane {
         tilePane = byggGrid(tile);
         gridPane = byggGrid(grid);
 
+
         canvas.getChildren().addAll(tilePane, gridPane);
 
-        midt.getChildren().add(canvas);
+        VBox b = new VBox();
+        b.getChildren().add(canvas);
+
+
+
+        midt.getChildren().add(b);
 
         System.out.println("Canvas er bygget");
 
@@ -127,8 +136,9 @@ public class Editor extends BorderPane {
         info = new VBox();
         info.setMinWidth(250);
         info.setMaxHeight(150);
-        info.setStyle("-fx-background-color: lightgray; -fx-border-color: black; -fx-border-width: 1px;");
+        info.setStyle("-fx-background-color: #000046; -fx-border-width: 1px; -fx-text-fill: white; -fx-font-family: Consolas");
         info.setMaxHeight(vinduStrY);
+        info.setSpacing(10);
 
         //knapper og comboxer er definert i subklasser
     }

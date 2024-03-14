@@ -77,6 +77,7 @@ public class TileEditor extends Editor {
         stack.getChildren().add(test);
 
         GridPane g = new GridPane();
+
         Rectangle[][] testTable = new Rectangle[16][16];
         for(int i = 0; i < 16; i++){
             for(int j = 0; j < 16; j++){
@@ -99,6 +100,7 @@ public class TileEditor extends Editor {
         testBox.setSpacing(10);
         testBox.setMinHeight(200);
         testBox.getChildren().add(tilePallet);
+
 
         byggCanvas();
         midt.getChildren().clear();
@@ -176,6 +178,7 @@ public class TileEditor extends Editor {
 
         //lager checkbox for å vise frem grid eller ikke
         chRuteNett = new CheckBox("Vis rutenett");
+        chRuteNett.setStyle("-fx-text-fill: #ffe148");
         chRuteNett.setSelected(true);
         chRuteNett.setOnAction(e -> ruteNett());
 

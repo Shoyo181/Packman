@@ -14,6 +14,7 @@ import javafx.scene.input.KeyCode;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -116,13 +117,17 @@ public class PackmanGui extends Application {
         tileEdit.setOnAction(e -> {
             edit = new TileEditor(WIN_X, WIN_Y);
             mainPane.setCenter(edit);
+            HBox backButton = new HBox();
+            backButton.setStyle("-fx-background-color:  #000046;");
             Button goBack2 = new Button("Back");
+            goBack2.setStyle("-fx-background-color: transparent; -fx-text-fill: #ffe148; -fx-font-family: Consolas; -fx-font-size: 16px;");
+            backButton.getChildren().add(goBack2);
             goBack2.setOnAction(e1 -> {
                 mainPane.setCenter(editorMenu);
                 mainPane.setTop(null);
 
             });
-            mainPane.setTop(goBack2);
+            mainPane.setTop(backButton);
 
         });
 
@@ -130,11 +135,15 @@ public class PackmanGui extends Application {
             edit = new MapEditor(WIN_X, WIN_Y);
             mainPane.setCenter(edit);
             Button goBack3 = new Button("Back");
+            HBox backButton2 = new HBox();
+            backButton2.setStyle("-fx-background-color:  #000046;");
+            backButton2.getChildren().add(goBack3);
+            goBack3.setStyle("-fx-background-color: transparent; -fx-text-fill: #ffe148; -fx-font-family: Consolas; -fx-font-size: 16px;");
             goBack3.setOnAction(e1 -> {
                 mainPane.setCenter(editorMenu);
                 mainPane.setTop(null);
             });
-        mainPane.setTop(goBack3);
+        mainPane.setTop(backButton2);
 
         });
 
