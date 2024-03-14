@@ -4,18 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a2a43c00-d9c6-44ef-a34a-6ac895b8a1eb" name="Changes" comment="">
+    <list default="true" id="4d739412-e813-4697-992f-94c65c726e7d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-<<<<<<< Updated upstream
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/packman/Rute/Rute.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/Rute/Rute.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/packman/Rute/RuteSamling.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/Rute/RuteSamling.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/packman/editor/TileEditor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/editor/TileEditor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/packman/tilesets/testigjen.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/packman/tilesets/testigjen.txt" afterDir="false" />
-=======
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/packman/Elementer/Levende/Levende.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/Elementer/Levende/Levende.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/packman/PackmanGui.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/PackmanGui.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/packman/editor/Editor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/editor/Editor.java" afterDir="false" />
->>>>>>> Stashed changes
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,24 +44,8 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Application.PackmanGui.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-<<<<<<< Updated upstream
-    "git-widget-placeholder": "Rute-bytte",
-=======
-    "git-widget-placeholder": "mies2",
->>>>>>> Stashed changes
-    "kotlin-language-version-configured": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "configurable.group.appearance",
-    "vue.rearranger.settings.migration": "true"
+    "git-widget-placeholder": "master",
+    "node.js.selected.package.tslint": "(autodetect)"
   }
 }]]></component>
   <component name="SharedIndexes">
@@ -100,12 +75,7 @@
       <workItem from="1709982969996" duration="75000" />
       <workItem from="1710164803597" duration="6550000" />
       <workItem from="1710252623702" duration="17486000" />
-<<<<<<< Updated upstream
       <workItem from="1710288859557" duration="35274000" />
-=======
-      <workItem from="1710288859557" duration="4596000" />
-      <workItem from="1710348115308" duration="8894000" />
->>>>>>> Stashed changes
     </task>
     <servers />
   </component>

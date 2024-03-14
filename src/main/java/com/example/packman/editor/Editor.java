@@ -6,11 +6,6 @@
 
 package com.example.packman.editor;
 
-import javafx.geometry.Pos;
-<<<<<<< Updated upstream
-=======
-import javafx.scene.control.Button;
->>>>>>> Stashed changes
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
