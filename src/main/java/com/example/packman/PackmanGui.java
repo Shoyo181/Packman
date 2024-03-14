@@ -99,7 +99,7 @@ public class PackmanGui extends Application {
 
     }
 
-    public void byggEditorMeny(){
+    public void byggEditorMeny() {
 
         tileEdit = new Button("Tile-Editor");
         tileEdit.setStyle("-fx-background-color: transparent; -fx-text-fill: #ffe148; -fx-font-family: Consolas;");
@@ -121,7 +121,7 @@ public class PackmanGui extends Application {
                 mainPane.setCenter(editorMenu);
                 mainPane.setTop(null);
 
-        });
+            });
             mainPane.setTop(goBack2);
 
         });
@@ -129,7 +129,15 @@ public class PackmanGui extends Application {
         mapEdit.setOnAction(e -> {
             edit = new MapEditor(WIN_X, WIN_Y);
             mainPane.setCenter(edit);
+            Button goBack3 = new Button("Back");
+            goBack3.setOnAction(e1 -> {
+                mainPane.setCenter(editorMenu);
+                mainPane.setTop(null);
         });
+        mainPane.setTop(goBack3);
+
+    });
+
 
 
 
