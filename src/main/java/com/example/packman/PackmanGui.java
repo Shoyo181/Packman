@@ -4,6 +4,11 @@ import com.example.packman.Elementer.Levende.Levende;
 import com.example.packman.editor.Editor;
 import com.example.packman.editor.MapEditor;
 import com.example.packman.editor.TileEditor;
+import javafx.animation.Animation;
+import javafx.animation.AnimationTimer;
+import javafx.animation.FadeTransition;
+import javafx.animation.ScaleTransition;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.application.Application;
@@ -11,6 +16,8 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+
 import java.io.IOException;
 
 public class PackmanGui extends Application {
@@ -42,8 +49,15 @@ public class PackmanGui extends Application {
         // metode for å bygge meny
         VBox v = new VBox();
         campain = new Button("Campain");
+        campain.setStyle("-fx-background-color: transparent; -fx-text-fill:#ffe148; -fx-font-family: Consolas" );
+        buttonStretch(campain);
         editor = new Button("Editor");
+        editor.setStyle("-fx-background-color: transparent; -fx-text-fill: #ffe148; -fx-font-family: Consolas");
+        buttonStretch(editor);
         ekstra = new Button("Ekstra");
+        ekstra.setStyle("-fx-background-color: transparent; -fx-text-fill: #ffe148; -fx-font-family: Consolas");
+        buttonStretch(ekstra);
+        v.setStyle("-fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #1f2031, #042796); -fx-border-width: 1px; -fx-alignment: center; -fx-font-family: 'Droid Sans Mono'; -fx-font-size: 40px; -fx-spacing: 50px; -fx-padding: 10px;");
 
         campain.setOnAction(e -> {
             byggBane();
@@ -54,6 +68,7 @@ public class PackmanGui extends Application {
         editor.setOnAction(e -> {
             byggEditorMeny();
             mainPane.setCenter(editorMenu);
+
         });
 
         v.getChildren().addAll(campain, editor, ekstra);
@@ -85,12 +100,30 @@ public class PackmanGui extends Application {
     }
 
     public void byggEditorMeny(){
+
         tileEdit = new Button("Tile-Editor");
+        tileEdit.setStyle("-fx-background-color: transparent; -fx-text-fill: #ffe148; -fx-font-family: Consolas;");
+        buttonStretch(tileEdit);
         mapEdit = new Button("Map-Editor");
+        mapEdit.setStyle("-fx-background-color: transparent; -fx-text-fill: #ffe148; -fx-font-family: Consolas");
+        buttonStretch(mapEdit);
+        Button goBack1 = new Button("Back");
+        buttonStretch(goBack1);
+        goBack1.setStyle("-fx-background-color: transparent; -fx-text-fill: #ffe148; -fx-font-family: Consolas");
+        goBack1.setOnAction(e -> mainPane.setCenter(menu));
+
 
         tileEdit.setOnAction(e -> {
             edit = new TileEditor(WIN_X, WIN_Y);
             mainPane.setCenter(edit);
+            Button goBack2 = new Button("Back");
+            goBack2.setOnAction(e1 -> {
+                mainPane.setCenter(editorMenu);
+                mainPane.setTop(null);
+
+        });
+            mainPane.setTop(goBack2);
+
         });
 
         mapEdit.setOnAction(e -> {
@@ -101,9 +134,30 @@ public class PackmanGui extends Application {
 
 
         editorMenu = new VBox();
-        editorMenu.getChildren().addAll(tileEdit, mapEdit);
+        editorMenu.getChildren().addAll(tileEdit, mapEdit, goBack1);
         mainPane.setCenter(editorMenu);
+        editorMenu.setStyle("-fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #1f2031, #042796);  -fx-border-color: black; -fx-border-width: 1px; -fx-alignment: center; -fx-font-family: 'Droid Sans Mono'; -fx-font-size: 40px; -fx-spacing: 50px; -fx-padding: 10px;");
+        editorMenu.setAlignment(Pos.CENTER);
     }
+
+
+
+    public void buttonStretch (Button b) {
+        b.setOnMouseEntered(e -> {
+            ScaleTransition scaleIn = new ScaleTransition(Duration.seconds(0.5), b);
+            scaleIn.setToX(1.2);
+            scaleIn.setToY(1.2);
+            scaleIn.play();
+        });
+
+        b.setOnMouseExited(e -> {
+            ScaleTransition scaleOut = new ScaleTransition(Duration.seconds(0.5), b);
+            scaleOut.setToX(1.0);
+            scaleOut.setToY(1.0);
+            scaleOut.play();
+        });
+    }
+
 
 
     public static void main(String[] args) {

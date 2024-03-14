@@ -7,6 +7,10 @@
 package com.example.packman.editor;
 
 import javafx.geometry.Pos;
+<<<<<<< Updated upstream
+=======
+import javafx.scene.control.Button;
+>>>>>>> Stashed changes
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -25,6 +29,7 @@ public class Editor extends BorderPane {
     protected GridPane tilePane;
     protected StackPane canvas;
 
+
     public Editor( int vinduStrX, int vinduStrY){
         this.vinduStrX = vinduStrX;
         this.vinduStrY = vinduStrY;
@@ -40,6 +45,7 @@ public class Editor extends BorderPane {
 
     }
 
+
     public void regnUtRuteStr(){
         int breddeIgjen = vinduStrX - 150 - 250;
         ruteStr = breddeIgjen / pxPerRute;
@@ -53,6 +59,8 @@ public class Editor extends BorderPane {
         pallet.setMaxHeight(150);
         pallet.setStyle("-fx-background-color: lightgray; -fx-border-color: black; -fx-border-width: 1px;");
         pallet.setMaxHeight(vinduStrY);
+
+
         //hva pallet viser er definert i subklasser
     }
 

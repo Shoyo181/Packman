@@ -32,6 +32,9 @@ public class Levende extends Elementer {
        int x = sjekkPosX();
        int y = sjekkPosY();
        System.out.println("x: " + x + ", y: " + y);
+       if(r == null) {
+           return false;
+       }
        switch (r){
            case NED:
                if( getTypeUnder(x, y) == Rute.RuteType.GULV)
