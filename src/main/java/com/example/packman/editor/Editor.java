@@ -81,15 +81,15 @@ public class Editor extends BorderPane {
         canvas = new StackPane();
         leggTilGrid();
         byggTileTab();
-        canvas.setStyle("-fx-background-color: #000046;");
+        //canvas.setStyle("-fx-background-color: #000046;");
 
 
         tilePane = byggGrid(tile);
-        tilePane.setAlignment(Pos.CENTER);
-        tilePane.setStyle("-fx-background-color: white; -fx-padding: 20px;");
+        //tilePane.setAlignment(Pos.CENTER);
+        //tilePane.setStyle("-fx-background-color: white; -fx-padding: 20px;");
         gridPane = byggGrid(grid);
-        gridPane.setAlignment(Pos.CENTER);
-        gridPane.setStyle("-fx-background-color: white; -fx-padding: 20px;");
+        //gridPane.setAlignment(Pos.CENTER);
+        //gridPane.setStyle("-fx-background-color: white; -fx-padding: 20px;");
 
         canvas.getChildren().addAll(tilePane, gridPane);
 

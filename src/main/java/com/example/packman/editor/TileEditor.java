@@ -75,24 +75,7 @@ public class TileEditor extends Editor {
         tilePallet.setHgap(1);
         tilePallet.setVgap(1);
         tilePallet.setPadding(new Insets(5, 5, 5, 5));
-        Rectangle test = new Rectangle(tileRuteStr, tileRuteStr, Color.RED);
-        StackPane stack = new StackPane();
-        stack.getChildren().add(test);
 
-        GridPane g = new GridPane();
-        Rectangle[][] testTable = new Rectangle[16][16];
-        for(int i = 0; i < 16; i++){
-            for(int j = 0; j < 16; j++){
-                testTable[i][j] = new Rectangle((ruteStr/16) - 1, (ruteStr/16)-1, Color.TRANSPARENT);
-                testTable[i][j].setStroke(Color.BLACK);
-                testTable[i][j].setStrokeWidth(1);
-                g.add(testTable[i][j], j, i);
-            }
-        }
-
-        stack.getChildren().add(g);
-
-        tilePallet.add(stack, 0, 0);
         tilePallet.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-border-width: 1px;");
         tilePallet.setAlignment(Pos.CENTER);
         tilePallet.setMinWidth(500);
