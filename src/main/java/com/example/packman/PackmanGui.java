@@ -122,7 +122,12 @@ public class PackmanGui extends Application {
                 mainPane.setTop(null);
 
             });
+<<<<<<< Updated upstream
             mainPane.setTop(goBack2);
+=======
+
+            mainPane.setTop(backButton);
+>>>>>>> Stashed changes
 
         });
 
@@ -134,7 +139,12 @@ public class PackmanGui extends Application {
                 mainPane.setCenter(editorMenu);
                 mainPane.setTop(null);
             });
+<<<<<<< Updated upstream
         mainPane.setTop(goBack3);
+=======
+            
+        mainPane.setTop(backButton2);
+>>>>>>> Stashed changes
 
         });
 

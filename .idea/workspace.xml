@@ -45,8 +45,19 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Application.PackmanGui.executor": "Run",
+<<<<<<< Updated upstream
     "git-widget-placeholder": "master",
     "node.js.selected.package.tslint": "(autodetect)"
+=======
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "git-widget-placeholder": "mies3",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+>>>>>>> Stashed changes
   }
 }]]></component>
   <component name="SharedIndexes">
@@ -77,6 +88,10 @@
       <workItem from="1710164803597" duration="6550000" />
       <workItem from="1710252623702" duration="17486000" />
       <workItem from="1710288859557" duration="35274000" />
+<<<<<<< Updated upstream
+=======
+      <workItem from="1710512829068" duration="1015000" />
+>>>>>>> Stashed changes
     </task>
     <servers />
   </component>
