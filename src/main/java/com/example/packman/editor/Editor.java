@@ -52,7 +52,7 @@ public class Editor extends BorderPane {
         // 150 x px
         pallet = new VBox();
         pallet.setMinWidth(150);
-        pallet.setStyle("-fx-background-color: #000046; -fx-border-width: 1px; -fx-text-fill: white; -fx-font-family: Consolas; -fx-padding: 10px;");
+        pallet.setStyle("-fx-background-color: #000046; -fx-border-width: 1px; -fx-text-fill: #ffffff; -fx-font-family: Consolas; -fx-padding: 10px;");
         pallet.setMaxHeight(vinduStrY);
         pallet.setSpacing(10);
 
@@ -71,7 +71,7 @@ public class Editor extends BorderPane {
         canvas = new StackPane();
         leggTilGrid();
         byggTileTab();
-        canvas.setStyle("-fx-background-color: 000046;");
+        canvas.setStyle("-fx-background-color: #000046;");
 
 
         tilePane = byggGrid(tile);

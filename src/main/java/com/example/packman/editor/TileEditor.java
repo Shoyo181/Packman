@@ -97,7 +97,7 @@ public class TileEditor extends Editor {
 
 
         testBox = new HBox();
-        testBox.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-border-width: 1px;");
+        testBox.setStyle("-fx-background-color: #ffffff; -fx-border-color: black; -fx-border-width: 1px;");
         testBox.setPadding(new Insets(10, 10, 10, 10));
         testBox.setSpacing(10);
         testBox.setMinHeight(200);
