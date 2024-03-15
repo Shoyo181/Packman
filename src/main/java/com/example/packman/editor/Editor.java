@@ -45,6 +45,8 @@ public class Editor extends BorderPane {
         //oppdater slik at den funker begge veier - gjør det ikke nå..
         int breddeIgjen = vinduStrX - 150 - 250;
         ruteStr = breddeIgjen / bredde;
+        ruteStr = ruteStr /16;
+        ruteStr = ruteStr * 16;
         System.out.println("ruteStr: " + ruteStr);
 
 

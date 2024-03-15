@@ -41,7 +41,7 @@ public class Rute extends StackPane {
         this.tile = new Rectangle(tile.getHeight(), tile.getWidth(), tile.getFill());
         this.utseende = utseende;
         byggRute();
-        System.out.println("En ny Rute er bygget");
+        //System.out.println("En ny Rute er bygget");
     }
 
     public void byggRute(){
@@ -51,9 +51,9 @@ public class Rute extends StackPane {
         tile.setHeight(ruteStr);
         tile.setWidth(ruteStr);
 
-        System.out.println("ruteStr: " + ruteStr);
-        System.out.println("ruteStr/16: " + ruteStr/16);
-        System.out.println("ruteStr/16 * 16: " + (ruteStr/16) *16);
+        //System.out.println("ruteStr: " + ruteStr);
+        //System.out.println("ruteStr/16: " + ruteStr/16);
+        //System.out.println("ruteStr/16 * 16: " + (ruteStr/16) *16);
 
         for(int i = 0; i < utseende.length; i++){
             for(int j = 0; j < utseende[i].length; j++){
@@ -70,6 +70,18 @@ public class Rute extends StackPane {
                 utseendePanel.add(utseende[i][j], i, j);
             }
         }
+        new StackPane();
+        getChildren().add(tile);
+        getChildren().add(utseendePanel);
+    }
+
+    public void setAlt(Rute r){
+        this.ruteStr = r.getRuteStr();
+        this.id = r.getRuteId();
+        this.type = r.getType();
+        this.tile = r.getTile();
+        this.utseende = r.getUtseende();
+        this.utseendePanel = r.getUtseendePanel();
         new StackPane();
         getChildren().add(tile);
         getChildren().add(utseendePanel);
@@ -99,7 +111,10 @@ public class Rute extends StackPane {
         tile.setY(y);
     }
     public Rute getRute(){
-        return this;
+        return (Rute) this;
+    }
+    public int getRuteStr(){
+        return (int) ruteStr;
     }
     public RuteType getType() {
         return type;
@@ -113,7 +128,7 @@ public class Rute extends StackPane {
 
 
     public Rute kopierRute(){
-        return new Rute(id, type, tile);
+        return new Rute(this.id, this.type, this.tile, this.utseende, this.ruteStr);
     }
 
     public Rectangle kopierTile(){

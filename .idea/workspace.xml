@@ -6,9 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="4d739412-e813-4697-992f-94c65c726e7d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/packman/Rute/Rute.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/Rute/Rute.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/packman/Rute/RuteSamling.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/Rute/RuteSamling.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/packman/editor/Editor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/editor/Editor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/packman/editor/MapEditor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/editor/MapEditor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/packman/editor/TileEditor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/editor/TileEditor.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,13 +45,13 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.PackmanGui.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.PackmanGui.executor": "Run",
+    "git-widget-placeholder": "mapEditor",
+    "node.js.selected.package.tslint": "(autodetect)"
   }
-}</component>
+}]]></component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
