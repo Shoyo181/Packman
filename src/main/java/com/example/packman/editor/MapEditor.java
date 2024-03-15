@@ -33,6 +33,8 @@ public class MapEditor extends Editor {
     private Rute[][] ruteMap;
     private GridPane rutePanel;
 
+    //test
+
     public MapEditor(int vinduStrX, int vinduStrY) {
         super(vinduStrX, vinduStrY);
 
