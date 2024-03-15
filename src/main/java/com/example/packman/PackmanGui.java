@@ -126,7 +126,9 @@ public class PackmanGui extends Application {
                 mainPane.setCenter(editorMenu);
                 mainPane.setTop(null);
             });
+
             mainPane.setTop(backButton);
+
 
         });
 
@@ -142,7 +144,9 @@ public class PackmanGui extends Application {
                 mainPane.setCenter(editorMenu);
                 mainPane.setTop(null);
             });
+
         mainPane.setTop(backButton2);
+
 
         });
 
