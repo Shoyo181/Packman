@@ -20,6 +20,9 @@ public class RuteSamling {
     public Rute kopierFraRuteSamling(int index){
         return new Rute(samling.get(index).getRuteId(), samling.get(index).getType(), samling.get(index).getTile());
     }
+    public Rute kopierFraRuteSamlingStack(int index){
+        return new Rute(samling.get(index).getRuteId(), samling.get(index).getType(), samling.get(index).getTile(), samling.get(index).getUtseende(), samling.get(index).getRuteStr());
+    }
     public GridPane getUtseendePanelFraSamling(int index){
         return samling.get(index).getUtseendePanel();
     }

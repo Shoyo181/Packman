@@ -34,7 +34,6 @@ public class TileEditor extends Editor {
     private final String LENKE_FARGER = "src/main/resources/com/example/packman/fargeSamlinger/";
     private final String LENKE_OVERSIKT = "src/main/resources/com/example/packman/Oversikter/";
     private final String LENKE_TILESET = "src/main/resources/com/example/packman/tilesets/";
-
     private Color leggTilfarge;
     private Color valgtfarge;
     private Button btNyFarge, btNyFargeSamling, btHentFargeSamling, btLagreRute, btNyTileSamling, btHentTileSamling;
@@ -52,8 +51,12 @@ public class TileEditor extends Editor {
     final ColorPicker colorPicker = new ColorPicker();
 
     public TileEditor(int vinduStrX, int vinduStrY) {
+
         super(vinduStrX, vinduStrY);
         // tileRuteStr må være i 16 gangen
+        this.høyde = pxPerRute;
+        this.bredde = pxPerRute;
+        regnUtRuteStr();
         palettRuteStr = ruteStr;
         tileRuteStr = 48;
         ruteStr = ruteStr - 16;
