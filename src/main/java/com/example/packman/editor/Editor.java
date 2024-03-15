@@ -6,6 +6,7 @@
 
 package com.example.packman.editor;
 
+import javafx.geometry.Pos;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -51,9 +52,9 @@ public class Editor extends BorderPane {
         // 150 x px
         pallet = new VBox();
         pallet.setMinWidth(150);
-        pallet.setMaxHeight(150);
-        pallet.setStyle("-fx-background-color: lightgray; -fx-border-color: black; -fx-border-width: 1px;");
+        pallet.setStyle("-fx-background-color: #000046; -fx-border-width: 1px; -fx-text-fill: white; -fx-font-family: Consolas; -fx-padding: 10px;");
         pallet.setMaxHeight(vinduStrY);
+        pallet.setSpacing(10);
 
 
         //hva pallet viser er definert i subklasser
@@ -63,14 +64,22 @@ public class Editor extends BorderPane {
     public void byggCanvas(){
         // 800 x px orginalt
         midt = new VBox();
-        midt.setMinWidth(800);
+        midt.setMinHeight(vinduStrY);
+
+
 
         canvas = new StackPane();
         leggTilGrid();
         byggTileTab();
+        canvas.setStyle("-fx-background-color: 000046;");
+
 
         tilePane = byggGrid(tile);
+        tilePane.setAlignment(Pos.CENTER);
+        tilePane.setStyle("-fx-background-color: white; -fx-padding: 20px;");
         gridPane = byggGrid(grid);
+        gridPane.setAlignment(Pos.CENTER);
+        gridPane.setStyle("-fx-background-color: white; -fx-padding: 20px;");
 
         canvas.getChildren().addAll(tilePane, gridPane);
 
@@ -127,8 +136,9 @@ public class Editor extends BorderPane {
         info = new VBox();
         info.setMinWidth(250);
         info.setMaxHeight(150);
-        info.setStyle("-fx-background-color: lightgray; -fx-border-color: black; -fx-border-width: 1px;");
+        info.setStyle("-fx-background-color: #000046; -fx-border-width: 1px; -fx-text-fill: white; -fx-font-family: Consolas; -fx-padding: 10px;");
         info.setMaxHeight(vinduStrY);
+        info.setSpacing(10);
 
         //knapper og comboxer er definert i subklasser
     }

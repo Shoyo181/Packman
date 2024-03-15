@@ -7,6 +7,8 @@
     <list default="true" id="4d739412-e813-4697-992f-94c65c726e7d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/packman/PackmanGui.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/PackmanGui.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/packman/editor/Editor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/editor/Editor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/packman/editor/TileEditor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/editor/TileEditor.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,8 +47,14 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Application.PackmanGui.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
     "git-widget-placeholder": "master",
-    "node.js.selected.package.tslint": "(autodetect)"
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="SharedIndexes">
@@ -59,7 +67,7 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="a2a43c00-d9c6-44ef-a34a-6ac895b8a1eb" name="Changes" comment="" />
+      <changelist id="4d739412-e813-4697-992f-94c65c726e7d" name="Changes" comment="" />
       <created>1709217000118</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -77,6 +85,7 @@
       <workItem from="1710164803597" duration="6550000" />
       <workItem from="1710252623702" duration="17486000" />
       <workItem from="1710288859557" duration="35274000" />
+      <workItem from="1710512829068" duration="771000" />
     </task>
     <servers />
   </component>

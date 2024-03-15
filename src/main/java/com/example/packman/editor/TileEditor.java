@@ -90,15 +90,20 @@ public class TileEditor extends Editor {
         stack.getChildren().add(g);
 
         tilePallet.add(stack, 0, 0);
-
+        tilePallet.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-border-width: 1px;");
+        tilePallet.setAlignment(Pos.CENTER);
+        tilePallet.setMinWidth(500);
+        tilePallet.setMinHeight(100);
 
 
         testBox = new HBox();
-        testBox.setStyle("-fx-background-color: lightgray; -fx-border-color: black; -fx-border-width: 1px;");
+        testBox.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-border-width: 1px;");
         testBox.setPadding(new Insets(10, 10, 10, 10));
         testBox.setSpacing(10);
         testBox.setMinHeight(200);
+        testBox.setAlignment(Pos.CENTER);
         testBox.getChildren().add(tilePallet);
+        testBox.setStyle("-fx-background-color: 000046;");
 
         byggCanvas();
         midt.getChildren().clear();
@@ -176,6 +181,7 @@ public class TileEditor extends Editor {
 
         //lager checkbox for å vise frem grid eller ikke
         chRuteNett = new CheckBox("Vis rutenett");
+        chRuteNett.setStyle("-fx-text-fill: ffe148;");
         chRuteNett.setSelected(true);
         chRuteNett.setOnAction(e -> ruteNett());
 
