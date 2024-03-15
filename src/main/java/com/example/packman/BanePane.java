@@ -2,10 +2,13 @@ package com.example.packman;
 
 import com.example.packman.Elementer.Levende.Levende;
 import com.example.packman.Elementer.Levende.PacMan;
+import com.example.packman.Elementer.Levende.Spøkelser.SpøkelsesType;
 import com.example.packman.Rute.Rute;
 import com.example.packman.Rute.RuteSamling;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -39,6 +42,7 @@ public class BanePane extends BorderPane{
     private Pane elementer;
     private PacMan pac; //midlertidlig, for en test
     private Levende.Retning nesteRetning;
+    private SpøkelsesType Pinky;
 
 
 
@@ -102,7 +106,18 @@ public class BanePane extends BorderPane{
         pac = new PacMan(grid);
         pac.plasserPacMan();
 
-        elementer.getChildren().add(pac.getPacMan());
+        /*Image blinkyImage = new Image("/com/example/packman/Elementer/Levende/Blinky.png");
+        ImageView blinkyView = new ImageView(blinkyImage);
+        blinkyView.setX(100);
+        blinkyView.setY(100);
+
+         */
+
+
+
+
+
+        elementer.getChildren().addAll(pac.getPacMan());
         banen.getChildren().add(elementer);
         System.out.println("PacMan er plassert");
         System.out.println("banen sin;");
