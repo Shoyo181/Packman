@@ -19,8 +19,8 @@ public class PacMan extends Levende{
         super(grid);
         pac = new Circle();
         pac.setFill(Paint.valueOf("yellow"));
-        pac.setRadius(radius);
         radius = ruteStr/2;
+        pac.setRadius(radius);
     }
 
     public Circle getPacMan(){
