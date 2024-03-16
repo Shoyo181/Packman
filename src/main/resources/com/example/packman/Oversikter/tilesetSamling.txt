@@ -4,3 +4,6 @@ nyTest
 Map-set
 mapset-test
 mapset-test2
+PacMan1
+PacM1
+PacMan2

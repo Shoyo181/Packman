@@ -6,3 +6,7 @@ test4
 testes
 testerersfase
 Pac-Man map-Pallet
+kk
+testm
+PacM1
+PacMan2

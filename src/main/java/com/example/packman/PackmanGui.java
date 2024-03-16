@@ -61,6 +61,7 @@ public class PackmanGui extends Application {
         v.setStyle("-fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #1f2031, #042796); -fx-border-width: 1px; -fx-alignment: center; -fx-font-family: 'Droid Sans Mono'; -fx-font-size: 40px; -fx-spacing: 50px; -fx-padding: 10px;");
 
         campain.setOnAction(e -> {
+
             byggBane();
             mainPane.setCenter(bane);
             bane.requestFocus();
@@ -75,6 +76,7 @@ public class PackmanGui extends Application {
         v.getChildren().addAll(campain, editor, ekstra);
         return v;
     }
+
     public void byggBane() {
         bane = new BanePane("testIgjen", WIN_X, WIN_Y);
 
@@ -85,6 +87,7 @@ public class PackmanGui extends Application {
                 r = Levende.Retning.NED;
             if( e.getCode() == KeyCode.LEFT)
                 r = Levende.Retning.VENSTRE;
+
             if( e.getCode() == KeyCode.RIGHT)
                 r = Levende.Retning.HØYRE;
             if ( e.getCode() == KeyCode.SPACE)

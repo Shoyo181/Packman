@@ -366,7 +366,7 @@ public class MapEditor extends Editor {
                     //vi siller hver dute id med ";"
                     writer.print(ruteMap[x][y].getRuteId());
                     System.out.print(ruteMap[x][y].getRuteId());
-                    if( y < bredde -1){
+                    if( y < bredde){
                         writer.print(";");
                         System.out.print(";");
                     }
