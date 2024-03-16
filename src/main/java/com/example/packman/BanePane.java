@@ -10,6 +10,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -26,8 +27,8 @@ import java.util.Scanner;
 public class BanePane extends BorderPane{
 
     private final String LENKE ="src/main/resources/com/example/packman/";
-    private int høyde;
-    private int bredde;
+    private int høyde, bredde, pxPerRute= 16;
+
     private int vinduStrX;
     private int vinduStrY;
     private RuteSamling tileset;
@@ -39,6 +40,7 @@ public class BanePane extends BorderPane{
     private Pane elementer;
     private PacMan pac; //midlertidlig, for en test
     private Levende.Retning nesteRetning;
+    private GridPane gridPanel;
 
 
 
@@ -57,7 +59,9 @@ public class BanePane extends BorderPane{
         );
         animasjon.setCycleCount(Timeline.INDEFINITE);
         animasjon.play();
+
     }
+
 
     /***      Metoder       ***/
 
@@ -94,7 +98,10 @@ public class BanePane extends BorderPane{
     public void banePlussSpiller() {
         banen = new StackPane();
         //legger inn selve banen
-        banen.getChildren().add(mapSetUp(filnavn));
+        gridPanel = new GridPane();
+        gridPanel = mapSetUp(filnavn);
+        banen.getChildren().add(gridPanel);
+
         //legger inn elementer til banen
         elementer = new Pane();
         elementer.setPrefSize(vinduStrX, vinduStrY);
@@ -130,26 +137,37 @@ public class BanePane extends BorderPane{
             grid = new Rute[bredde][høyde];
             // regner ut hvor stor en rute skal være
             ruteStr = 0;
+            /*
             if (høyde < bredde) {
                 ruteStr = (vinduStrX - 100) / bredde;
             } else {
                 ruteStr = (vinduStrY - 100) / høyde;
-            }
-            //System.out.println("rute størrelse: " + ruteStr);
+            }*/
+            //ruteStr må være i 16 gangen siden hver rute trenger 16px hver
+            ruteStr = (vinduStrX - 100)  / bredde;
+            ruteStr = (int) ruteStr / 16;
+            ruteStr = (int) ruteStr * 16;
+
+            System.out.println("Siste rute størrelse test: " + ruteStr);
 
             // henter tileset med hjelp av filnavn og rute størrelse
             tileset = hentTileset(tileFilnavn);
+            System.out.println("tileset er hentet");
 
             //behandler resten av filen - selve banen
-            int linjeTeller = 0;
+            int linjeTeller = 0; // teller linjer i filen (y eller høyden)
             while (leser.hasNextLine()) {
+
                 linje = leser.nextLine();
+
                 //System.out.println("linje: " + linje);
-                String[] baneTab = linje.split(",");
-                for (int i = 0; i < bredde; i++) {
-                    int index = Integer.parseInt(baneTab[i]);
+                String[] baneTab = linje.split(";");
+
+                for (int i = 0; i < bredde; i++) {      // i teller x eller bredde fra filen
+                    //henter id fra bane filen
+                    int id = Integer.parseInt(baneTab[i]);
                     //System.out.print("Index: " + index + "; ");
-                    grid[i][linjeTeller] = tileset.kopierFraRuteSamling(index);
+                    //grid[i][linjeTeller] = tileset.kopierFraRuteSamling(index);
 
                     // dette er ikke lovelig hvor det blir duplikater i gridet
                     //grid[i][linjeTeller].setRuteX(ruteStr*i);
@@ -157,19 +175,43 @@ public class BanePane extends BorderPane{
                     //Rute nyRute = grid[i][linjeTeller].getRute();
                     // to bort node i Rute
 
+                    Rectangle tile = new Rectangle(ruteStr, ruteStr);
+                    tile.setFill(Color.TRANSPARENT);
+
+                    //henter utseende
+                    Rectangle[][] utseendeSjekk = tileset.getRuteFraSamling(id).getUtseende();
+
+                    Rectangle[][] utseende = new Rectangle[pxPerRute][pxPerRute];
+                    //utseende
+                    for(int x = 0; x < utseende.length; x++) {
+                        for(int y = 0; y < utseende[i].length; y++) {
+                            utseende[x][y] = new Rectangle(ruteStr/16, ruteStr/16);
+                            utseende[x][y].setFill(utseendeSjekk[x][y].getFill());
+                        }
+                    }
+
+                    Rute.RuteType type = tileset.getRuteFraSamling(id).getType();
+
+                    System.out.println("id: " + id + ", type: " + type);
+                    //lager ny rute og legger den inn in gridet
+                    Rute nyRute = new Rute(id, type, tile, utseende, ruteStr);
+
+
+                    grid[i][linjeTeller] = nyRute;
+
 
                     // lager kopi av rektanglet i ruteklassen, siden vi ikke får lov til å legge inn
                     // duplikater i grid
-                    Rectangle nyRute = grid[i][linjeTeller].kopierTile();
+
 
 
                     //System.out.println("i: " + i + ", linjeTeller: " + linjeTeller);
                     //      objekt,                       x,   y index
-                    g.add(nyRute, i, linjeTeller);
+                    g.add(grid[i][linjeTeller].kopierRute(), i, linjeTeller);
 
                 }
                 linjeTeller++;
-                //System.out.println();
+                System.out.println(linje);
             }
             leser.close();
 
@@ -193,34 +235,44 @@ public class BanePane extends BorderPane{
         System.out.println("Henter tilset");
         try{
             // åpner datastrøm for å hente tilset
-            Scanner leser = new Scanner(new File(LENKE + "tilesets/" + tileFilnavn + ".txt"));
+            Scanner scanner = new Scanner(new File(LENKE + "tilesets/" + tileFilnavn + ".txt"));
             // behandler datastrøm
-            while(leser.hasNextLine()){
-                String linje = leser.nextLine();
-                String[] datTab = linje.split(";");
-                Rectangle utsende = new Rectangle();
-                Paint farge = Paint.valueOf(datTab[1]);
-                utsende.setFill(farge);
-                Rute.RuteType type = Rute.RuteType.valueOf(datTab[2]);
-
-                /*boolean walkable = Boolean.parseBoolean(datTab[2]);
-                boolean ghostWalk = Boolean.parseBoolean(datTab[3]);
-                boolean door = Boolean.parseBoolean(datTab[4]);
-                boolean home = Boolean.parseBoolean(datTab[5]);
-
+            while(scanner.hasNextLine()) {
+                //id
+                String linje = scanner.nextLine();
+                System.out.println(linje);
+                String datTab[] = linje.split(":");
                 int id = Integer.parseInt(datTab[0]);
-                Rute nyRute = new Rute(id, utsende, walkable, ghostWalk, door, home);
-                nyRute.setRuteStr(ruteStr);
-                samling.leggTil(nyRute);
+                // type
+                linje = scanner.nextLine();
+                System.out.println(linje);
+                Rute.RuteType type = Rute.RuteType.valueOf(linje);
+                // design til ruta
+                Rectangle[][] utseende = new Rectangle[pxPerRute][pxPerRute];
+                for (int i = 0; i < pxPerRute; i++) {
+                    linje = scanner.nextLine();
+                    System.out.println(linje);
+                    String strTab[] = linje.split(";");
+                    for (int j = 0; j < pxPerRute; j++) {
+                        Rectangle pixel = new Rectangle(ruteStr/16, ruteStr/16);
+                        pixel.setFill(Color.valueOf(strTab[j]));
+                        utseende[i][j] = pixel;
+                    }
+                }
+                Rectangle tile = new Rectangle(ruteStr, ruteStr);
+                tile.setFill(Color.TRANSPARENT);
+                System.out.println("all info er hentet ");
 
-                 */
-                int id = Integer.parseInt(datTab[0]);
-                Rute nyRute = new Rute(id, type, utsende);
-                nyRute.setRuteStr(ruteStr);
-                samling.leggTil(nyRute);
+                linje =scanner.nextLine();
+                System.out.println("linje i tilesethenting, skal være ':', og er - " + linje);
+                // legger inn til rutesamling
+                samling.leggTil( new Rute(id, type, tile, utseende, ruteStr) );
+                System.out.println("tileset er lagt til i samling");
+                // nå har vi hentet et helt rute objekt
+                // men leseren er fortsatt på feil plass
+
             }
-            // lukker datastrøm
-            leser.close();
+            scanner.close();
 
         }catch (Exception e){
             System.out.println("Noe gikk galt med filbehandling - tileset \n" + e);

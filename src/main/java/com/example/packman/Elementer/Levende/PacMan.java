@@ -19,6 +19,7 @@ public class PacMan extends Levende{
         super(grid);
         pac = new Circle();
         pac.setFill(Paint.valueOf("yellow"));
+        pac.setRadius(radius);
         radius = ruteStr/2;
     }
 
@@ -35,17 +36,17 @@ public class PacMan extends Levende{
         ArrayList<String> dørPlassering = new ArrayList<>();
         ArrayList<String> hjemPlassering = new ArrayList<>();
 
-        for (int i = 0; i < grid.length; i++) {
-            System.out.println("i = " + i);
-            for (int j = 0; j < grid[i].length; j++) {
-                System.out.println("j = " + j + ", " + grid[i][j].getType());
-                Rute.RuteType currType = grid[i][j].getType();
+        for (int y = 0; y < gridHøyde; y++) {
+            System.out.println("y = " + y);
+            for (int x = 0; x < gridBredde; x++) {
+                System.out.println("x = " + x + ", " + grid[x][y].getType());
+                Rute.RuteType currType = grid[x][y].getType();
                 if (currType == Rute.RuteType.DØR) {
-                    String nyDør = i + ";" + j;
+                    String nyDør = x + ";" + y;
                     dørPlassering.add(nyDør);
                 }
                 if (currType == Rute.RuteType.HJEM) {
-                    String nyHjem = i + ";" + j;
+                    String nyHjem = x + ";" + y;
                     hjemPlassering.add(nyHjem);
                 }
             }
@@ -203,7 +204,6 @@ public class PacMan extends Levende{
         startPosY += radius;
 
         // setter plassering til PACMAN
-        pac.setRadius(radius);
         pac.setCenterX(startPosX);
         pac.setCenterY(startPosY);
         currentPosX = startPosX;

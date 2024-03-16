@@ -7,11 +7,17 @@ import javafx.scene.shape.Rectangle;
 public class Elementer {
 
     protected Rute [][] grid;
-    protected int ruteStr;
+    protected int ruteStr, gridHøyde, gridBredde;
 
     public Elementer(Rute[][] grid) {
         this.grid = grid;
         this.ruteStr = hentRuteStr(grid[0][0].getTile());
+        regnutHøydeBredde();
+        System.out.println("(Fra Elementer) Høyde: " + gridHøyde + ", Bredde: " + gridBredde);
+    }
+    public void regnutHøydeBredde() {
+        this.gridHøyde = grid[0].length;       // y-akse
+        this.gridBredde = grid.length;   // x-akse
     }
 
     private int hentRuteStr(Rectangle r) {

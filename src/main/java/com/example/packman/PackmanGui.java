@@ -76,7 +76,7 @@ public class PackmanGui extends Application {
         return v;
     }
     public void byggBane() {
-        bane = new BanePane("test", WIN_X, WIN_Y);
+        bane = new BanePane("testIgjen", WIN_X, WIN_Y);
 
         bane.setOnKeyPressed(e -> {
             if( e.getCode() == KeyCode.UP)
