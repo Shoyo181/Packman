@@ -15,6 +15,7 @@ import javafx.scene.text.Font;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class MapEditor extends Editor {
@@ -46,6 +47,7 @@ public class MapEditor extends Editor {
         regnUtRuteStrMap();
         byggViderePallet();
         byggVidereInfoPanel();
+
 
     }
     public void regnUtRuteStrMap() {
@@ -347,13 +349,16 @@ public class MapEditor extends Editor {
         System.out.println("Prøver å lagre bane");
         //sjekker først om det kartet har et navn
         String filnavn = tfMapNavn.getText();
+
         if (filnavn.equals("")) {
             System.out.println("Du ma først skrive inn navnet til mappet din");
+
             return;
         }
         try{
             //åpner datastrøm
             PrintWriter writer = new PrintWriter(LENKE_BANER + filnavn + ".txt");
+
             // behandler datastrøm
             // I filen skal det først stå hvor stor banen er bredde,høyde så skal det stå hvilket tileset den bruker
             // skiller med ";"
@@ -366,7 +371,7 @@ public class MapEditor extends Editor {
                     //vi siller hver dute id med ";"
                     writer.print(ruteMap[x][y].getRuteId());
                     System.out.print(ruteMap[x][y].getRuteId());
-                    if( y < bredde){
+                    if( x < bredde -1){
                         writer.print(";");
                         System.out.print(";");
                     }
@@ -378,7 +383,9 @@ public class MapEditor extends Editor {
             }
             // lukker datastrøm
             writer.close();
+
             System.out.println("Mappet har blitt lagret");
+
         }catch (Exception e){
             System.out.println("Karte ikke å lagre mappet");
             return;

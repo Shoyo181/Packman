@@ -10,6 +10,7 @@ import javafx.animation.FadeTransition;
 import javafx.animation.ScaleTransition;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.scene.input.KeyCode;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -19,14 +20,17 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PackmanGui extends Application {
 
     final int WIN_X = 1200;
     final int WIN_Y = 850;
     BorderPane mainPane;
-    VBox menu, editorMenu;
+    VBox menu, editorMenu, campMenu;
     BanePane bane;
     Levende.Retning r = Levende.Retning.INGEN;
     Editor edit;
@@ -62,9 +66,14 @@ public class PackmanGui extends Application {
 
         campain.setOnAction(e -> {
 
-            byggBane();
+            /*byggBane();
             mainPane.setCenter(bane);
             bane.requestFocus();
+            */
+
+            campainMenu();
+            mainPane.setCenter(campMenu);
+
         });
 
         editor.setOnAction(e -> {
@@ -76,6 +85,50 @@ public class PackmanGui extends Application {
         v.getChildren().addAll(campain, editor, ekstra);
         return v;
     }
+    public void campainMenu() {
+
+        Button b1 = new Button("Level 1");
+        b1.setStyle("-fx-background-color: transparent; -fx-text-fill:#ffe148; -fx-font-family: Consolas" );
+        b1.setOnAction(e -> {
+            byggBane();
+            mainPane.setCenter(bane);
+            bane.requestFocus();
+        });
+        Button b2 = new Button("Level 2");
+        b2.setStyle("-fx-background-color: transparent; -fx-text-fill:#ffe148; -fx-font-family: Consolas" );
+        Button b3 = new Button("Level 3");
+        b3.setStyle("-fx-background-color: transparent; -fx-text-fill:#ffe148; -fx-font-family: Consolas" );
+        HBox cM = new HBox();
+        cM.setStyle("-fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #1f2031, #042796); -fx-border-width: 1px; -fx-alignment: center; -fx-font-family: 'Droid Sans Mono'; -fx-font-size: 40px; -fx-spacing: 50px; -fx-padding: 10px;");
+        cM.getChildren().addAll(b1, b2, b3);
+
+
+        campMenu = new VBox();
+        campMenu.getChildren().add(cM);
+    }
+
+    /* public ArrayList listeMedMaps () {
+        String mappePath = "src/main/resources/com/example/packman/baner";
+        ArrayList <String> filListe = new ArrayList<>();
+
+        File mappe = new File(mappePath);
+        File[] listeAvFiler = mappe.listFiles();
+
+        if(listeAvFiler != null) {
+            for (File f: listeAvFiler) {
+                if(f.isFile()) {
+                    filListe.add(f.getName());
+                    System.out.println("Filnavn: " + f.getName());
+                }
+            }
+        } else {
+            System.out.println("Listen er tom");
+        }
+        return filListe;
+    }
+    */
+
+
 
     public void byggBane() {
         bane = new BanePane("testIgjen", WIN_X, WIN_Y);
@@ -102,6 +155,7 @@ public class PackmanGui extends Application {
         });
 
     }
+
 
     public void byggEditorMeny() {
 
