@@ -4,6 +4,10 @@ import com.example.packman.Elementer.IkkeLevende.Dots;
 import com.example.packman.Elementer.IkkeLevende.PowerUp;
 import com.example.packman.Elementer.Levende.Levende;
 import com.example.packman.Elementer.Levende.PacMan;
+import com.example.packman.Elementer.Levende.Spøkelser.Blinky;
+import com.example.packman.Elementer.Levende.Spøkelser.Clyde;
+import com.example.packman.Elementer.Levende.Spøkelser.Inky;
+import com.example.packman.Elementer.Levende.Spøkelser.Pinky;
 import com.example.packman.Rute.Rute;
 import com.example.packman.Rute.RuteSamling;
 import javafx.animation.KeyFrame;
@@ -20,6 +24,7 @@ import javafx.scene.shape.Shape;
 import javafx.util.Duration;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 /* Egen klasse for å sette opp panel som setter igang spillet
@@ -43,6 +48,10 @@ public class BanePane extends BorderPane{
     private StackPane banen;
     private Pane elementer;
     private PacMan pac; //midlertidlig, for en test
+    private Clyde clyde;
+    private Inky inky;
+    private Blinky blinky;
+    private Pinky pinky;
     private Levende.Retning nesteRetning, sistRetning = Levende.Retning.INGEN;
     private GridPane gridPanel;
     private ArrayList<Dots> dotsListe;
@@ -141,7 +150,20 @@ public class BanePane extends BorderPane{
         pac = new PacMan(grid);
         pac.plasserPacMan();
 
-        elementer.getChildren().add(pac.getPacMan());
+        clyde = new Clyde(grid);
+        clyde.byggClyde();
+
+        /*inky = new Inky(grid);
+        inky.byggInky();
+
+        blinky = new Blinky(grid);
+        blinky.byggBlinky();
+
+        pinky = new Pinky(grid);
+        pinky.byggPinky();
+*/
+        //elementer.getChildren().addAll(pac.getPacMan(), clyde.getClyde(), inky.getInky(), blinky.getBlinky(), pinky.getPinky());
+        elementer.getChildren().addAll(pac.getPacMan(), clyde.getClyde());
         setUpElementer();
         banen.getChildren().add(elementer);
         System.out.println("PacMan er plassert");

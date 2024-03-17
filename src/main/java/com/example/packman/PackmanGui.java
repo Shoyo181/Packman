@@ -20,6 +20,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -107,7 +108,7 @@ public class PackmanGui extends Application {
         campMenu.getChildren().add(cM);
     }
 
-    /* public ArrayList listeMedMaps () {
+    /* public ArrayList listeMedMaps ()
         String mappePath = "src/main/resources/com/example/packman/baner";
         ArrayList <String> filListe = new ArrayList<>();
 
