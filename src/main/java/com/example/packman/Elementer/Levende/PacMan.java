@@ -1,6 +1,7 @@
 package com.example.packman.Elementer.Levende;
 
 import com.example.packman.Rute.Rute;
+import com.example.packman.misc.Vector2D;
 import javafx.scene.control.skin.TextInputControlSkin;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;

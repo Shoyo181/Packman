@@ -13,7 +13,7 @@ public class Elementer {
         this.grid = grid;
         this.ruteStr = hentRuteStr(grid[0][0].getTile());
         regnutHøydeBredde();
-        System.out.println("(Fra Elementer) Høyde: " + gridHøyde + ", Bredde: " + gridBredde);
+        //System.out.println("(Fra Elementer) Høyde: " + gridHøyde + ", Bredde: " + gridBredde);
     }
     public void regnutHøydeBredde() {
         this.gridHøyde = grid[0].length;       // y-akse
@@ -82,23 +82,7 @@ public class Elementer {
         return grid[x+1][y+1].getRute();
     }
 
-    protected class Vector2D {
-        private int x, y;
-        public Vector2D(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
 
-        public int getX() {
-            return x;
-        }
-        public int getY() {
-            return y;
-        }
-        public String toString() {
-            return "(" + x + ", " + y + ")";
-        }
-    }
 
 
 }

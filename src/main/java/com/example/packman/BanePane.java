@@ -6,6 +6,7 @@ import com.example.packman.Elementer.Levende.Levende;
 import com.example.packman.Elementer.Levende.PacMan;
 import com.example.packman.Rute.Rute;
 import com.example.packman.Rute.RuteSamling;
+import com.example.packman.misc.Vector2D;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.layout.BorderPane;
@@ -156,34 +157,78 @@ public class BanePane extends BorderPane{
         //legger inn powerUp først siden de tar en plass først
         powerListe = new ArrayList<>();
 
+        ArrayList<Vector2D> topLeftPowerSpawnPos = new ArrayList<>();
+        ArrayList<Vector2D> topRightPowerSpawnPos = new ArrayList<>();
+        ArrayList<Vector2D> botLeftPowerSpawnPos = new ArrayList<>();
+        ArrayList<Vector2D> botRightPowerSpawnPos = new ArrayList<>();
+
         //går igjennom grid 4 ganger og leter etter ledige plasser
         // men med disse vil vi bare ha de i hjørnene men en random plass () der
         // top right
-        for(int i = 0; i < grid.length /2; i++){
-            for(int j = 0; j < grid[0].length /2; j++){
-
-
+        int hjørneSkala = 4;
+        int hjørneBredde = bredde/hjørneSkala; //halv bredd
+        int hjørtneHøyde = høyde/hjørneSkala;
+        for(int x = 0; x < grid.length; x++){
+            for(int y = 0; y < grid[0].length; y++){
+                if(grid[x][y].getType() == Rute.RuteType.GULV) {
+                    // lagrer alle posisjoner power up kan spawne på - bare GULV
+                    if (x < hjørneBredde && y < hjørtneHøyde) {
+                        // topleft
+                        topLeftPowerSpawnPos.add(new Vector2D(x ,y));
+                    } else if (x < hjørneBredde && y > hjørtneHøyde * (hjørneSkala -1)) {
+                        // botleft
+                        botLeftPowerSpawnPos.add(new Vector2D(x ,y));
+                    } else if (x > hjørneBredde * (hjørneSkala -1) && y < hjørtneHøyde) {
+                        // topright
+                        topRightPowerSpawnPos.add(new Vector2D(x ,y));
+                    } else if (x > hjørneBredde * (hjørneSkala -1) && y > hjørtneHøyde * (hjørneSkala -1)) {
+                        //botright
+                        botRightPowerSpawnPos.add(new Vector2D(x ,y));
+                    }
+                }
             }
         }
+        System.out.println(" topLeftPowerSpawnPos size: " + topLeftPowerSpawnPos.size());
+        System.out.println(" topLeftPowerSpawnPos randomPos: " + topLeftPowerSpawnPos.get( (int) Math.random() * topLeftPowerSpawnPos.size() ));
+        // velger en random plass power up kan spawne
+        Vector2D randomPosTopLeft = topLeftPowerSpawnPos.get( (int) (Math.random() * topLeftPowerSpawnPos.size()) );
+        Vector2D randomPosTopRight = topRightPowerSpawnPos.get( (int) (Math.random() * topRightPowerSpawnPos.size()) );
+        Vector2D randomPosBotLeft = botLeftPowerSpawnPos.get( (int) (Math.random() * botLeftPowerSpawnPos.size()) );
+        Vector2D randomPosBotRight = botRightPowerSpawnPos.get( (int) (Math.random() * botRightPowerSpawnPos.size()) );
+
+        spawnPowerUp(randomPosBotLeft);
+        spawnPowerUp(randomPosTopLeft);
+        spawnPowerUp(randomPosBotRight);
+        spawnPowerUp(randomPosTopRight);
 
         //legger inn dots nå, siden alle plasser som trenges å bli tatt er oppdatta som betyr at vi kan fylle ut resten med dots
         dotsListe = new ArrayList<>();
         //går igjennom hele grid og leter etter ledige plasser
-        for(int i = 0; i < grid.length; i++){
-            for(int j = 0; j < grid[0].length; j++){
-                if(grid[i][j].getLedigForElement()){
+        for(int x = 0; x < grid.length; x++){
+            for(int y = 0; y < grid[0].length; y++){
+                if(grid[x][y].getLedigForElement()){
                     //legger inn dots i tabell og gir dem x og y verdi
-
-                    dotsListe.add(new Dots(grid));
-                    dotsListe.get(dotsListe.size()-1).getDot().setCenterX((i*ruteStr) + (ruteStr/2));
-                    dotsListe.get(dotsListe.size()-1).getDot().setCenterY((j*ruteStr) + (ruteStr/2));
-                    grid[i][j].setLedigForElement(false);
-                    elementer.getChildren().add(dotsListe.get(dotsListe.size()-1).getDot());
+                    spawnDot(new Vector2D(x, y));
                 }
             }
         }
 
 
+    }
+    public void spawnDot(Vector2D pos){
+        Dots dot = new Dots(grid, pos);
+        dotsListe.add(dot);
+        grid[pos.getX()][pos.getY()].setLedigForElement(false);
+        elementer.getChildren().add(dotsListe.get(dotsListe.size()-1).getDot());
+    }
+
+    public void spawnPowerUp(Vector2D pos){
+
+        PowerUp newPower = new PowerUp(grid, pos);
+
+        powerListe.add(newPower);
+        grid[pos.getX()][pos.getY()].setLedigForElement(false);
+        elementer.getChildren().add(powerListe.get(powerListe.size()-1).getPowerUp());
     }
 
 
@@ -264,20 +309,20 @@ public class BanePane extends BorderPane{
 
                     Rute.RuteType type = tileset.getRuteFraSamling(id).getType();
 
-                    System.out.println("id: " + id + ", type: " + type);
+
                     //lager ny rute og legger den inn in gridet
                     Rute nyRute = new Rute(id, type, tile, utseende, ruteStr);
                     nyRute.setRuteX(ruteStr*i);
                     nyRute.setRuteY(ruteStr*linjeTeller);
-                    System.out.print("All info lagt inn i rute - ");
+
 
                     grid[i][linjeTeller] = nyRute;
-                    System.out.print("Første tabell input - ");
+
                     if(nyRute.getType() != Rute.RuteType.GULV){
                         //System.out.println("ikke gulv");
                         veggListe.add(nyRute.getTile());
                     }
-                    System.out.print("Arraylist? - ");
+
 
                     // lager kopi av rektanglet i ruteklassen, siden vi ikke får lov til å legge inn
                     // duplikater i grid
@@ -287,13 +332,14 @@ public class BanePane extends BorderPane{
                     //System.out.println("i: " + i + ", linjeTeller: " + linjeTeller);
                     //      objekt,                       x,   y index
                     g.add(grid[i][linjeTeller].kopierRute(), i, linjeTeller);
-                    System.out.println("rute lagt inn i gridet - løkke teller i: " + i + ", linjeTeller: " + linjeTeller);
+
 
                 }
                 linjeTeller++;
                 //System.out.println(linje);
             }
             leser.close();
+            System.out.println("Banen er bygget");
 
             // hvor stor en rute skal være
 
