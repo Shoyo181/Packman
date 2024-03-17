@@ -2,6 +2,7 @@ package com.example.packman.Elementer.Levende.Spøkelser;
 
 import com.example.packman.Elementer.Levende.Levende;
 import com.example.packman.Rute.Rute;
+import com.example.packman.misc.Vector2D;
 
 import java.util.ArrayList;
 
