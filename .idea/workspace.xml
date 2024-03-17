@@ -7,11 +7,7 @@
     <list default="true" id="4d739412-e813-4697-992f-94c65c726e7d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/packman/BanePane.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/BanePane.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/packman/Elementer/Elementer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/Elementer/Elementer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/packman/Elementer/IkkeLevende/Dots.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/Elementer/IkkeLevende/Dots.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/packman/Elementer/IkkeLevende/PowerUp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/Elementer/IkkeLevende/PowerUp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/packman/Elementer/Levende/Levende.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/Elementer/Levende/Levende.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/packman/Elementer/Levende/PacMan.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/Elementer/Levende/PacMan.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/packman/PackmanGui.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/packman/PackmanGui.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,7 +46,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Application.PackmanGui.executor": "Run",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "master-kjartan",
     "node.js.selected.package.tslint": "(autodetect)"
   }
 }]]></component>
