@@ -14,9 +14,6 @@ public class PacMan extends Levende{
 
     //private Circle pac;
 
-
-
-
     public PacMan(Rute[][] grid) {
         super(grid);
 
@@ -210,7 +207,7 @@ public class PacMan extends Levende{
         lev.setCenterY(startPosY);
         currentPosX = startPosX;
         currentPosY = startPosY;
-        byggHitBox();
+        //byggHitBox();
     }
 
     public void flyttPacManIgjen(){
@@ -245,6 +242,12 @@ public class PacMan extends Levende{
                 setHitBox(currentPosX, currentPosY);
                 break;
         }
+    }
+
+
+    public void sjekkPickUp(){
+        // metoden sjekker om pacMan treffen ett ikkeLevende element
+
     }
 
     public Vector2D getPosition() {
