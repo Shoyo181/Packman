@@ -17,6 +17,9 @@ public class Clyde extends Spøkelser {
         super(grid);
         try {
             clydeBildeView = new ImageView(new Image(new FileInputStream("src/main/resources/com/example/packman/bilder/Clyde01.png")));
+            clydeBildeView.setFitWidth(ruteStr);
+            clydeBildeView.setFitHeight(ruteStr);
+            clydeBildeView.setPreserveRatio(true);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
