@@ -2,6 +2,7 @@ package com.example.packman.Elementer.Levende;
 
 import com.example.packman.Elementer.Elementer;
 import com.example.packman.Rute.Rute;
+import com.example.packman.misc.Vector2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
