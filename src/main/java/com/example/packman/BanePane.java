@@ -205,6 +205,7 @@ public class BanePane extends BorderPane{
 
             // lager tabell for banen
             grid = new Rute[bredde][høyde];
+            System.out.println("Tabell for banen lageres - bredde: " + bredde + ", høyde: " + høyde);
             // regner ut hvor stor en rute skal være
             ruteStr = 0;
             /*
@@ -255,7 +256,7 @@ public class BanePane extends BorderPane{
                     Rectangle[][] utseende = new Rectangle[pxPerRute][pxPerRute];
                     //utseende
                     for(int x = 0; x < utseende.length; x++) {
-                        for(int y = 0; y < utseende[i].length; y++) {
+                        for(int y = 0; y < utseende[x].length; y++) {
                             utseende[x][y] = new Rectangle(ruteStr/16, ruteStr/16);
                             utseende[x][y].setFill(utseendeSjekk[x][y].getFill());
                         }
@@ -268,14 +269,15 @@ public class BanePane extends BorderPane{
                     Rute nyRute = new Rute(id, type, tile, utseende, ruteStr);
                     nyRute.setRuteX(ruteStr*i);
                     nyRute.setRuteY(ruteStr*linjeTeller);
+                    System.out.print("All info lagt inn i rute - ");
 
                     grid[i][linjeTeller] = nyRute;
-
+                    System.out.print("Første tabell input - ");
                     if(nyRute.getType() != Rute.RuteType.GULV){
-                        System.out.println("ikke gulv");
+                        //System.out.println("ikke gulv");
                         veggListe.add(nyRute.getTile());
                     }
-
+                    System.out.print("Arraylist? - ");
 
                     // lager kopi av rektanglet i ruteklassen, siden vi ikke får lov til å legge inn
                     // duplikater i grid
@@ -285,10 +287,11 @@ public class BanePane extends BorderPane{
                     //System.out.println("i: " + i + ", linjeTeller: " + linjeTeller);
                     //      objekt,                       x,   y index
                     g.add(grid[i][linjeTeller].kopierRute(), i, linjeTeller);
+                    System.out.println("rute lagt inn i gridet - løkke teller i: " + i + ", linjeTeller: " + linjeTeller);
 
                 }
                 linjeTeller++;
-                System.out.println(linje);
+                //System.out.println(linje);
             }
             leser.close();
 
@@ -335,18 +338,18 @@ public class BanePane extends BorderPane{
             while(scanner.hasNextLine()) {
                 //id
                 String linje = scanner.nextLine();
-                System.out.println(linje);
+                //System.out.println(linje);
                 String datTab[] = linje.split(":");
                 int id = Integer.parseInt(datTab[0]);
                 // type
                 linje = scanner.nextLine();
-                System.out.println(linje);
+                //System.out.println(linje);
                 Rute.RuteType type = Rute.RuteType.valueOf(linje);
                 // design til ruta
                 Rectangle[][] utseende = new Rectangle[pxPerRute][pxPerRute];
                 for (int i = 0; i < pxPerRute; i++) {
                     linje = scanner.nextLine();
-                    System.out.println(linje);
+                    //System.out.println(linje);
                     String strTab[] = linje.split(";");
                     for (int j = 0; j < pxPerRute; j++) {
                         Rectangle pixel = new Rectangle(ruteStr/16, ruteStr/16);
@@ -356,17 +359,18 @@ public class BanePane extends BorderPane{
                 }
                 Rectangle tile = new Rectangle(ruteStr, ruteStr);
                 tile.setFill(Color.TRANSPARENT);
-                System.out.println("all info er hentet ");
+                //System.out.println("all info er hentet ");
 
                 linje =scanner.nextLine();
-                System.out.println("linje i tilesethenting, skal være ':', og er - " + linje);
+                //System.out.println("linje i tilesethenting, skal være ':', og er - " + linje);
                 // legger inn til rutesamling
                 samling.leggTil( new Rute(id, type, tile, utseende, ruteStr) );
-                System.out.println("tileset er lagt til i samling");
+                //System.out.println("tileset er lagt til i samling");
                 // nå har vi hentet et helt rute objekt
                 // men leseren er fortsatt på feil plass
 
             }
+            System.out.println("tilesettet er hentet");
             scanner.close();
 
         }catch (Exception e){

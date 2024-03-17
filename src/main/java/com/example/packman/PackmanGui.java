@@ -131,7 +131,7 @@ public class PackmanGui extends Application {
 
 
     public void byggBane() {
-        bane = new BanePane("testIgjen", WIN_X, WIN_Y);
+        bane = new BanePane("Kart2", WIN_X, WIN_Y);
 
         bane.setOnKeyPressed(e -> {
             if( e.getCode() == KeyCode.UP)
