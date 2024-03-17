@@ -21,6 +21,8 @@ public class PacMan extends Levende{
         super(grid);
 
         lev.setFill(Paint.valueOf("yellow"));
+
+
     }
 
     public Circle getPacMan(){

@@ -2,7 +2,11 @@ package com.example.packman.Elementer.Levende;
 
 import com.example.packman.Elementer.Elementer;
 import com.example.packman.Rute.Rute;
+
 import com.example.packman.misc.Vector2D;
+
+import javafx.scene.image.ImageView;
+
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -21,6 +25,7 @@ public class Levende extends Elementer {
     protected ArrayList<Rectangle> veggList;
 
     protected Circle lev;
+    protected ImageView bildeSpøkelse;
     protected Rectangle levHitBox;
 
     //variabler for pixel plassering av levende
