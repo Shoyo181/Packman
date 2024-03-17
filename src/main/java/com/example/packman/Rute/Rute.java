@@ -1,5 +1,6 @@
 package com.example.packman.Rute;
 
+import com.example.packman.misc.IkkeLevendeType;
 import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -20,6 +21,7 @@ public class Rute extends StackPane {
     private Rectangle[][] utseende;              // utseende til rute
     private GridPane utseendePanel;
     private double ruteStr;
+    IkkeLevendeType ikkeLevendeType;
 
 
     /***        Konstruktører        ***/
@@ -124,6 +126,12 @@ public class Rute extends StackPane {
     }
     public boolean getLedigForElement(){
         return ledigForElement;
+    }
+    public void setElementType(IkkeLevendeType t){
+        ikkeLevendeType = t;
+    }
+    public IkkeLevendeType getElementType(){
+        return ikkeLevendeType;
     }
 
 

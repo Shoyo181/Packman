@@ -6,6 +6,7 @@ import com.example.packman.Elementer.Levende.Levende;
 import com.example.packman.Elementer.Levende.PacMan;
 import com.example.packman.Rute.Rute;
 import com.example.packman.Rute.RuteSamling;
+import com.example.packman.misc.IkkeLevendeType;
 import com.example.packman.misc.Vector2D;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -32,10 +33,9 @@ import java.util.Scanner;
 public class BanePane extends BorderPane{
 
     private final String LENKE ="src/main/resources/com/example/packman/";
-    private int høyde, bredde, pxPerRute= 16;
+    private int høyde, bredde, pxPerRute= 16, score;
 
-    private int vinduStrX;
-    private int vinduStrY;
+    private int vinduStrX, vinduStrY;
     private RuteSamling tileset;
     private String filnavn;
     private Rute[][] grid;
@@ -103,6 +103,21 @@ public class BanePane extends BorderPane{
             pac.setRetning(sistRetning);
             pac.flyttPacManIgjen();
         }
+
+        spise();
+
+    }
+
+    public void spise(){
+        if(kollisjonMellomPacOgDots()){
+            score += 100;
+            System.out.println("Score: " + score);
+        }
+        if(kollisjonMellomPacOgPower()){
+            score += 200;
+            System.out.println("Score: " + score);
+        }
+
     }
 
 
@@ -219,6 +234,7 @@ public class BanePane extends BorderPane{
         Dots dot = new Dots(grid, pos);
         dotsListe.add(dot);
         grid[pos.getX()][pos.getY()].setLedigForElement(false);
+        grid[pos.getX()][pos.getY()].setElementType(IkkeLevendeType.DOT);
         elementer.getChildren().add(dotsListe.get(dotsListe.size()-1).getDot());
     }
 
@@ -228,6 +244,7 @@ public class BanePane extends BorderPane{
 
         powerListe.add(newPower);
         grid[pos.getX()][pos.getY()].setLedigForElement(false);
+        grid[pos.getX()][pos.getY()].setElementType(IkkeLevendeType.POWERUP);
         elementer.getChildren().add(powerListe.get(powerListe.size()-1).getPowerUp());
     }
 
@@ -355,18 +372,38 @@ public class BanePane extends BorderPane{
 
         return g;
     }
-    public boolean kollisjonFunnetTest() {
-
-        for (Rectangle v : veggListe) {
+    public boolean kollisjonMellomPacOgDots() {
+        // metode for å spise dots
+        for (Dots d : dotsListe) {
             // Sjekk kollisjon mellom sirkelen og hvert rektangel
-            Shape intersect = Shape.intersect(pac.getPacMan(), v);
+            Circle dot = d.getDot();
+            Shape intersect = Shape.intersect(pac.getPacMan(), dot);
 
             if (intersect.getBoundsInLocal().getWidth() != -1) {
-                // Det er en kollisjon mellom sirkelen og dette rektangelet
+                // Det er en kollisjon mellom pacman og en dot
+                //System.out.println("Kollisjon oppdaget med dot: " + dot);
+                dot.setFill(Color.TRANSPARENT);
+                dot.setStroke(Color.TRANSPARENT);
+                dotsListe.remove(d);
 
-                System.out.println("Kollisjon oppdaget med rektangel: " + v);
-                pac.setHitBox(sistPosX, sistPosY);
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean kollisjonMellomPacOgPower(){
+        // metode for å sjekke om pacman spsier en powerup
+        for (PowerUp p : powerListe) {
+            // Sjekk kollisjon mellom sirkelen og hvert rektangel
+            Circle power = p.getPowerUp();
+            Shape intersect = Shape.intersect(pac.getPacMan(), power);
 
+            if(intersect.getBoundsInLocal().getWidth() != -1){
+                // Det er en kollisjon mellom pacman og en powerup
+                //System.out.println("Kollisjon oppdaget med powerup: " + power);
+                power.setFill(Color.TRANSPARENT);
+                power.setStroke(Color.TRANSPARENT);
+                powerListe.remove(p);
                 return true;
             }
         }

@@ -30,14 +30,15 @@ public class Levende extends Elementer {
     public Levende(Rute[][] grid) {
         super(grid);
         retning = Retning.INGEN;
-        speed = 1;
+        speed = 2;
         radius = (ruteStr / 2);
         lev = new Circle();
+       /*
         levHitBox = new Rectangle();
         levHitBox.setWidth(ruteStr);
         levHitBox.setHeight(ruteStr);
         levHitBox.setFill(Color.RED);
-
+*/
         byggVeggList();
 
         lev.setRadius(radius);
@@ -68,17 +69,18 @@ public class Levende extends Elementer {
 
         double topX = x - ruteStr/2;
         double topY = y - ruteStr/2;
-
+        /*
         levHitBox.setX(topX);
         levHitBox.setY(topY);
         levHitBox.setWidth(ruteStr);
         levHitBox.setHeight(ruteStr);
 
+        */
         lev.setCenterX(x);
         lev.setCenterY(y);
 
-        System.out.println("x: " + topX + ", y: " + topY);
-        System.out.println("x (c): " + x + ", y (c): " + y);
+        //System.out.println("x: " + topX + ", y: " + topY);
+        //System.out.println("x (c): " + x + ", y (c): " + y);
     }
 
     public void byggVeggList(){
@@ -313,10 +315,10 @@ public class Levende extends Elementer {
 
         for(Rectangle vegg: veggList){
             if(levTest.getBoundsInParent().intersects(vegg.getBoundsInParent())){
-                System.out.println("Kollisjon funnet");
+                //System.out.println("Kollisjon funnet");
                 return true;
             }
-            System.out.println("Ingen kollisjon funnet");
+            //System.out.println("Ingen kollisjon funnet");
         }
         return false;
     }
