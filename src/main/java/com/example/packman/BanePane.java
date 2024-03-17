@@ -1,5 +1,7 @@
 package com.example.packman;
 
+import com.example.packman.Elementer.IkkeLevende.Dots;
+import com.example.packman.Elementer.IkkeLevende.PowerUp;
 import com.example.packman.Elementer.Levende.Levende;
 import com.example.packman.Elementer.Levende.PacMan;
 import com.example.packman.Rute.Rute;
@@ -14,9 +16,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import javafx.util.Duration;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Scanner;
 /* Egen klasse for å sette opp panel som setter igang spillet
  *
@@ -34,13 +38,16 @@ public class BanePane extends BorderPane{
     private RuteSamling tileset;
     private String filnavn;
     private Rute[][] grid;
-    private double ruteStr;
+    private double ruteStr, sistPosX, sistPosY;
     private Timeline animasjon;
     private StackPane banen;
     private Pane elementer;
     private PacMan pac; //midlertidlig, for en test
-    private Levende.Retning nesteRetning;
+    private Levende.Retning nesteRetning, sistRetning = Levende.Retning.INGEN;
     private GridPane gridPanel;
+    private ArrayList<Dots> dotsListe;
+    private ArrayList<PowerUp> powerListe;
+    private ArrayList<Rectangle> veggListe;
 
 
 
@@ -53,12 +60,29 @@ public class BanePane extends BorderPane{
         banePlussSpiller();
         setCenter(banen);
 
+        System.out.println("pacman placed: " + pac.getPacMan().getCenterX() + ", "+ pac.getPacMan().getCenterY());
+        System.out.println("UP    - TileY: 768.0 ElementY: 704.0");
+
+        System.out.println( "Tile høyde: " + grid[8][12].getHeight() + ", tile bredde: " + grid[8][12].getWidth() );
+
+        /*
+        xAndY: (8, 12)
+        Info om tile - høyde: 64.0, bredde: 64.0, x: 512.0, y: 704.0
+        UP    - TileY: 768.0 ElementY: 704.0
+
+        */
+
         // settter igang animasjon av spillet
+
         animasjon = new Timeline(
                 new KeyFrame(Duration.millis(40), e -> bevegelse())
         );
         animasjon.setCycleCount(Timeline.INDEFINITE);
         animasjon.play();
+
+        //System.out.println("pacman placed: " + pac.getPacMan().getCenterX() + ", "+ pac.getPacMan().getCenterY());
+        //System.out.println("UP    - TileY: 768.0 ElementY: 704.0");
+
 
     }
 
@@ -68,10 +92,18 @@ public class BanePane extends BorderPane{
     public void bevegelse(){
         // denne metoden kjører så mange ganger i sekundet som bestemt i duration i banePane konstruktøren
         // tom nå, men her kommer bevegelsen til spøkelsene inn og sjekk om de treffer packman sampt om packman spiser de opp
-        if(pac.sjekkRetning(nesteRetning))
+
+
+        if(pac.sjekkRetningLedig(nesteRetning)) {
             pac.setRetning(nesteRetning);
-        pac.flyttPacMan();
+            pac.flyttPacManIgjen();
+            sistRetning = nesteRetning;
+        }else{
+            pac.setRetning(sistRetning);
+            pac.flyttPacManIgjen();
+        }
     }
+
 
     public void start(){
         animasjon.play();
@@ -110,6 +142,7 @@ public class BanePane extends BorderPane{
         pac.plasserPacMan();
 
         elementer.getChildren().add(pac.getPacMan());
+        setUpElementer();
         banen.getChildren().add(elementer);
         System.out.println("PacMan er plassert");
         System.out.println("banen sin;");
@@ -118,6 +151,43 @@ public class BanePane extends BorderPane{
 
         System.out.println("Banen er bygget");
     }
+
+    public void setUpElementer(){
+        //legger inn powerUp først siden de tar en plass først
+        powerListe = new ArrayList<>();
+
+        //går igjennom grid 4 ganger og leter etter ledige plasser
+        // men med disse vil vi bare ha de i hjørnene men en random plass () der
+        // top right
+        for(int i = 0; i < grid.length /2; i++){
+            for(int j = 0; j < grid[0].length /2; j++){
+
+
+            }
+        }
+
+        //legger inn dots nå, siden alle plasser som trenges å bli tatt er oppdatta som betyr at vi kan fylle ut resten med dots
+        dotsListe = new ArrayList<>();
+        //går igjennom hele grid og leter etter ledige plasser
+        for(int i = 0; i < grid.length; i++){
+            for(int j = 0; j < grid[0].length; j++){
+                if(grid[i][j].getLedigForElement()){
+                    //legger inn dots i tabell og gir dem x og y verdi
+
+                    dotsListe.add(new Dots(grid));
+                    dotsListe.get(dotsListe.size()-1).getDot().setCenterX((i*ruteStr) + (ruteStr/2));
+                    dotsListe.get(dotsListe.size()-1).getDot().setCenterY((j*ruteStr) + (ruteStr/2));
+                    grid[i][j].setLedigForElement(false);
+                    elementer.getChildren().add(dotsListe.get(dotsListe.size()-1).getDot());
+                }
+            }
+        }
+
+
+    }
+
+
+
     public GridPane mapSetUp(String baneFilnavn) {
         // setup, g returneres, grid to dim tabell som tar vare på alle rektangler for nå
         GridPane g = new GridPane();
@@ -152,6 +222,7 @@ public class BanePane extends BorderPane{
 
             // henter tileset med hjelp av filnavn og rute størrelse
             tileset = hentTileset(tileFilnavn);
+            veggListe = new ArrayList<>();
             System.out.println("tileset er hentet");
 
             //behandler resten av filen - selve banen
@@ -175,7 +246,7 @@ public class BanePane extends BorderPane{
                     //Rute nyRute = grid[i][linjeTeller].getRute();
                     // to bort node i Rute
 
-                    Rectangle tile = new Rectangle(ruteStr, ruteStr);
+                    Rectangle tile = new Rectangle( ruteStr, ruteStr);
                     tile.setFill(Color.TRANSPARENT);
 
                     //henter utseende
@@ -195,9 +266,15 @@ public class BanePane extends BorderPane{
                     System.out.println("id: " + id + ", type: " + type);
                     //lager ny rute og legger den inn in gridet
                     Rute nyRute = new Rute(id, type, tile, utseende, ruteStr);
-
+                    nyRute.setRuteX(ruteStr*i);
+                    nyRute.setRuteY(ruteStr*linjeTeller);
 
                     grid[i][linjeTeller] = nyRute;
+
+                    if(nyRute.getType() != Rute.RuteType.GULV){
+                        System.out.println("ikke gulv");
+                        veggListe.add(nyRute.getTile());
+                    }
 
 
                     // lager kopi av rektanglet i ruteklassen, siden vi ikke får lov til å legge inn
@@ -228,6 +305,24 @@ public class BanePane extends BorderPane{
         }
 
         return g;
+    }
+    public boolean kollisjonFunnetTest() {
+
+        for (Rectangle v : veggListe) {
+            // Sjekk kollisjon mellom sirkelen og hvert rektangel
+            Shape intersect = Shape.intersect(pac.getPacMan(), v);
+
+            if (intersect.getBoundsInLocal().getWidth() != -1) {
+                // Det er en kollisjon mellom sirkelen og dette rektangelet
+
+                System.out.println("Kollisjon oppdaget med rektangel: " + v);
+                pac.setHitBox(sistPosX, sistPosY);
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public RuteSamling hentTileset(String tileFilnavn){

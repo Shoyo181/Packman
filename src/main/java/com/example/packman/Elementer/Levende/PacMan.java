@@ -4,27 +4,26 @@ import com.example.packman.Rute.Rute;
 import javafx.scene.control.skin.TextInputControlSkin;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
 
 
 public class PacMan extends Levende{
 
-    private Circle pac;
-    private double radius;
+    //private Circle pac;
+
 
 
 
     public PacMan(Rute[][] grid) {
         super(grid);
-        pac = new Circle();
-        pac.setFill(Paint.valueOf("yellow"));
-        radius = ruteStr/2;
-        pac.setRadius(radius);
+
+        lev.setFill(Paint.valueOf("yellow"));
     }
 
     public Circle getPacMan(){
-        return pac;
+        return lev;
     }
 
     public void plasserPacMan(){
@@ -204,53 +203,60 @@ public class PacMan extends Levende{
         startPosY += radius;
 
         // setter plassering til PACMAN
-        pac.setCenterX(startPosX);
-        pac.setCenterY(startPosY);
+        lev.setCenterX(startPosX);
+        lev.setCenterY(startPosY);
         currentPosX = startPosX;
         currentPosY = startPosY;
+        byggHitBox();
     }
 
+    public void flyttPacManIgjen(){
 
-
-    public void flyttPacMan(){
-        if(retning == Retning.HØYRE){
-            flyttPacManHøyre();
-        }else if(retning == Retning.VENSTRE){
-            flyttPacManVenstre();
-        }else if(retning == Retning.NED){
-            flyttPacManNed();
-        }else if(retning == Retning.OPP){
-            flyttPacManOpp();
+        switch (retning) {
+            case OPP:
+                if(sjekkKollisjon(currentPosX, currentPosY - speed)){
+                    break;
+                }
+                currentPosY -= speed;
+                setHitBox(currentPosX, currentPosY);
+                break;
+            case NED:
+                if(sjekkKollisjon(currentPosX, currentPosY + speed)){
+                    break;
+                }
+                currentPosY += speed;
+                setHitBox(currentPosX, currentPosY);
+                break;
+            case HØYRE:
+                if (sjekkKollisjon(currentPosX + speed, currentPosY)) {
+                    break;
+                }
+                currentPosX += speed;
+                setHitBox(currentPosX, currentPosY);
+                break;
+            case VENSTRE:
+                if (sjekkKollisjon(currentPosX - speed, currentPosY)) {
+                    break;
+                }
+                currentPosX -= speed;
+                setHitBox(currentPosX, currentPosY);
+                break;
         }
     }
 
+    public Vector2D getPosition() {
 
-    public void flyttPacManOpp(){
-        if (sjekkRetning(retning)) {
-            currentPosY -= speed;
-            pac.setCenterY(currentPosY);
+        switch (retning) {
+            case OPP:
+                return new Vector2D( (int) currentPosX / ruteStr, (int) ( currentPosY + radius ) / ruteStr);
+            case NED:
+                return new Vector2D( (int) currentPosX / ruteStr, (int) ( currentPosY - radius ) / ruteStr);
+            case HØYRE:
+                return new Vector2D( (int) ( currentPosX + radius ) / ruteStr, (int) currentPosY / ruteStr);
+            case VENSTRE:
+                return new Vector2D( (int) ( currentPosX - radius ) / ruteStr, (int) currentPosY / ruteStr);
+            default:
+                return new Vector2D(0, 0);
         }
-        System.out.println("Pacman treffer en VEGG i retning: " + retning);
-    }
-    public void flyttPacManNed(){
-        if (sjekkRetning(retning)) {
-            currentPosY += speed;
-            pac.setCenterY(currentPosY);
-        }
-        System.out.println("Pacman treffer en VEGG i retning: " + retning);
-    }
-    public void flyttPacManVenstre(){
-        if (sjekkRetning(retning)) {
-            currentPosX -= speed;
-            pac.setCenterX(currentPosX);
-        }
-        System.out.println("Pacman treffer en VEGG i retning: " + retning);
-    }
-    public void flyttPacManHøyre(){
-        if (sjekkRetning(retning)) {
-            currentPosX += speed;
-            pac.setCenterX(currentPosX);
-        }
-        System.out.println("Pacman treffer en VEGG i retning: " + retning);
     }
 }
