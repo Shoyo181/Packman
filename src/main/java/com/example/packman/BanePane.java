@@ -169,7 +169,7 @@ public class BanePane extends BorderPane{
         clyde = new Clyde(grid);
         clyde.byggClyde();
 
-        /*inky = new Inky(grid);
+        inky = new Inky(grid);
         inky.byggInky();
 
         blinky = new Blinky(grid);
@@ -177,9 +177,9 @@ public class BanePane extends BorderPane{
 
         pinky = new Pinky(grid);
         pinky.byggPinky();
-*/
-        //elementer.getChildren().addAll(pac.getPacMan(), clyde.getClyde(), inky.getInky(), blinky.getBlinky(), pinky.getPinky());
-        elementer.getChildren().addAll(pac.getPacMan(), clyde.getClyde());
+
+        elementer.getChildren().addAll(pac.getPacMan(), clyde.getClyde(), inky.getInky(), blinky.getBlinky(), pinky.getPinky());
+
         setUpElementer();
         banen.getChildren().add(elementer);
         System.out.println("PacMan er plassert");

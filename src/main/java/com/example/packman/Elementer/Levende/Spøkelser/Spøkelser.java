@@ -2,6 +2,7 @@ package com.example.packman.Elementer.Levende.Spøkelser;
 
 import com.example.packman.Elementer.Levende.Levende;
 import com.example.packman.Rute.Rute;
+import com.example.packman.misc.Vector2D;
 
 import java.util.ArrayList;
 
@@ -30,10 +31,14 @@ public class Spøkelser extends Levende {
         }
         // Plasserer spøkelse i hjemposisjon
         Vector2D randomPos = hjemPos.get((int) (Math.random() * hjemPos.size()));
-        lev.setCenterX(randomPos.getX()*ruteStr+radius);
-        lev.setCenterY(randomPos.getY()*ruteStr+radius);
-        bildeSpøkelse.setLayoutX(randomPos.getX()*ruteStr+radius);
-        bildeSpøkelse.setLayoutY(randomPos.getY()*ruteStr+radius);
+        startPosX = randomPos.getX()*ruteStr;
+        startPosY = randomPos.getY()*ruteStr;
+
+        lev.setCenterX(startPosX);
+        lev.setCenterY(startPosY);
+
+        bildeSpøkelse.setLayoutX(startPosX);
+        bildeSpøkelse.setLayoutY(startPosY);
 
 
     }
