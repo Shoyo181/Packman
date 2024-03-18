@@ -2,29 +2,44 @@ package com.example.packman.Elementer.Levende;
 
 import com.example.packman.Rute.Rute;
 import com.example.packman.misc.Vector2D;
+import javafx.animation.Animation;
+import javafx.animation.ParallelTransition;
+import javafx.animation.RotateTransition;
+import javafx.animation.ScaleTransition;
+import javafx.scene.Group;
 import javafx.scene.control.skin.TextInputControlSkin;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Arc;
+import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 
 import java.util.ArrayList;
 
 
 public class PacMan extends Levende{
 
-    //private Circle pac;
+    private Arc pacUnderLeppe, pacOverLeppe;
+    private RotateTransition overLeppe, underLeppe;
+    private ParallelTransition openMouth;
+    private boolean spiser;
+    private Group pacman;
 
     public PacMan(Rute[][] grid) {
         super(grid);
 
-        lev.setFill(Paint.valueOf("yellow"));
-
+        //lev.setFill(Paint.valueOf("yellow"));
+        spiser = false;
+        //pacmanDisign();
 
     }
 
-    public Circle getPacMan(){
-        return lev;
+    public Group getPacman(){
+        return pacman;
     }
+    public Circle getHitBox(){ return lev;}
 
     public void plasserPacMan(){
 
@@ -207,6 +222,7 @@ public class PacMan extends Levende{
         lev.setCenterY(startPosY);
         currentPosX = startPosX;
         currentPosY = startPosY;
+        pacmanDisign();
         //byggHitBox();
     }
 
@@ -219,6 +235,7 @@ public class PacMan extends Levende{
                 }
                 currentPosY -= speed;
                 setHitBox(currentPosX, currentPosY);
+                roterPacMan();
                 break;
             case NED:
                 if(sjekkKollisjon(currentPosX, currentPosY + speed)){
@@ -226,6 +243,7 @@ public class PacMan extends Levende{
                 }
                 currentPosY += speed;
                 setHitBox(currentPosX, currentPosY);
+                roterPacMan();
                 break;
             case HØYRE:
                 if (sjekkKollisjon(currentPosX + speed, currentPosY)) {
@@ -233,6 +251,7 @@ public class PacMan extends Levende{
                 }
                 currentPosX += speed;
                 setHitBox(currentPosX, currentPosY);
+                roterPacMan();
                 break;
             case VENSTRE:
                 if (sjekkKollisjon(currentPosX - speed, currentPosY)) {
@@ -240,8 +259,94 @@ public class PacMan extends Levende{
                 }
                 currentPosX -= speed;
                 setHitBox(currentPosX, currentPosY);
+                roterPacMan();
                 break;
         }
+    }
+
+    public Arc getPacOverLeppe(){
+        return pacOverLeppe;
+    }
+
+    public void pacmanDisign(){
+        // pacman gaper når han går, derfor vil vi også gjøre dette når han beveger på seg
+        // vi bruker to arcer for å vise at han spiser
+        pacUnderLeppe = new Arc(currentPosX, currentPosY, radius, radius, 359, 180);
+        pacUnderLeppe.setFill(Paint.valueOf("yellow"));
+        //pacUnderLeppe.setType(ArcType.ROUND);
+
+        pacOverLeppe = new Arc(currentPosX, currentPosY, radius, radius, 180, 181);
+        pacOverLeppe.setFill(Paint.valueOf("blue"));
+        //pacOverLeppe.setType(ArcType.ROUND);
+
+        pacman = new Group(pacOverLeppe, pacUnderLeppe);
+
+        // ved å animere at pacman spiser slik så kan vi ikke bestemme når animasjonen starter..
+        // TODO: Fikse dette.. Animer Pacman korrekt
+
+        overLeppe = new RotateTransition(Duration.seconds(0.5), pacOverLeppe);
+        overLeppe.setByAngle(90);
+        overLeppe.setToAngle(45);
+        overLeppe.setAutoReverse(true);
+        overLeppe.setCycleCount(0);
+        overLeppe.pause();
+
+        underLeppe = new RotateTransition(Duration.seconds(0.5), pacUnderLeppe);
+        underLeppe.setByAngle(90);
+        underLeppe.setToAngle(-45);
+        underLeppe.setAutoReverse(true);
+        underLeppe.setCycleCount( 0);
+        underLeppe.pause();
+
+        spiser = false;
+
+
+        openMouth = new ParallelTransition();
+        openMouth.getChildren().addAll(overLeppe, underLeppe);
+
+
+        // gjør gamle pacman usynelig, men trenger fortsatt denne sirkelen som hitBox
+        lev.setStroke(Color.TRANSPARENT);
+        // endre denne fargen til TRANSPARENT når animering fungerer - lev er bare hitboxen
+        lev.setFill(Color.YELLOW);
+    }
+    public void roterPacMan(){
+        //trenger ikke å sjekke om retning er null. hvor det blir sjekket tidligere
+        // funker heller ikke nå - tror kanskje rotering må være en metode som kalles i banepane
+        // også må man ta vek pacman fra panel og settet han inn igjen etter den er rotert
+        // TODO: Fikse dette.
+
+        switch (retning) {
+            case OPP:
+                pacUnderLeppe.rotateProperty().set(90);
+                pacOverLeppe.rotateProperty().set(90);
+                break;
+            case NED:
+                pacUnderLeppe.rotateProperty().set(270);
+                pacOverLeppe.rotateProperty().set(270);
+                break;
+            case HØYRE:
+                pacUnderLeppe.rotateProperty().set(0);
+                pacOverLeppe.rotateProperty().set(0);
+                break;
+            case VENSTRE:
+                pacUnderLeppe.rotateProperty().set(180);
+                pacOverLeppe.rotateProperty().set(180);
+                break;
+        }
+    }
+    public void startSpiseing(){
+        overLeppe.setCycleCount(Animation.INDEFINITE);
+        underLeppe.setCycleCount(Animation.INDEFINITE);
+
+        openMouth.play();
+        spiser = true;
+    }
+    public void stopSpiseing(){
+        openMouth.stop();
+    }
+    public boolean spiserPacman(){
+        return spiser;
     }
 
 

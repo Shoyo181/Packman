@@ -29,6 +29,7 @@ import javafx.util.Duration;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 /* Egen klasse for å sette opp panel som setter igang spillet
  *
@@ -59,7 +60,11 @@ public class BanePane extends BorderPane{
     private ArrayList<Dots> dotsListe;
     private ArrayList<PowerUp> powerListe;
     private ArrayList<Rectangle> veggListe;
+
     Label scoreLabel;
+
+    private Date start, slutt;
+
 
 
 
@@ -73,7 +78,7 @@ public class BanePane extends BorderPane{
         setCenter(banen);
         byggToppPanel();
 
-        System.out.println("pacman placed: " + pac.getPacMan().getCenterX() + ", "+ pac.getPacMan().getCenterY());
+        System.out.println("pacman placed: " + pac.getHitBox().getCenterX() + ", "+ pac.getHitBox().getCenterY());
         System.out.println("UP    - TileY: 768.0 ElementY: 704.0");
 
         System.out.println( "Tile høyde: " + grid[8][12].getHeight() + ", tile bredde: " + grid[8][12].getWidth() );
@@ -111,12 +116,17 @@ public class BanePane extends BorderPane{
             pac.setRetning(nesteRetning);
             pac.flyttPacManIgjen();
             sistRetning = nesteRetning;
+            if (!pac.spiserPacman()){
+                pac.startSpiseing();
+                start = new Date();
+            }
         }else{
             pac.setRetning(sistRetning);
             pac.flyttPacManIgjen();
         }
 
-       spise();
+        spise();
+        System.out.println("Score: " + score + ", time (min, sek): " + (new Date().getTime() - start.getTime()) / 1000 / 60 + ", " + (new Date().getTime() - start.getTime()) / 1000 % 60);;
 
     }
     public void byggToppPanel()  {
@@ -134,6 +144,7 @@ public class BanePane extends BorderPane{
         if(kollisjonMellomPacOgPower()){
             score += 200;
             scoreLabel.setText("Score: " + score);
+
         }
 
     }
@@ -174,9 +185,13 @@ public class BanePane extends BorderPane{
 
         pac = new PacMan(grid);
         pac.plasserPacMan();
+        // legger pacman inn i elementer
+        elementer.getChildren().addAll(pac.getPacman(), pac.getHitBox());
 
         clyde = new Clyde(grid);
         clyde.byggClyde();
+        //legger clyde inn i elementer - husk hitboxen til clyde.
+        elementer.getChildren().add(clyde.getClyde());
 
         inky = new Inky(grid);
         inky.byggInky();
@@ -188,7 +203,8 @@ public class BanePane extends BorderPane{
         pinky.byggPinky();
 
 
-        elementer.getChildren().addAll(pac.getPacMan(), clyde.getClyde(), inky.getInky(), blinky.getBlinky(), pinky.getPinky());
+        elementer.getChildren().addAll(inky.getInky(), blinky.getBlinky(), pinky.getPinky());
+
 
         setUpElementer();
         banen.getChildren().add(elementer);
@@ -409,7 +425,7 @@ public class BanePane extends BorderPane{
         for (Dots d : dotsListe) {
             // Sjekk kollisjon mellom sirkelen og hvert rektangel
             Circle dot = d.getDot();
-            Shape intersect = Shape.intersect(pac.getPacMan(), dot);
+            Shape intersect = Shape.intersect(pac.getHitBox(), dot);
 
             if (intersect.getBoundsInLocal().getWidth() != -1) {
                 // Det er en kollisjon mellom pacman og en dot
@@ -428,7 +444,7 @@ public class BanePane extends BorderPane{
         for (PowerUp p : powerListe) {
             // Sjekk kollisjon mellom sirkelen og hvert rektangel
             Circle power = p.getPowerUp();
-            Shape intersect = Shape.intersect(pac.getPacMan(), power);
+            Shape intersect = Shape.intersect(pac.getHitBox(), power);
 
             if(intersect.getBoundsInLocal().getWidth() != -1){
                 // Det er en kollisjon mellom pacman og en powerup
