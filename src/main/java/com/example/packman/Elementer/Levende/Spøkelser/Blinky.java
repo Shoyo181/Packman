@@ -15,7 +15,7 @@ public class Blinky extends Spøkelser{
     public Blinky(Rute[][] grid) {
         super(grid);
         try {
-            blinkyBildeView = new ImageView(new Image(new FileInputStream("src/main/resources/com/example/packman/bilder/Blinky01.png")));
+            blinkyBildeView = new ImageView(new Image(new FileInputStream("src/main/resources/com/example/packman/bilder/Blinky05.png")));
             blinkyBildeView.setFitWidth(ruteStr);
             blinkyBildeView.setFitHeight(ruteStr);
             blinkyBildeView.setPreserveRatio(true);

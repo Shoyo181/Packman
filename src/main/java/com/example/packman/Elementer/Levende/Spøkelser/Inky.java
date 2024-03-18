@@ -15,7 +15,7 @@ public class Inky extends Spøkelser {
     public Inky(Rute[][] grid) {
     super(grid);
         try {
-        inkyBildeView = new ImageView(new Image(new FileInputStream("src/main/resources/com/example/packman/bilder/Inky01.png")));
+        inkyBildeView = new ImageView(new Image(new FileInputStream("src/main/resources/com/example/packman/bilder/Inky05.png")));
         inkyBildeView.setFitWidth(ruteStr);
         inkyBildeView.setFitHeight(ruteStr);
         inkyBildeView.setPreserveRatio(true);
