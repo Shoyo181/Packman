@@ -8,6 +8,7 @@ import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
 import javafx.animation.ScaleTransition;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
@@ -133,7 +134,7 @@ public class PackmanGui extends Application {
 
     public void byggBane() {
         bane = new BanePane("Kart2", WIN_X, WIN_Y);
-
+        bane.setPadding(new Insets(20));
         bane.setOnKeyPressed(e -> {
             if( e.getCode() == KeyCode.UP)
                 r = Levende.Retning.OPP;

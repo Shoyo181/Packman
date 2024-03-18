@@ -14,15 +14,16 @@ import com.example.packman.misc.IkkeLevendeType;
 import com.example.packman.misc.Vector2D;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 import java.io.File;
@@ -58,6 +59,7 @@ public class BanePane extends BorderPane{
     private ArrayList<Dots> dotsListe;
     private ArrayList<PowerUp> powerListe;
     private ArrayList<Rectangle> veggListe;
+    Label scoreLabel;
 
 
 
@@ -69,6 +71,7 @@ public class BanePane extends BorderPane{
         // setter opp selve banen
         banePlussSpiller();
         setCenter(banen);
+        byggToppPanel();
 
         System.out.println("pacman placed: " + pac.getPacMan().getCenterX() + ", "+ pac.getPacMan().getCenterY());
         System.out.println("UP    - TileY: 768.0 ElementY: 704.0");
@@ -113,18 +116,24 @@ public class BanePane extends BorderPane{
             pac.flyttPacManIgjen();
         }
 
-        spise();
+       spise();
 
+    }
+    public void byggToppPanel()  {
+        scoreLabel = new Label();
+        scoreLabel.setStyle("-fx-background-color: #d5bd00; -fx-font-family: 'MS Gothic'; -fx-text-fill: #0022ff; -fx-font-size: 24px; -fx-font-weight: bold;");
+        setTop(scoreLabel);
     }
 
     public void spise(){
+
         if(kollisjonMellomPacOgDots()){
             score += 100;
-            System.out.println("Score: " + score);
+            scoreLabel.setText("Score: " + score);
         }
         if(kollisjonMellomPacOgPower()){
             score += 200;
-            System.out.println("Score: " + score);
+            scoreLabel.setText("Score: " + score);
         }
 
     }
@@ -177,6 +186,7 @@ public class BanePane extends BorderPane{
 
         pinky = new Pinky(grid);
         pinky.byggPinky();
+
 
         elementer.getChildren().addAll(pac.getPacMan(), clyde.getClyde(), inky.getInky(), blinky.getBlinky(), pinky.getPinky());
 
@@ -487,7 +497,12 @@ public class BanePane extends BorderPane{
         return samling;
     }
 
-
+    public HBox scoreTeller () {
+        HBox score = new HBox();
+        score.setSpacing(10);
+        Text textSpis = new Text();
+        return score;
+    }
 
 
 }
