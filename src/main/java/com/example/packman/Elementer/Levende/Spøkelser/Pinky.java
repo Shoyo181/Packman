@@ -16,7 +16,7 @@ public class Pinky extends Spøkelser {
     public Pinky(Rute[][] grid) {
         super(grid);
         try {
-            pinkyBildeView = new ImageView(new Image(new FileInputStream("src/main/resources/com/example/packman/bilder/Pinky01.png")));
+            pinkyBildeView = new ImageView(new Image(new FileInputStream("src/main/resources/com/example/packman/bilder/Pinky05.png")));
             pinkyBildeView.setFitWidth(ruteStr);
             pinkyBildeView.setFitHeight(ruteStr);
             pinkyBildeView.setPreserveRatio(true);

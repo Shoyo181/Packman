@@ -64,7 +64,7 @@ public class PackmanGui extends Application {
         ekstra = new Button("Ekstra");
         ekstra.setStyle("-fx-background-color: transparent; -fx-text-fill: #ffe148; -fx-font-family: Consolas");
         buttonStretch(ekstra);
-        v.setStyle("-fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #1f2031, #042796); -fx-border-width: 1px; -fx-alignment: center; -fx-font-family: 'Droid Sans Mono'; -fx-font-size: 40px; -fx-spacing: 50px; -fx-padding: 10px;");
+        v.setStyle("-fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #000000, #181818); -fx-border-width: 1px; -fx-alignment: center; -fx-font-family: 'Droid Sans Mono'; -fx-font-size: 40px; -fx-spacing: 50px; -fx-padding: 10px;");
 
         campain.setOnAction(e -> {
 
@@ -101,7 +101,7 @@ public class PackmanGui extends Application {
         Button b3 = new Button("Level 3");
         b3.setStyle("-fx-background-color: transparent; -fx-text-fill:#ffe148; -fx-font-family: Consolas" );
         HBox cM = new HBox();
-        cM.setStyle("-fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #1f2031, #042796); -fx-border-width: 1px; -fx-alignment: center; -fx-font-family: 'Droid Sans Mono'; -fx-font-size: 40px; -fx-spacing: 50px; -fx-padding: 10px;");
+        cM.setStyle("-fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #000000, #181818); -fx-border-width: 1px; -fx-alignment: center; -fx-font-family: 'Droid Sans Mono'; -fx-font-size: 40px; -fx-spacing: 50px; -fx-padding: 10px;");
         cM.getChildren().addAll(b1, b2, b3);
 
 
@@ -215,7 +215,7 @@ public class PackmanGui extends Application {
         editorMenu = new VBox();
         editorMenu.getChildren().addAll(tileEdit, mapEdit, goBack1);
         mainPane.setCenter(editorMenu);
-        editorMenu.setStyle("-fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #1f2031, #042796);  -fx-border-color: black; -fx-border-width: 1px; -fx-alignment: center; -fx-font-family: 'Droid Sans Mono'; -fx-font-size: 40px; -fx-spacing: 50px; -fx-padding: 10px;");
+        editorMenu.setStyle("-fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #000000, #181818);  -fx-border-color: black; -fx-border-width: 1px; -fx-alignment: center; -fx-font-family: 'Droid Sans Mono'; -fx-font-size: 40px; -fx-spacing: 50px; -fx-padding: 10px;");
         editorMenu.setAlignment(Pos.CENTER);
     }
 

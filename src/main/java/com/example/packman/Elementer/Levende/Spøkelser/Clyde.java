@@ -16,7 +16,7 @@ public class Clyde extends Spøkelser {
     public Clyde(Rute[][] grid) {
         super(grid);
         try {
-            clydeBildeView = new ImageView(new Image(new FileInputStream("src/main/resources/com/example/packman/bilder/Clyde01.png")));
+            clydeBildeView = new ImageView(new Image(new FileInputStream("src/main/resources/com/example/packman/bilder/Clyde05.png")));
             clydeBildeView.setFitWidth(ruteStr);
             clydeBildeView.setFitHeight(ruteStr);
             clydeBildeView.setPreserveRatio(true);
