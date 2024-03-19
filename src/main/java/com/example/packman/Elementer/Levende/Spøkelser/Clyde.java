@@ -1,6 +1,8 @@
 package com.example.packman.Elementer.Levende.Spøkelser;
 
 import com.example.packman.Rute.Rute;
+import com.example.packman.misc.SpøkelsesModus;
+import com.example.packman.misc.Vector2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
@@ -29,6 +31,17 @@ public class Clyde extends Spøkelser {
         bildeSpøkelse = clydeBildeView;
         plasserSpøkelse();
     }
+
+    public void flyttClyde() {
+        //metoden er til for å bevege dete spøkelse
+        if (modus == null) {
+            return;
+        }
+        bevegSøkelse();
+    }
+
+
+
 
     public ImageView getClyde() {
         return clydeBildeView;
