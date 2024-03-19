@@ -11,6 +11,7 @@ import com.example.packman.Elementer.Levende.Spøkelser.Pinky;
 import com.example.packman.Rute.Rute;
 import com.example.packman.Rute.RuteSamling;
 import com.example.packman.misc.IkkeLevendeType;
+import com.example.packman.misc.SpøkelsesModus;
 import com.example.packman.misc.Vector2D;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -83,29 +84,13 @@ public class BanePane extends BorderPane {
         byggToppPanel();
         bunnPanel();
 
-
-        System.out.println("pacman placed: " + pac.getHitBox().getCenterX() + ", " + pac.getHitBox().getCenterY());
-        System.out.println("UP    - TileY: 768.0 ElementY: 704.0");
-
-        System.out.println("Tile høyde: " + grid[8][12].getHeight() + ", tile bredde: " + grid[8][12].getWidth());
-
-        /*
-        xAndY: (8, 12)
-        Info om tile - høyde: 64.0, bredde: 64.0, x: 512.0, y: 704.0
-        UP    - TileY: 768.0 ElementY: 704.0
-
-        */
-
         // settter igang animasjon av spillet
 
         animasjon = new Timeline(
                 new KeyFrame(Duration.millis(20), e -> bevegelse())
         );
         animasjon.setCycleCount(Timeline.INDEFINITE);
-        animasjon.play();
-
-        //System.out.println("pacman placed: " + pac.getPacMan().getCenterX() + ", "+ pac.getPacMan().getCenterY());
-        //System.out.println("UP    - TileY: 768.0 ElementY: 704.0");
+        //animasjon.play();
 
 
     }
@@ -118,7 +103,15 @@ public class BanePane extends BorderPane {
         // tom nå, men her kommer bevegelsen til spøkelsene inn og sjekk om de treffer packman sampt om packman spiser de opp
 
 
-        if (pac.sjekkRetningLedig(nesteRetning)) {
+
+        // før vi kan bevege på spøkelsene må vi bestemme hvilken mode de skal ha
+
+        bestemMode();
+        oppdaterPacmanPos();
+
+        clyde.flyttClyde();
+
+        if(pac.sjekkRetningLedig(nesteRetning, veggListe)) {
             pac.setRetning(nesteRetning);
             pac.flyttPacManIgjen();
             sistRetning = nesteRetning;
@@ -194,6 +187,35 @@ public class BanePane extends BorderPane {
 
 
 
+        //System.out.println("Score: " + score + ", time (min, sek): " + (new Date().getTime() - start.getTime()) / 1000 / 60 + ", " + (new Date().getTime() - start.getTime()) / 1000 % 60);;
+
+    }
+
+    public void oppdaterPacmanPos(){
+        // oppdaterer pacman posisjonen for spøkelsene
+        clyde.setPackmanPos(pac.getPositionIGridIndex());
+    }
+
+    public void bestemMode(){
+        if(start == null){
+            return;
+        }
+        // setter hvilken modus spøkelsene skal ha
+        if( ((new Date().getTime() - start.getTime()) / 1000 % 60) >=15){
+            clyde.setModus(SpøkelsesModus.CHASE);
+            System.out.println("Clyde modus: " + clyde.getModus().toString());
+        }else if (((new Date().getTime() - start.getTime()) / 1000 % 60) >= 10){
+            clyde.setModus(SpøkelsesModus.PÅVEIUT);
+            System.out.println("Clyde modus: " + clyde.getModus().toString());
+        } else{
+            clyde.setModus(SpøkelsesModus.ATHOME);
+            System.out.println("Clyde modus: " + clyde.getModus().toString());
+        }
+
+
+        // hvis det er chase så må vi fore inn data til spøkelsene, hvilket kordinat pacman er på
+
+
     }
 
     public void spise() {
@@ -235,6 +257,7 @@ public class BanePane extends BorderPane {
 
 
     /*  Bygger spillflaten.   */
+    
 
     public void banePlussSpiller() {
         banen = new StackPane();
@@ -250,13 +273,14 @@ public class BanePane extends BorderPane {
         pac = new PacMan(grid);
         pac.plasserPacMan();
         // legger pacman inn i elementer
+
         elementer.getChildren().addAll(pac.getPacman(), pac.getHitBox());
 
         clyde = new Clyde(grid);
         clyde.byggClyde();
         //legger clyde inn i elementer - husk hitboxen til clyde.
-        elementer.getChildren().add(clyde.getClyde());
-
+        //elementer.getChildren().add(clyde.getClyde());
+        elementer.getChildren().addAll(clyde.getClyde() , clyde.getHitBox());
         inky = new Inky(grid);
         inky.byggInky();
 
@@ -315,8 +339,7 @@ public class BanePane extends BorderPane {
                 }
             }
         }
-        System.out.println(" topLeftPowerSpawnPos size: " + topLeftPowerSpawnPos.size());
-        System.out.println(" topLeftPowerSpawnPos randomPos: " + topLeftPowerSpawnPos.get((int) Math.random() * topLeftPowerSpawnPos.size()));
+
         // velger en random plass power up kan spawne
         Vector2D randomPosTopLeft = topLeftPowerSpawnPos.get((int) (Math.random() * topLeftPowerSpawnPos.size()));
         Vector2D randomPosTopRight = topRightPowerSpawnPos.get((int) (Math.random() * topRightPowerSpawnPos.size()));
@@ -464,8 +487,6 @@ public class BanePane extends BorderPane {
                         //System.out.println("ikke gulv");
                         veggListe.add(nyRute.getTile());
                     }
-
-
                     // lager kopi av rektanglet i ruteklassen, siden vi ikke får lov til å legge inn
                     // duplikater i grid
 

@@ -56,6 +56,8 @@ public class Levende extends Elementer {
 
     }
 
+    public Circle getHitBox(){ return lev;}
+
 
     // metoder for å sjekke om noe kolliderer ved å gå en retning på banen.
 
@@ -89,11 +91,20 @@ public class Levende extends Elementer {
     }
 
     public void byggVeggList(){
+        // bruker denne metode for å lage veggListe. slik at levende har noe å kollidere med
         veggList = new ArrayList<>();
+        ArrayList<Vector2D> hjemPosisjoner = new ArrayList<>();
+        ArrayList<Vector2D> dørPosisjoner = new ArrayList<>();
         for(int x = 0; x < gridBredde; x++){
             for(int y = 0; y < gridHøyde; y++){
-                if( grid[x][y].getType() != Rute.RuteType.GULV ){
+                if( grid[x][y].getType() == Rute.RuteType.VEGG || grid[x][y].getType() == Rute.RuteType.DØR) {
                     veggList.add(grid[x][y].getTile());
+                }
+                if (grid[x][y].getType() == Rute.RuteType.HJEM) {
+                    hjemPosisjoner.add(new Vector2D(x, y));
+                }
+                if (grid[x][y].getType() == Rute.RuteType.DØR) {
+                    dørPosisjoner.add(new Vector2D(x, y));
                 }
             }
         }
@@ -188,13 +199,11 @@ public class Levende extends Elementer {
         return false;
     }
 
-
+    public Vector2D getPositionIGridIndex() {
+        return new Vector2D(sjekkPosisjonIGridIndexX(), sjekkPosisjonIGridIndexY());
+    }
 
     // metode som oversetter grid til kordinater
-    public void sjekkKordinatIGrid(int x, int y) {
-
-
-    }
 
     // Metode som sjekker hvilken posisjon levende er i banen (pixel)
     // unødvendig - siden vi har variabel for det.. kanskje nyttig med mtode for å regne offset fra senter rute?
@@ -210,11 +219,11 @@ public class Levende extends Elementer {
     // Metode som sjekker hvilken grid pos levende er i nå
     public int sjekkPosisjonIGridX() {
         //System.out.println("sjekkPosX(): " + ((currentPosX + ruteStr/2)/ruteStr));
-        return (int) ((currentPosX + ruteStr/2)/ruteStr);
+        return (int) ((currentPosX + radius)/ruteStr);
     }
     public int sjekkPosisjonIGridY() {
         //System.out.println("sjekkPosY(): " + ((currentPosY + ruteStr/2)/ruteStr));
-        return (int) ((currentPosY + ruteStr/2)/ruteStr);
+        return (int) ((currentPosY + radius)/ruteStr);
     }
     public int sjekkPosisjonIGridIndexX() {
         //System.out.println("sjekkPosX(): " + ((currentPosX + ruteStr/2)/ruteStr));
@@ -314,11 +323,11 @@ public class Levende extends Elementer {
         System.out.println("Ingen kollisjon funnet");
         return false;
     }
-    public boolean sjekkKollisjon(double nestX, double nestY){
+    public boolean sjekkKollisjon(double nestX, double nestY, ArrayList<Rectangle> liste) {
 
         Circle levTest = new Circle(nestX, nestY, radius -1);
 
-        for(Rectangle vegg: veggList){
+        for(Rectangle vegg: liste){
             if(levTest.getBoundsInParent().intersects(vegg.getBoundsInParent())){
                 //System.out.println("Kollisjon funnet");
                 return true;
@@ -328,25 +337,25 @@ public class Levende extends Elementer {
         return false;
     }
 
-    public boolean sjekkRetningLedig(Retning r){
+    public boolean sjekkRetningLedig(Retning r, ArrayList<Rectangle> liste){
         if(r == null){
             return true;
         }
         switch (r){
             case OPP:
-                if (sjekkKollisjon(currentPosX, currentPosY - speed))
+                if (sjekkKollisjon(currentPosX, currentPosY - speed, liste))
                     return false;
                 break;
             case NED:
-                if (sjekkKollisjon(currentPosX, currentPosY + speed))
+                if (sjekkKollisjon(currentPosX, currentPosY + speed, liste))
                     return false;
                 break;
             case HØYRE:
-                if (sjekkKollisjon(currentPosX + speed, currentPosY))
+                if (sjekkKollisjon(currentPosX + speed, currentPosY, liste))
                     return false;
                 break;
             case VENSTRE:
-                if (sjekkKollisjon(currentPosX - speed, currentPosY))
+                if (sjekkKollisjon(currentPosX - speed, currentPosY, liste))
                     return false;
                 break;
             case INGEN:
@@ -354,8 +363,6 @@ public class Levende extends Elementer {
             default:
                 System.out.println("Ugyldig retning");
         }
-
-
         return true;
     }
 
