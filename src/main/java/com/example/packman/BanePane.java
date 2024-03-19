@@ -16,7 +16,10 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -27,9 +30,11 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Scanner;
 /* Egen klasse for å sette opp panel som setter igang spillet
  *
@@ -37,10 +42,10 @@ import java.util.Scanner;
  * - når banen bygges kan det hende det ikke regnes ut riktig hvor stor rute størrelsen er (har ikk testet hvis banen er breiere enn den er høy
  */
 
-public class BanePane extends BorderPane{
+public class BanePane extends BorderPane {
 
-    private final String LENKE ="src/main/resources/com/example/packman/";
-    private int høyde, bredde, pxPerRute= 16, score;
+    private final String LENKE = "src/main/resources/com/example/packman/";
+    private int høyde, bredde, pxPerRute = 16, score;
 
     private int vinduStrX, vinduStrY;
     private RuteSamling tileset;
@@ -60,12 +65,11 @@ public class BanePane extends BorderPane{
     private ArrayList<Dots> dotsListe;
     private ArrayList<PowerUp> powerListe;
     private ArrayList<Rectangle> veggListe;
+    private HBox bunnPanel;
 
-    Label scoreLabel;
+    Label scoreLabel, livLabel, time, livLabel1, livLabel2;
 
     private Date start, slutt;
-
-
 
 
     /***        Konstruktør        ***/
@@ -77,11 +81,13 @@ public class BanePane extends BorderPane{
         banePlussSpiller();
         setCenter(banen);
         byggToppPanel();
+        bunnPanel();
 
-        System.out.println("pacman placed: " + pac.getHitBox().getCenterX() + ", "+ pac.getHitBox().getCenterY());
+
+        System.out.println("pacman placed: " + pac.getHitBox().getCenterX() + ", " + pac.getHitBox().getCenterY());
         System.out.println("UP    - TileY: 768.0 ElementY: 704.0");
 
-        System.out.println( "Tile høyde: " + grid[8][12].getHeight() + ", tile bredde: " + grid[8][12].getWidth() );
+        System.out.println("Tile høyde: " + grid[8][12].getHeight() + ", tile bredde: " + grid[8][12].getWidth());
 
         /*
         xAndY: (8, 12)
@@ -93,7 +99,7 @@ public class BanePane extends BorderPane{
         // settter igang animasjon av spillet
 
         animasjon = new Timeline(
-                new KeyFrame(Duration.millis(40), e -> bevegelse())
+                new KeyFrame(Duration.millis(20), e -> bevegelse())
         );
         animasjon.setCycleCount(Timeline.INDEFINITE);
         animasjon.play();
@@ -107,41 +113,96 @@ public class BanePane extends BorderPane{
 
     /***      Metoder       ***/
 
-    public void bevegelse(){
+    public void bevegelse() {
         // denne metoden kjører så mange ganger i sekundet som bestemt i duration i banePane konstruktøren
         // tom nå, men her kommer bevegelsen til spøkelsene inn og sjekk om de treffer packman sampt om packman spiser de opp
 
 
-        if(pac.sjekkRetningLedig(nesteRetning)) {
+        if (pac.sjekkRetningLedig(nesteRetning)) {
             pac.setRetning(nesteRetning);
             pac.flyttPacManIgjen();
             sistRetning = nesteRetning;
-            if (!pac.spiserPacman()){
+            if (!pac.spiserPacman()) {
                 pac.startSpiseing();
                 start = new Date();
             }
-        }else{
+        } else {
             pac.setRetning(sistRetning);
             pac.flyttPacManIgjen();
         }
 
         spise();
-        System.out.println("Score: " + score + ", time (min, sek): " + (new Date().getTime() - start.getTime()) / 1000 / 60 + ", " + (new Date().getTime() - start.getTime()) / 1000 % 60);;
+        beregnTid();
+
+
+      //  System.out.println("Score: " + score + ", time (min, sek): " + (new Date().getTime() - start.getTime()) / 1000 / 60 + ", " + (new Date().getTime() - start.getTime()) / 1000 % 60);
+
 
     }
-    public void byggToppPanel()  {
+    public void beregnTid() {
+        int min =(int) (new Date().getTime() - start.getTime()) / 1000 / 60;
+        int sek =(int) (new Date().getTime() - start.getTime()) / 1000 % 60;
+        String tid = "";
+        if(min < 10) {
+            tid += "0" + min+ ":";
+        } else {
+            tid += min + ":";
+        }
+        if(sek < 10) {
+            tid += "0" + sek;
+        }else {
+            tid += sek;
+        }
+        time.setText(tid);
+    }
+
+    public void byggToppPanel() {
+
+        HBox toppInfo = new HBox();
+
+        GridPane grid = new GridPane();
+
+        Label highScore = new Label("Highscore: ");
+        highScore.setStyle("-fx-font-family: 'MS PGothic'; -fx-text-fill: #fff200; -fx-font-weight: bold; -fx-font-size: 15;");
+        Text highestScore = new Text();
+        highestScore.setStyle("-fx-font-family: 'MS PGothic'; -fx-text-fill: #fff200; -fx-font-weight: bold; -fx-font-size: 15;");
+
+        Label score = new Label("Score: ");
+        score.setStyle("-fx-font-family: 'MS PGothic'; -fx-text-fill: #fff200; -fx-font-weight: bold; -fx-font-size: 15;");
         scoreLabel = new Label();
-        scoreLabel.setStyle("-fx-background-color: #d5bd00; -fx-font-family: 'MS Gothic'; -fx-text-fill: #0022ff; -fx-font-size: 24px; -fx-font-weight: bold;");
-        setTop(scoreLabel);
+        scoreLabel.setStyle("-fx-font-family: 'MS PGothic'; -fx-text-fill: #fff200; -fx-font-weight: bold; -fx-font-size: 15;");
+
+
+        time = new Label("Time: ");
+        time.setStyle("-fx-font-family: 'MS PGothic'; -fx-text-fill: #fff200; -fx-font-weight: bold; -fx-font-size: 15;");
+
+        grid.setPadding(new Insets(10, 10, 10, 10));
+        grid.setHgap(50);
+        grid.setVgap(10);
+        grid.add(highScore, 0, 0);
+        grid.add(highestScore, 0, 1);
+        grid.add(score, 2, 0);
+        grid.add(scoreLabel, 2, 1);
+        grid.add(new Label("Time: "), 4, 0);
+        grid.add(time, 4, 1);
+
+
+        toppInfo.setStyle("-fx-background-color: #000000;");
+
+        toppInfo.getChildren().add(grid);
+        setTop(toppInfo);
+
+
+
     }
 
-    public void spise(){
+    public void spise() {
 
-        if(kollisjonMellomPacOgDots()){
+        if (kollisjonMellomPacOgDots()) {
             score += 100;
             scoreLabel.setText("Score: " + score);
         }
-        if(kollisjonMellomPacOgPower()){
+        if (kollisjonMellomPacOgPower()) {
             score += 200;
             scoreLabel.setText("Score: " + score);
 
@@ -150,17 +211,20 @@ public class BanePane extends BorderPane{
     }
 
 
-    public void start(){
+    public void start() {
         animasjon.play();
     }
-    public void stop(){
+
+    public void stop() {
         animasjon.stop();
     }
-    public void pause(){
+
+    public void pause() {
         animasjon.pause();
+
     }
 
-    public void resume(){
+    public void resume() {
         animasjon.play();
     }
 
@@ -216,7 +280,7 @@ public class BanePane extends BorderPane{
         System.out.println("Banen er bygget");
     }
 
-    public void setUpElementer(){
+    public void setUpElementer() {
         //legger inn powerUp først siden de tar en plass først
         powerListe = new ArrayList<>();
 
@@ -229,35 +293,35 @@ public class BanePane extends BorderPane{
         // men med disse vil vi bare ha de i hjørnene men en random plass () der
         // top right
         int hjørneSkala = 4;
-        int hjørneBredde = bredde/hjørneSkala; //halv bredd
-        int hjørtneHøyde = høyde/hjørneSkala;
-        for(int x = 0; x < grid.length; x++){
-            for(int y = 0; y < grid[0].length; y++){
-                if(grid[x][y].getType() == Rute.RuteType.GULV) {
+        int hjørneBredde = bredde / hjørneSkala; //halv bredd
+        int hjørtneHøyde = høyde / hjørneSkala;
+        for (int x = 0; x < grid.length; x++) {
+            for (int y = 0; y < grid[0].length; y++) {
+                if (grid[x][y].getType() == Rute.RuteType.GULV) {
                     // lagrer alle posisjoner power up kan spawne på - bare GULV
                     if (x < hjørneBredde && y < hjørtneHøyde) {
                         // topleft
-                        topLeftPowerSpawnPos.add(new Vector2D(x ,y));
-                    } else if (x < hjørneBredde && y > hjørtneHøyde * (hjørneSkala -1)) {
+                        topLeftPowerSpawnPos.add(new Vector2D(x, y));
+                    } else if (x < hjørneBredde && y > hjørtneHøyde * (hjørneSkala - 1)) {
                         // botleft
-                        botLeftPowerSpawnPos.add(new Vector2D(x ,y));
-                    } else if (x > hjørneBredde * (hjørneSkala -1) && y < hjørtneHøyde) {
+                        botLeftPowerSpawnPos.add(new Vector2D(x, y));
+                    } else if (x > hjørneBredde * (hjørneSkala - 1) && y < hjørtneHøyde) {
                         // topright
-                        topRightPowerSpawnPos.add(new Vector2D(x ,y));
-                    } else if (x > hjørneBredde * (hjørneSkala -1) && y > hjørtneHøyde * (hjørneSkala -1)) {
+                        topRightPowerSpawnPos.add(new Vector2D(x, y));
+                    } else if (x > hjørneBredde * (hjørneSkala - 1) && y > hjørtneHøyde * (hjørneSkala - 1)) {
                         //botright
-                        botRightPowerSpawnPos.add(new Vector2D(x ,y));
+                        botRightPowerSpawnPos.add(new Vector2D(x, y));
                     }
                 }
             }
         }
         System.out.println(" topLeftPowerSpawnPos size: " + topLeftPowerSpawnPos.size());
-        System.out.println(" topLeftPowerSpawnPos randomPos: " + topLeftPowerSpawnPos.get( (int) Math.random() * topLeftPowerSpawnPos.size() ));
+        System.out.println(" topLeftPowerSpawnPos randomPos: " + topLeftPowerSpawnPos.get((int) Math.random() * topLeftPowerSpawnPos.size()));
         // velger en random plass power up kan spawne
-        Vector2D randomPosTopLeft = topLeftPowerSpawnPos.get( (int) (Math.random() * topLeftPowerSpawnPos.size()) );
-        Vector2D randomPosTopRight = topRightPowerSpawnPos.get( (int) (Math.random() * topRightPowerSpawnPos.size()) );
-        Vector2D randomPosBotLeft = botLeftPowerSpawnPos.get( (int) (Math.random() * botLeftPowerSpawnPos.size()) );
-        Vector2D randomPosBotRight = botRightPowerSpawnPos.get( (int) (Math.random() * botRightPowerSpawnPos.size()) );
+        Vector2D randomPosTopLeft = topLeftPowerSpawnPos.get((int) (Math.random() * topLeftPowerSpawnPos.size()));
+        Vector2D randomPosTopRight = topRightPowerSpawnPos.get((int) (Math.random() * topRightPowerSpawnPos.size()));
+        Vector2D randomPosBotLeft = botLeftPowerSpawnPos.get((int) (Math.random() * botLeftPowerSpawnPos.size()));
+        Vector2D randomPosBotRight = botRightPowerSpawnPos.get((int) (Math.random() * botRightPowerSpawnPos.size()));
 
         spawnPowerUp(randomPosBotLeft);
         spawnPowerUp(randomPosTopLeft);
@@ -267,9 +331,9 @@ public class BanePane extends BorderPane{
         //legger inn dots nå, siden alle plasser som trenges å bli tatt er oppdatta som betyr at vi kan fylle ut resten med dots
         dotsListe = new ArrayList<>();
         //går igjennom hele grid og leter etter ledige plasser
-        for(int x = 0; x < grid.length; x++){
-            for(int y = 0; y < grid[0].length; y++){
-                if(grid[x][y].getLedigForElement()){
+        for (int x = 0; x < grid.length; x++) {
+            for (int y = 0; y < grid[0].length; y++) {
+                if (grid[x][y].getLedigForElement()) {
                     //legger inn dots i tabell og gir dem x og y verdi
                     spawnDot(new Vector2D(x, y));
                 }
@@ -278,24 +342,29 @@ public class BanePane extends BorderPane{
 
 
     }
-    public void spawnDot(Vector2D pos){
+    public void sjekkCount () {
+        if (dotsListe.size() == 0) {
+            System.out.println("YOU WIN");
+        }
+    }
+
+    public void spawnDot(Vector2D pos) {
         Dots dot = new Dots(grid, pos);
         dotsListe.add(dot);
         grid[pos.getX()][pos.getY()].setLedigForElement(false);
         grid[pos.getX()][pos.getY()].setElementType(IkkeLevendeType.DOT);
-        elementer.getChildren().add(dotsListe.get(dotsListe.size()-1).getDot());
+        elementer.getChildren().add(dotsListe.get(dotsListe.size() - 1).getDot());
     }
 
-    public void spawnPowerUp(Vector2D pos){
+    public void spawnPowerUp(Vector2D pos) {
 
         PowerUp newPower = new PowerUp(grid, pos);
 
         powerListe.add(newPower);
         grid[pos.getX()][pos.getY()].setLedigForElement(false);
         grid[pos.getX()][pos.getY()].setElementType(IkkeLevendeType.POWERUP);
-        elementer.getChildren().add(powerListe.get(powerListe.size()-1).getPowerUp());
+        elementer.getChildren().add(powerListe.get(powerListe.size() - 1).getPowerUp());
     }
-
 
 
     public GridPane mapSetUp(String baneFilnavn) {
@@ -325,7 +394,15 @@ public class BanePane extends BorderPane{
                 ruteStr = (vinduStrY - 100) / høyde;
             }*/
             //ruteStr må være i 16 gangen siden hver rute trenger 16px hver
-            ruteStr = (vinduStrX - 100)  / bredde;
+            //ruteStr = (vinduStrX - 100) / bredde;
+            //TODO: Vil alltid velge Y som størrelse. Kanskje lage en funksjon for dette
+            int tempRuteStrlX = (vinduStrX - 100) / bredde;
+            int tempRuteStrlY = (vinduStrY - 100) / høyde;
+            if (tempRuteStrlX < tempRuteStrlY) {
+                ruteStr = tempRuteStrlX;
+            } else {
+                ruteStr = tempRuteStrlY;
+            }
             ruteStr = (int) ruteStr / 16;
             ruteStr = (int) ruteStr * 16;
 
@@ -357,7 +434,7 @@ public class BanePane extends BorderPane{
                     //Rute nyRute = grid[i][linjeTeller].getRute();
                     // to bort node i Rute
 
-                    Rectangle tile = new Rectangle( ruteStr, ruteStr);
+                    Rectangle tile = new Rectangle(ruteStr, ruteStr);
                     tile.setFill(Color.TRANSPARENT);
 
                     //henter utseende
@@ -365,9 +442,9 @@ public class BanePane extends BorderPane{
 
                     Rectangle[][] utseende = new Rectangle[pxPerRute][pxPerRute];
                     //utseende
-                    for(int x = 0; x < utseende.length; x++) {
-                        for(int y = 0; y < utseende[x].length; y++) {
-                            utseende[x][y] = new Rectangle(ruteStr/16, ruteStr/16);
+                    for (int x = 0; x < utseende.length; x++) {
+                        for (int y = 0; y < utseende[x].length; y++) {
+                            utseende[x][y] = new Rectangle(ruteStr / 16, ruteStr / 16);
                             utseende[x][y].setFill(utseendeSjekk[x][y].getFill());
                         }
                     }
@@ -377,13 +454,13 @@ public class BanePane extends BorderPane{
 
                     //lager ny rute og legger den inn in gridet
                     Rute nyRute = new Rute(id, type, tile, utseende, ruteStr);
-                    nyRute.setRuteX(ruteStr*i);
-                    nyRute.setRuteY(ruteStr*linjeTeller);
+                    nyRute.setRuteX(ruteStr * i);
+                    nyRute.setRuteY(ruteStr * linjeTeller);
 
 
                     grid[i][linjeTeller] = nyRute;
 
-                    if(nyRute.getType() != Rute.RuteType.GULV){
+                    if (nyRute.getType() != Rute.RuteType.GULV) {
                         //System.out.println("ikke gulv");
                         veggListe.add(nyRute.getTile());
                     }
@@ -391,7 +468,6 @@ public class BanePane extends BorderPane{
 
                     // lager kopi av rektanglet i ruteklassen, siden vi ikke får lov til å legge inn
                     // duplikater i grid
-
 
 
                     //System.out.println("i: " + i + ", linjeTeller: " + linjeTeller);
@@ -408,11 +484,11 @@ public class BanePane extends BorderPane{
 
             // hvor stor en rute skal være
 
-        } catch (IndexOutOfBoundsException e){
+        } catch (IndexOutOfBoundsException e) {
             System.out.println();
             System.out.println("Tabell feil - \n" + e);
             return null;
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println();
             System.out.println("Noe fikk galt under filbehandlig - bane \n" + e);
             return null;
@@ -420,6 +496,7 @@ public class BanePane extends BorderPane{
 
         return g;
     }
+
     public boolean kollisjonMellomPacOgDots() {
         // metode for å spise dots
         for (Dots d : dotsListe) {
@@ -439,14 +516,15 @@ public class BanePane extends BorderPane{
         }
         return false;
     }
-    public boolean kollisjonMellomPacOgPower(){
+
+    public boolean kollisjonMellomPacOgPower() {
         // metode for å sjekke om pacman spsier en powerup
         for (PowerUp p : powerListe) {
             // Sjekk kollisjon mellom sirkelen og hvert rektangel
             Circle power = p.getPowerUp();
             Shape intersect = Shape.intersect(pac.getHitBox(), power);
 
-            if(intersect.getBoundsInLocal().getWidth() != -1){
+            if (intersect.getBoundsInLocal().getWidth() != -1) {
                 // Det er en kollisjon mellom pacman og en powerup
                 //System.out.println("Kollisjon oppdaget med powerup: " + power);
                 power.setFill(Color.TRANSPARENT);
@@ -459,14 +537,14 @@ public class BanePane extends BorderPane{
         return false;
     }
 
-    public RuteSamling hentTileset(String tileFilnavn){
+    public RuteSamling hentTileset(String tileFilnavn) {
         RuteSamling samling = new RuteSamling();
         System.out.println("Henter tilset");
-        try{
+        try {
             // åpner datastrøm for å hente tilset
             Scanner scanner = new Scanner(new File(LENKE + "tilesets/" + tileFilnavn + ".txt"));
             // behandler datastrøm
-            while(scanner.hasNextLine()) {
+            while (scanner.hasNextLine()) {
                 //id
                 String linje = scanner.nextLine();
                 //System.out.println(linje);
@@ -483,7 +561,7 @@ public class BanePane extends BorderPane{
                     //System.out.println(linje);
                     String strTab[] = linje.split(";");
                     for (int j = 0; j < pxPerRute; j++) {
-                        Rectangle pixel = new Rectangle(ruteStr/16, ruteStr/16);
+                        Rectangle pixel = new Rectangle(ruteStr / 16, ruteStr / 16);
                         pixel.setFill(Color.valueOf(strTab[j]));
                         utseende[i][j] = pixel;
                     }
@@ -492,10 +570,10 @@ public class BanePane extends BorderPane{
                 tile.setFill(Color.TRANSPARENT);
                 //System.out.println("all info er hentet ");
 
-                linje =scanner.nextLine();
+                linje = scanner.nextLine();
                 //System.out.println("linje i tilesethenting, skal være ':', og er - " + linje);
                 // legger inn til rutesamling
-                samling.leggTil( new Rute(id, type, tile, utseende, ruteStr) );
+                samling.leggTil(new Rute(id, type, tile, utseende, ruteStr));
                 //System.out.println("tileset er lagt til i samling");
                 // nå har vi hentet et helt rute objekt
                 // men leseren er fortsatt på feil plass
@@ -504,7 +582,7 @@ public class BanePane extends BorderPane{
             System.out.println("tilesettet er hentet");
             scanner.close();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Noe gikk galt med filbehandling - tileset \n" + e);
             return null;
         }
@@ -513,12 +591,59 @@ public class BanePane extends BorderPane{
         return samling;
     }
 
-    public HBox scoreTeller () {
-        HBox score = new HBox();
-        score.setSpacing(10);
-        Text textSpis = new Text();
-        return score;
+    public HBox toppBar() {
+        HBox toppInfo = new HBox();
+
+        GridPane grid = new GridPane();
+        Label highScore = new Label("Highscore: ");
+        highScore.setStyle("-fx-background-color: #d5bd00; -fx-font-family: 'MS Gothic'; -fx-text-fill: #0022ff; -fx-font-weight: bold;");
+        Text highestScore = new Text();
+
+        Label score = new Label("Score: ");
+        score.setStyle("-fx-background-color: #d5bd00; -fx-font-family: 'MS Gothic'; -fx-text-fill: #0022ff; -fx-font-weight: bold;");
+        Text currentScore = new Text();
+
+
+        return toppInfo;
     }
 
 
+    public HBox bunnPanel() {
+        HBox bunnInfo = new HBox();
+            livLabel = new Label();
+            try {
+                ImageView hjerte = new ImageView(new Image(new FileInputStream("src/main/resources/com/example/packman/bilder/Hjerte05.png")));
+                hjerte.setFitWidth(ruteStr);
+                hjerte.setFitHeight(ruteStr);
+                livLabel.setGraphic(hjerte);
+            } catch (Exception e) {
+                System.out.println("Noe gikk galt med filbehandling \n" + e);
+            }
+            livLabel1 = new Label();
+            try {
+                ImageView hjerte = new ImageView(new Image(new FileInputStream("src/main/resources/com/example/packman/bilder/Hjerte05.png")));
+                hjerte.setFitWidth(ruteStr);
+                hjerte.setFitHeight(ruteStr);
+                livLabel1.setGraphic(hjerte);
+            } catch (Exception e) {
+                System.out.println("Noe gikk galt med filbehandling \n" + e);
+            }
+            livLabel2 = new Label();
+            try {
+                ImageView hjerte = new ImageView(new Image(new FileInputStream("src/main/resources/com/example/packman/bilder/Hjerte05.png")));
+                hjerte.setFitWidth(ruteStr);
+                hjerte.setFitHeight(ruteStr);
+                livLabel2.setGraphic(hjerte);
+            } catch (Exception e) {
+                System.out.println("Noe gikk galt med filbehandling \n" + e);
+            }
+
+            bunnInfo.getChildren().addAll(livLabel, livLabel1, livLabel2);
+            setBottom(bunnInfo);
+            return bunnInfo;
+        }
 }
+
+
+
+

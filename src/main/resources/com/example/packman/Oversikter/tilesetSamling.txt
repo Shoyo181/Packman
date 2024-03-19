@@ -7,3 +7,6 @@ mapset-test2
 PacMan1
 PacM1
 PacMan2
+BlomsterTile
+BlomsterTile2
+Sommerfugl
