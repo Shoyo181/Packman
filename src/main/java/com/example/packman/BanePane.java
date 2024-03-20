@@ -1,5 +1,6 @@
 package com.example.packman;
 
+import com.example.packman.Elementer.IkkeLevende.Cherry;
 import com.example.packman.Elementer.IkkeLevende.Dots;
 import com.example.packman.Elementer.IkkeLevende.PowerUp;
 import com.example.packman.Elementer.Levende.Levende;
@@ -33,10 +34,7 @@ import javafx.util.Duration;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 /* Egen klasse for å sette opp panel som setter igang spillet
  *
  * Mulige bugs:
@@ -67,10 +65,13 @@ public class BanePane extends BorderPane {
     private ArrayList<PowerUp> powerListe;
     private ArrayList<Rectangle> veggListe;
     private HBox bunnPanel;
+    private Cherry cherry;
+    private boolean cherrySpawned = false;
 
     Label scoreLabel, livLabel, time, livLabel1, livLabel2;
 
     private Date start, slutt;
+    private Timer cherryTimer = new Timer();
 
 
     /***        Konstruktør        ***/
@@ -126,6 +127,7 @@ public class BanePane extends BorderPane {
 
         spise();
         beregnTid();
+
 
 
       //  System.out.println("Score: " + score + ", time (min, sek): " + (new Date().getTime() - start.getTime()) / 1000 / 60 + ", " + (new Date().getTime() - start.getTime()) / 1000 % 60);
@@ -203,6 +205,10 @@ public class BanePane extends BorderPane {
         // setter hvilken modus spøkelsene skal ha
         if( ((new Date().getTime() - start.getTime()) / 1000 % 60) >=15){
             clyde.setModus(SpøkelsesModus.CHASE);
+            if (!cherrySpawned) {
+                spawnCherry();
+                cherrySpawned = true;
+            }
             System.out.println("Clyde modus: " + clyde.getModus().toString());
         }else if (((new Date().getTime() - start.getTime()) / 1000 % 60) >= 10){
             clyde.setModus(SpøkelsesModus.PÅVEIUT);
@@ -228,6 +234,10 @@ public class BanePane extends BorderPane {
             score += 200;
             scoreLabel.setText("Score: " + score);
 
+        }
+        if (cherry == null && kollisjonMellomPacOgCherry()) {
+            score += 300;
+            scoreLabel.setText("Score: " + score);
         }
 
     }
@@ -318,27 +328,29 @@ public class BanePane extends BorderPane {
         // top right
         int hjørneSkala = 4;
         int hjørneBredde = bredde / hjørneSkala; //halv bredd
-        int hjørtneHøyde = høyde / hjørneSkala;
+        int hjørneHøyde = høyde / hjørneSkala;
         for (int x = 0; x < grid.length; x++) {
             for (int y = 0; y < grid[0].length; y++) {
                 if (grid[x][y].getType() == Rute.RuteType.GULV) {
                     // lagrer alle posisjoner power up kan spawne på - bare GULV
-                    if (x < hjørneBredde && y < hjørtneHøyde) {
+                    if (x < hjørneBredde && y < hjørneHøyde) {
                         // topleft
                         topLeftPowerSpawnPos.add(new Vector2D(x, y));
-                    } else if (x < hjørneBredde && y > hjørtneHøyde * (hjørneSkala - 1)) {
+                    } else if (x < hjørneBredde && y > hjørneHøyde * (hjørneSkala - 1)) {
                         // botleft
                         botLeftPowerSpawnPos.add(new Vector2D(x, y));
-                    } else if (x > hjørneBredde * (hjørneSkala - 1) && y < hjørtneHøyde) {
+                    } else if (x > hjørneBredde * (hjørneSkala - 1) && y < hjørneHøyde) {
                         // topright
                         topRightPowerSpawnPos.add(new Vector2D(x, y));
-                    } else if (x > hjørneBredde * (hjørneSkala - 1) && y > hjørtneHøyde * (hjørneSkala - 1)) {
+                    } else if (x > hjørneBredde * (hjørneSkala - 1) && y > hjørneHøyde * (hjørneSkala - 1)) {
                         //botright
                         botRightPowerSpawnPos.add(new Vector2D(x, y));
                     }
                 }
             }
         }
+
+
 
         // velger en random plass power up kan spawne
         Vector2D randomPosTopLeft = topLeftPowerSpawnPos.get((int) (Math.random() * topLeftPowerSpawnPos.size()));
@@ -350,6 +362,9 @@ public class BanePane extends BorderPane {
         spawnPowerUp(randomPosTopLeft);
         spawnPowerUp(randomPosBotRight);
         spawnPowerUp(randomPosTopRight);
+
+
+
 
         //legger inn dots nå, siden alle plasser som trenges å bli tatt er oppdatta som betyr at vi kan fylle ut resten med dots
         dotsListe = new ArrayList<>();
@@ -369,6 +384,32 @@ public class BanePane extends BorderPane {
         if (dotsListe.size() == 0) {
             System.out.println("YOU WIN");
         }
+    }
+    public void spawnCherry() {
+        ArrayList<Vector2D> cherrySpawnPos = new ArrayList<>();
+
+        int baneDeler;
+        if (grid.length < grid[0].length) {
+            baneDeler = grid.length / 3;
+        } else {
+            baneDeler = grid[0].length / 3;
+        }
+
+        for (int i = baneDeler; i < grid.length - baneDeler; i++) {
+            for (int j = baneDeler; j < grid[0].length - baneDeler; j++) {
+                if (grid[i][j].getType() == Rute.RuteType.GULV) {
+                    cherrySpawnPos.add(new Vector2D(i, j));
+                }
+            }
+        }
+        // Velger en random posisjon av alle cherry spawn posisjoner
+        Vector2D pos = cherrySpawnPos.get((int) (Math.random() * cherrySpawnPos.size()));
+
+        Cherry cherry = new Cherry(grid, pos);
+        grid[pos.getX()][pos.getY()].setElementType(IkkeLevendeType.CHERRY);
+        elementer.getChildren().addAll(cherry.getCherry(), cherry.getHitBox());
+
+        System.out.println("Spawned cherry at: x: " + pos.getX() + ", y: " + pos.getY());
     }
 
     public void spawnDot(Vector2D pos) {
@@ -557,6 +598,25 @@ public class BanePane extends BorderPane {
 
         return false;
     }
+    public boolean kollisjonMellomPacOgCherry() {
+        // Metode for å sjekke om PacMan spsier en cherry
+        if (cherry == null){
+            return false;
+        }
+        Shape intersect = Shape.intersect(pac.getHitBox(), cherry.getHitBox());
+         if (intersect.getBoundsInLocal().getWidth() != -1) {
+             // Det er en kollisjon mellom pacman og en cherry
+             //System.out.println("Kollisjon oppdaget med cherry: " + cherry);
+             elementer.getChildren().remove(cherry);
+             System.out.println("Cherry er borte");
+             cherry = null;
+
+             cherrySpawned = false;
+
+             return true;
+         }
+         return false;
+    }
 
     public RuteSamling hentTileset(String tileFilnavn) {
         RuteSamling samling = new RuteSamling();
@@ -664,7 +724,6 @@ public class BanePane extends BorderPane {
             return bunnInfo;
         }
 }
-
 
 
 

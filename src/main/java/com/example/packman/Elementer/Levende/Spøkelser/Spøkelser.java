@@ -118,7 +118,7 @@ public class Spøkelser extends Levende {
             return retninger.get(0);
         }
 
-        // hvis det ikke er noen retninger igjen må spøkelse gå tilbake der den kom fra - bryter den ene regelsen
+        // hvis det ikke er noen retninger igjen må spøkelse gå tilbake der den kom fra - bryter den ene regelen
         if (retninger.size() == 0) {
             Vector2D nestePos = regnUtNestePos(komFraRetning);
             // regner ut neste rute for spøkelse
