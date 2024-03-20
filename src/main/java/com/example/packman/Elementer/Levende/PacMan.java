@@ -32,7 +32,7 @@ public class PacMan extends Levende{
 
         //lev.setFill(Paint.valueOf("yellow"));
         spiser = false;
-        //pacmanDisign();
+        pacmanDisign();
 
     }
 
@@ -221,8 +221,8 @@ public class PacMan extends Levende{
         lev.setCenterY(startPosY);
         currentPosX = startPosX;
         currentPosY = startPosY;
-        pacmanDisign();
         //byggHitBox();
+        setPosisjon();
     }
 
     public void flyttPacManIgjen(){
@@ -233,7 +233,7 @@ public class PacMan extends Levende{
                     break;
                 }
                 currentPosY -= speed;
-                setHitBox(currentPosX, currentPosY);
+                setPosisjon();
                 roterPacMan();
                 break;
             case NED:
@@ -241,7 +241,7 @@ public class PacMan extends Levende{
                     break;
                 }
                 currentPosY += speed;
-                setHitBox(currentPosX, currentPosY);
+                setPosisjon();
                 roterPacMan();
                 break;
             case HØYRE:
@@ -249,7 +249,7 @@ public class PacMan extends Levende{
                     break;
                 }
                 currentPosX += speed;
-                setHitBox(currentPosX, currentPosY);
+                setPosisjon();
                 roterPacMan();
                 break;
             case VENSTRE:
@@ -257,10 +257,18 @@ public class PacMan extends Levende{
                     break;
                 }
                 currentPosX -= speed;
-                setHitBox(currentPosX, currentPosY);
+                setPosisjon();
                 roterPacMan();
                 break;
         }
+    }
+
+    public void setPosisjon(){
+        setHitBox(currentPosX, currentPosY);
+        pacUnderLeppe.setCenterX(currentPosX);
+        pacUnderLeppe.setCenterY(currentPosY);
+        pacOverLeppe.setCenterX(currentPosX);
+        pacOverLeppe.setCenterY(currentPosY);
     }
 
     public Arc getPacOverLeppe(){
@@ -307,7 +315,7 @@ public class PacMan extends Levende{
         // gjør gamle pacman usynelig, men trenger fortsatt denne sirkelen som hitBox
         lev.setStroke(Color.TRANSPARENT);
         // endre denne fargen til TRANSPARENT når animering fungerer - lev er bare hitboxen
-        lev.setFill(Color.YELLOW);
+        lev.setFill(Color.TRANSPARENT);
     }
     public void roterPacMan(){
         //trenger ikke å sjekke om retning er null. hvor det blir sjekket tidligere
@@ -348,11 +356,6 @@ public class PacMan extends Levende{
         return spiser;
     }
 
-
-    public void sjekkPickUp(){
-        // metoden sjekker om pacMan treffen ett ikkeLevende element
-
-    }
 
     public Vector2D getPosition() {
 

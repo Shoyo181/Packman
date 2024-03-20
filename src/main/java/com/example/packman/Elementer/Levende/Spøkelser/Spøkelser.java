@@ -110,10 +110,6 @@ public abstract class Spøkelser extends Levende {
             retninger.removeIf(r -> !sjekkRetningLedig(r, veggList));
         }
 
-        System.out.println("Mulige retninger: " + retninger.size() + ", kom fra retning: " + komFraRetning);
-        for(Retning r : retninger){
-            System.out.println("Retning: " + r);
-        }
 
         // da sitter vi igjen med antall retninger spøkelse kan ta
         // hvis det bare er en retning igjen velger vi den
@@ -175,12 +171,12 @@ public abstract class Spøkelser extends Levende {
             retningPosArray[i] = (int) (Math.pow(Math.abs(endeMål.getX() - retningPos.get(i).getX()), 2) +
                                         Math.pow(Math.abs(endeMål.getY() - retningPos.get(i).getY()), 2) );
         }
-        System.out.println("sjekker hvilken vei som er kortest");
+        //System.out.println("sjekker hvilken vei som er kortest");
         // vi må huske hvilken retning som er kortest
         int min = retningPosArray[0];
         int index = 0;
         for(int i = 0; i < retningPosArray.length; i++) {
-            System.out.println("index: " + i + ", retningPosArray[index] (verdi): " + retningPosArray[i] + ", retning: " + retninger.get(i));
+            //System.out.println("index: " + i + ", retningPosArray[index] (verdi): " + retningPosArray[i] + ", retning: " + retninger.get(i));
             if(retningPosArray[i] < min){
                 min = retningPosArray[i];
                 index = i;
@@ -192,14 +188,14 @@ public abstract class Spøkelser extends Levende {
         // (husk dette er grid index så må plusse på ruteStr)
         sluttRuteX = (retningPos.get(index).getX() * ruteStr) - radius + ruteStr;
         sluttRuteY = (retningPos.get(index).getY() * ruteStr) - radius + ruteStr;
-        System.out.println("Spøkelse befinner seg på - x: " + currentPosX + ", y: " + currentPosY);
-        System.out.println("Spøkelse beveger seg til - x: " + sluttRuteX + ", y: " + sluttRuteY);
+        //System.out.println("Spøkelse befinner seg på - x: " + currentPosX + ", y: " + currentPosY);
+        //System.out.println("Spøkelse beveger seg til - x: " + sluttRuteX + ", y: " + sluttRuteY);
 
-        System.out.println("Rute spøkelse er på: - x: " + sjekkPosisjonIGridIndexX() + ", y: " + sjekkPosisjonIGridIndexY());
-        System.out.println("Rute beveger seg til - x: " + retningPos.get(index).getX() + ", y: " + retningPos.get(index).getY());
-        System.out.println("Rute sitt ende mål   - x: " + endeMål.getX() + ", y: " + endeMål.getY());
+        //System.out.println("Rute spøkelse er på: - x: " + sjekkPosisjonIGridIndexX() + ", y: " + sjekkPosisjonIGridIndexY());
+        //System.out.println("Rute beveger seg til - x: " + retningPos.get(index).getX() + ", y: " + retningPos.get(index).getY());
+        //System.out.println("Rute sitt ende mål   - x: " + endeMål.getX() + ", y: " + endeMål.getY());
 
-        System.out.println("Retning valgt: " + retninger.get(index));
+        //System.out.println("Retning valgt: " + retninger.get(index));
 
         return retninger.get(index);
     }
@@ -226,14 +222,14 @@ public abstract class Spøkelser extends Levende {
         if(!harMål){
             retning = bestemSpøkelseRetning();
         }
-        System.out.println("Spøkelse sine kordinater -  x: " + currentPosX + ", y: " + currentPosY);
-        System.out.println("Spøkelse sitt mål        -  x: " + sluttRuteX + ", y: " + sluttRuteY);
+        //System.out.println("Spøkelse sine kordinater -  x: " + currentPosX + ", y: " + currentPosY);
+        //System.out.println("Spøkelse sitt mål        -  x: " + sluttRuteX + ", y: " + sluttRuteY);
 
 
         //etter spøkelse er flyttet seg en hel rute, bergner vi ett nytt mål
         if(currentPosX == sluttRuteX && currentPosY == sluttRuteY){
             harMål = false;
-            System.out.println("spøkelse har et mål - test");
+            //System.out.println("spøkelse har et mål - test");
         }else if(modus == SpøkelsesModus.PÅVEIUT){
             flyttSøkelse(veggUtenDørList);
         }else{
@@ -402,52 +398,52 @@ public abstract class Spøkelser extends Levende {
         // må først finne ut om døren er over/under eller ved siden av hjemmet
         int x = 0;
         int y = 0;
-        System.out.println("finner posisjon utenfor dør");
-        System.out.println("hjemPosisjoner: " + hjemPosisjoner);
+        //System.out.println("finner posisjon utenfor dør");
+        //System.out.println("hjemPosisjoner: " + hjemPosisjoner);
 
         // ikke optimalt, men dette finner den første døren som er "over" hjemmet
         for(int i = 0; i < dørPosisjoner.size(); i++){
-            System.out.println("sjekk i: " + i);
+            //System.out.println("sjekk i: " + i);
             for(int j = 0; j < hjemPosisjoner.size(); j++){
-                System.out.println("sjekk j: " + j);
+                //System.out.println("sjekk j: " + j);
                 if (dørPosisjoner.get(i).getX() == hjemPosisjoner.get(j).getX()){
                     //hvis dette er sant sier vi at døren er over eller under hjemmet
                     // da vi finne ut hvem det er
-                    System.out.println("dør funnet over eller under");
+                    //System.out.println("dør funnet over eller under");
                     if(dørPosisjoner.get(i).getY() < hjemPosisjoner.get(j).getY()){
                         //dør er over
                         x = dørPosisjoner.get(i).getX();
                         y = dørPosisjoner.get(i).getY() - 1;
-                        System.out.println("x: " + x + ", y: " + y);
-                        System.out.println("dør er over");
+                        //System.out.println("x: " + x + ", y: " + y);
+                        //System.out.println("dør er over");
                         foranDørPos = new Vector2D(x, y);
                         break;
                     } else if(dørPosisjoner.get(i).getY() > hjemPosisjoner.get(j).getY()){
                         //dør er under
                         x = dørPosisjoner.get(i).getX();
                         y = dørPosisjoner.get(i).getY() + 1;
-                        System.out.println("x: " + x + ", y: " + y);
-                        System.out.println("dør er under");
+                        //System.out.println("x: " + x + ", y: " + y);
+                        //System.out.println("dør er under");
                         foranDørPos = new Vector2D(x, y);
                         break;
                     }
                 }else if(dørPosisjoner.get(i).getY() == hjemPosisjoner.get(j).getY()){
                     //dør er på samme linje som hjemmet
-                    System.out.println("dør er på samme linje som hjemmet");
+                    //System.out.println("dør er på samme linje som hjemmet");
                     if(dørPosisjoner.get(i).getX() < hjemPosisjoner.get(j).getX()){
                         //dør er på venstre
                         x = dørPosisjoner.get(i).getX() - 1;
                         y = dørPosisjoner.get(i).getY();
-                        System.out.println("x: " + x + ", y: " + y);
-                        System.out.println("dør er på venstre");
+                        //System.out.println("x: " + x + ", y: " + y);
+                        //System.out.println("dør er på venstre");
                         foranDørPos = new Vector2D(x, y);
                         break;
                     } else if(dørPosisjoner.get(i).getX() > hjemPosisjoner.get(j).getX()){
                         //dør er på høyre
                         x = dørPosisjoner.get(i).getX() + 1;
                         y = dørPosisjoner.get(i).getY();
-                        System.out.println("x: " + x + ", y: " + y);
-                        System.out.println("dør er på høyre");
+                        //System.out.println("x: " + x + ", y: " + y);
+                        //System.out.println("dør er på høyre");
                         foranDørPos = new Vector2D(x, y);
                         break;
                     }
