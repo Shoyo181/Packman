@@ -1,3 +1,9 @@
+/**
+ * GUI for Packman
+ * Håndterer fremvisning av hele programmet.
+ * @author Kjartan Øyen
+ * @author Mie Rønningen
+ */
 package com.example.packman;
 
 import com.example.packman.Elementer.Levende.Levende;
@@ -51,22 +57,32 @@ public class PackmanGui extends Application {
         menu = byggMeny();
         mainPane.setCenter(byggMeny());
 
-
-
-
-
         Scene scene = new Scene(mainPane, WIN_X, WIN_Y);
-        stage.setTitle("Hello!");
+        stage.setTitle("Kjartan og Mies packman");
         stage.setScene(scene);
 
         stage.show();
     }
 
-    public VBox byggMeny() {
+    public VBox byggMeny()  {
         // metode for å bygge meny
         VBox v = new VBox();
         Label title = new Label("Packman");
         title.setStyle("-fx-font-size: 100px; -fx-font-family: 'MS Gothic'; -fx-text-fill: #ffe148");
+        ImageView pacmanB = null;
+        try {
+            pacmanB = new ImageView(new Image(new FileInputStream("src/main/resources/com/example/packman/bilder/Pacman05.png")));
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        pacmanB.setPreserveRatio(true);
+        pacmanB.setFitWidth(100);
+        pacmanB.setFitHeight(100);
+        HBox pacmanBilde = new HBox();
+        pacmanBilde.getChildren().add(pacmanB);
+        pacmanBilde.setAlignment(Pos.TOP_CENTER);
+
+
         campain = new Button("Campain");
         campain.setStyle("-fx-background-color: transparent; -fx-text-fill:#ffe148; -fx-font-family: Consolas" );
         buttonStretch(campain);
@@ -92,10 +108,15 @@ public class PackmanGui extends Application {
 
         });
 
-        v.getChildren().addAll(title, campain, editor, ekstra);
+        v.getChildren().addAll(title, pacmanBilde, campain, editor, ekstra);
         return v;
     }
     public void campainMenu() {
+        /*
+         * Lager meny for ulike map, med bilder som viser layout
+         * av hvordan banene ser ut. I tillegg en onclick på knappene,
+         * slik at man velger hvilken map man vil spille på.
+         */
         Button b1 = new Button("Bane 1");
         buttonStretch(b1);
         b1.setStyle("-fx-background-color: transparent; -fx-text-fill:#ffe148; -fx-font-family: Consolas" );
@@ -112,8 +133,6 @@ public class PackmanGui extends Application {
         }
         kart2BildeView.setFitWidth(200);
             kart2BildeView.setFitHeight(200);
-
-
 
         Button b2 = new Button("Bane 2");
         buttonStretch(b2);
@@ -157,6 +176,9 @@ public class PackmanGui extends Application {
 
 
     public void byggBane() {
+        /*
+         * Bygger første map, og setter knappene trykkbare.
+         */
         bane = new BanePane("GrøntMap", WIN_X, WIN_Y);
         bane.setPadding(new Insets(5));
         bane.setOnKeyPressed(e -> {
@@ -176,13 +198,15 @@ public class PackmanGui extends Application {
             if ( e.getCode() == KeyCode.W)
                 r = Levende.Retning.INGEN;
 
-
             System.out.println("PacMan er i retning: " + r);
             bane.oppdaterPacManRetning(r);
         });
 
     }
     public void byggBane2() {
+        /*
+         * Bygger andre map og lager knappene trykkbare.
+         */
         bane = new BanePane("Kart2", WIN_X, WIN_Y);
         bane.setPadding(new Insets(5));
         bane.setOnKeyPressed(e -> {
@@ -209,6 +233,10 @@ public class PackmanGui extends Application {
     }
 
     public void byggEditorMeny() {
+
+        /*
+         * Meny for tile- og map-editor.
+         */
 
         tileEdit = new Button("Tile-Editor");
         tileEdit.setStyle("-fx-background-color: transparent; -fx-text-fill: #ffe148; -fx-font-family: Consolas;");
@@ -237,7 +265,6 @@ public class PackmanGui extends Application {
 
             mainPane.setTop(backButton);
 
-
         });
 
         mapEdit.setOnAction(e -> {
@@ -258,9 +285,6 @@ public class PackmanGui extends Application {
 
         });
 
-
-
-
         editorMenu = new VBox();
         editorMenu.getChildren().addAll(tileEdit, mapEdit, goBack1);
         mainPane.setCenter(editorMenu);
@@ -268,9 +292,10 @@ public class PackmanGui extends Application {
         editorMenu.setAlignment(Pos.CENTER);
     }
 
-
-
     public void buttonStretch (Button b) {
+        /*
+         * Lager metode for buttons med stretch når man holder over knappene.
+         */
         b.setOnMouseEntered(e -> {
             ScaleTransition scaleIn = new ScaleTransition(Duration.seconds(0.5), b);
             scaleIn.setToX(1.2);

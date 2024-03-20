@@ -1,6 +1,6 @@
-/* Super klasse som har generelle metoder til begge editor typene, siden de er veldig like
- *
- *
+/**
+ * Dette er en super klasse som har generelle metoder
+ * begge editorene vi har laget, siden de har mange likhetstrekk.
  *
  */
 
@@ -18,8 +18,8 @@ public class Editor extends BorderPane {
     protected int ruteStr;
     protected VBox pallet, info, midt;
 
-    protected Rectangle[][] grid;         // for å vise grid
-    protected Rectangle[][] tile;         // der hvor farge lagres
+    protected Rectangle[][] grid;         // For å vise grid.
+    protected Rectangle[][] tile;         // Der hvor farge lagres.
     protected int pxPerRute = 16;
     protected int bredde = 0, høyde = 0;
     protected GridPane gridPane;
@@ -40,10 +40,12 @@ public class Editor extends BorderPane {
         setRight(info);
 
     }
-
+    /**
+     * Metoden regnUtRuteStr kalkulerer hvor mange ruter det er plass til i begge retninger.
+     */
 
     public void regnUtRuteStr(){
-        //oppdater slik at den funker begge veier - gjør det ikke nå..
+        // TODO: Oppdater slik at den funker begge veier - gjør det ikke nå..
         int breddeIgjen = vinduStrX - 150 - 250;
         ruteStr = breddeIgjen / bredde;
         ruteStr = ruteStr /16;
@@ -56,7 +58,10 @@ public class Editor extends BorderPane {
 
 
     }
-
+    /**
+     * Metode for å bygge pallet.
+     * Hva det dette inneholder defineres i subklasser.
+     */
     public void byggPallet(){
         // 150 x px
         pallet = new VBox();
@@ -65,14 +70,14 @@ public class Editor extends BorderPane {
         pallet.setMaxHeight(vinduStrY);
         pallet.setSpacing(10);
 
-
-        //hva pallet viser er definert i subklasser
     }
 
-
+    /**
+     * Metode for å bygge selve canvaset .
+     */
     public void byggCanvas(){
         // 800 x px orginalt
-        // innparameter er hvor manger ruter den skal ha
+        // Innparameter er hvor manger ruter den skal ha.
         midt = new VBox();
         midt.setMinHeight(vinduStrY);
 
@@ -98,8 +103,11 @@ public class Editor extends BorderPane {
         System.out.println("Canvas er bygget");
 
     }
+    /**
+     * Metode for å bygge tabellen for å vise tiles.
+     */
     public void byggTileTab(){
-        // bygger tabellen for tile tabellen
+
         System.out.println("ruteStr: " + ruteStr);
         for(int i = 0; i < bredde; i++){
             for(int j = 0; j < høyde; j++){
@@ -146,7 +154,7 @@ public class Editor extends BorderPane {
         info = new VBox();
         info.setMinWidth(250);
         info.setMaxHeight(150);
-        info.setStyle("-fx-background-color: #181818; -fx-border-width: 1px; -fx-text-fill: white; -fx-font-family: Consolas; -fx-padding: 10px;");
+        info.setStyle("-fx-background-color: #181818 ; -fx-border-width: 1px; -fx-text-fill: white; -fx-font-family: Consolas; -fx-padding: 10px;");
         info.setMaxHeight(vinduStrY);
         info.setSpacing(10);
 
