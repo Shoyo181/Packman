@@ -68,10 +68,9 @@ public class BanePane extends BorderPane {
     private Cherry cherry;
     private boolean cherrySpawned = false, erImun, iTunell;
 
-    Label scoreLabel, livLabel, time, livLabel1, livLabel2;
+    Label scoreLabel, time;
 
     private Date start, imun;
-    private Timer cherryTimer = new Timer();
 
 
     /***        Konstruktør        ***/
@@ -131,7 +130,7 @@ public class BanePane extends BorderPane {
 
         spise();
         beregnTid();
-
+        setCherrySpawned();
 
 
       //  System.out.println("Score: " + score + ", time (min, sek): " + (new Date().getTime() - start.getTime()) / 1000 / 60 + ", " + (new Date().getTime() - start.getTime()) / 1000 % 60);
@@ -223,10 +222,7 @@ public class BanePane extends BorderPane {
         // setter hvilken modus spøkelsene skal ha
         if( ((new Date().getTime() - start.getTime()) / 1000 % 60) >=15){
             clyde.setModus(SpøkelsesModus.CHASE);
-            if (!cherrySpawned) {
-                spawnCherry();
-                cherrySpawned = true;
-            }
+
             System.out.println("Clyde modus: " + clyde.getModus().toString());
         }else if (((new Date().getTime() - start.getTime()) / 1000 % 60) >= 10){
             clyde.setModus(SpøkelsesModus.PÅVEIUT);
@@ -253,7 +249,7 @@ public class BanePane extends BorderPane {
             scoreLabel.setText("Score: " + score);
 
         }
-        if (cherry == null && kollisjonMellomPacOgCherry()) {
+        if (kollisjonMellomPacOgCherry()) {
             score += 300;
             scoreLabel.setText("Score: " + score);
         }
@@ -298,6 +294,7 @@ public class BanePane extends BorderPane {
         //legger inn elementer til banen
         elementer = new Pane();
         elementer.setPrefSize(vinduStrX, vinduStrY);
+
 
         pac = new PacMan(grid);
         pac.plasserPacMan();
@@ -428,7 +425,8 @@ public class BanePane extends BorderPane {
         // Velger en random posisjon av alle cherry spawn posisjoner
         Vector2D pos = cherrySpawnPos.get((int) (Math.random() * cherrySpawnPos.size()));
 
-        Cherry cherry = new Cherry(grid, pos);
+        cherry = new Cherry(grid, pos);
+
         grid[pos.getX()][pos.getY()].setElementType(IkkeLevendeType.CHERRY);
         elementer.getChildren().addAll(cherry.getCherry(), cherry.getHitBox());
 
@@ -673,24 +671,30 @@ public class BanePane extends BorderPane {
     }
     public boolean kollisjonMellomPacOgCherry() {
         // Metode for å sjekke om PacMan spsier en cherry
+
         if (cherry == null){
             return false;
         }
         Shape intersect = Shape.intersect(pac.getHitBox(), cherry.getHitBox());
-         if (intersect.getBoundsInLocal().getWidth() != -1) {
-             // Det er en kollisjon mellom pacman og en cherry
-             //System.out.println("Kollisjon oppdaget med cherry: " + cherry);
-             elementer.getChildren().remove(cherry);
-             System.out.println("Cherry er borte");
-             cherry = null;
+        if (intersect.getBoundsInLocal().getWidth() != -1) {
+            // Det er en kollisjon mellom pacman og en cherry
+            elementer.getChildren().removeAll(cherry.getHitBox(), cherry.getCherry());
 
-             cherrySpawned = false;
 
-             return true;
-         }
-         return false;
+            cherrySpawned = false;
+
+            return true;
+        }
+        return false;
     }
 
+    private void setCherrySpawned() {
+        if (!cherrySpawned) {
+           Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(15), e -> spawnCherry()));
+           timeline.play();
+            cherrySpawned = true;
+        }
+    }
     public void kollisjonMellomPacOgSidenTilBanen() {
         // metode for å sjekke kollisjon mellom pacman og siden til banen - altså en tunell
         // blir egentlig ikke en kollisjon men heller

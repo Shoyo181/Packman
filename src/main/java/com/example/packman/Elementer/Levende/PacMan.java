@@ -283,7 +283,7 @@ public class PacMan extends Levende{
         //pacUnderLeppe.setType(ArcType.ROUND);
 
         pacOverLeppe = new Arc(currentPosX, currentPosY, radius, radius, 180, 181);
-        pacOverLeppe.setFill(Paint.valueOf("blue"));
+        pacOverLeppe.setFill(Paint.valueOf("yellow"));
         //pacOverLeppe.setType(ArcType.ROUND);
 
         pacman = new Group(pacOverLeppe, pacUnderLeppe);

@@ -42,7 +42,7 @@ import java.util.List;
 public class PackmanGui extends Application {
 
     final int WIN_X = 1200;
-    final int WIN_Y = 800;
+    final int WIN_Y = 850;
     BorderPane mainPane;
     VBox menu, editorMenu;
     BanePane bane;
@@ -124,6 +124,7 @@ public class PackmanGui extends Application {
             byggBane2();
             mainPane.setCenter(bane);
             bane.requestFocus();
+            mainPane.setStyle("-fx-background-color: #181818");
         });
         ImageView kart2BildeView = null;
         try {
@@ -151,6 +152,7 @@ public class PackmanGui extends Application {
             byggBane();
             mainPane.setCenter(bane);
             bane.requestFocus();
+            mainPane.setStyle("-fx-background-color: #181818");
         });
         /*Button b3 = new Button("Level 3");
         b3.setStyle("-fx-background-color: transparent; -fx-text-fill:#ffe148; -fx-font-family: Consolas" );*/
