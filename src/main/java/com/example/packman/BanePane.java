@@ -65,11 +65,11 @@ public class BanePane extends BorderPane {
     private ArrayList<HjerteContainer> hjerteListe;
     private HBox bunnPanel;
     private Cherry cherry;
-    private boolean cherrySpawned = false;
+    private boolean cherrySpawned = false, erImun;
 
     Label scoreLabel, livLabel, time, livLabel1, livLabel2;
 
-    private Date start, slutt;
+    private Date start, imun;
     private Timer cherryTimer = new Timer();
 
 
@@ -137,6 +137,7 @@ public class BanePane extends BorderPane {
 
     }
     public void beregnTid() {
+        // beregner tid spilt i spillet
         int min =(int) (new Date().getTime() - start.getTime()) / 1000 / 60;
         int sek =(int) (new Date().getTime() - start.getTime()) / 1000 % 60;
         String tid = "";
@@ -151,6 +152,19 @@ public class BanePane extends BorderPane {
             tid += sek;
         }
         time.setText(tid);
+
+        // oppdaterer om spiller er imun eller ikke
+
+        if(erImun) {
+            // betyr at spiller har akuratt blitt truffet
+            //bestemmer hvor lenge pacman skal være imun - vi velger 2 sekunder
+            if((new Date().getTime() - imun.getTime()) / 1000 >= 2) {
+                erImun = false;
+                //stopper klokken også
+                imun = null;
+            }
+        }
+
     }
 
     public void byggToppPanel() {
@@ -570,7 +584,12 @@ public class BanePane extends BorderPane {
     /***            Kollisjoner            ***/
 
     public void kollisjonMellomPacOgSpøkelse() {
-        // metode for å spise dots
+        // metode for se kollisjon mellom pacman og spøkelser
+        // vil ikke sjekke kollisjon hvis pacman er imun
+        if(erImun) {
+            return;
+        }
+
         for (Spøkelser s : spøkelseListe) {
             // Sjekk kollisjon mellom sirkelen og hvert rektangel
             Circle spøk = s.getHitBox();
@@ -583,13 +602,20 @@ public class BanePane extends BorderPane {
                 if(s.getModus() != SpøkelsesModus.FRIGHTENED) {
                     bunnPanel.getChildren().remove(hjerteListe.size() - 1);
                     hjerteListe.remove(hjerteListe.size() - 1);
-                }else{
+                    imunStart();
+                }else if(s.getModus() == SpøkelsesModus.FRIGHTENED){
                     s.gotEaten();
                 }
 
             }
         }
     }
+
+    public void imunStart(){
+        erImun = true;
+        imun = new Date();
+    }
+
     public boolean kollisjonMellomPacOgDots() {
         // metode for å spise dots
         for (Dots d : dotsListe) {
