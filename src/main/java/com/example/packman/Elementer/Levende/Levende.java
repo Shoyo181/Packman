@@ -2,11 +2,10 @@ package com.example.packman.Elementer.Levende;
 
 import com.example.packman.Elementer.Elementer;
 import com.example.packman.Rute.Rute;
-
 import com.example.packman.misc.Vector2D;
+import com.example.packman.misc.VectorDouble;
 
 import javafx.scene.image.ImageView;
-
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -23,7 +22,6 @@ public class Levende extends Elementer {
     protected Retning retning;
     protected int radius;
     protected ArrayList<Rectangle> veggList;
-
     protected Circle lev;
     protected ImageView bildeSpøkelse;
     protected Rectangle levHitBox;
@@ -364,6 +362,15 @@ public class Levende extends Elementer {
                 System.out.println("Ugyldig retning");
         }
         return true;
+    }
+
+    public void setKordinatPosisjon(VectorDouble v){
+        currentPosX = v.getX();
+        currentPosY = v.getY();
+
+    }
+    public VectorDouble getKordinatPosisjon(){
+        return new VectorDouble(currentPosX, currentPosY);
     }
 
 
