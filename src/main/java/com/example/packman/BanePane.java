@@ -106,7 +106,7 @@ public class BanePane extends BorderPane {
 
         // før vi kan bevege på spøkelsene må vi bestemme hvilken mode de skal ha
 
-        bestemMode();
+        //bestemMode();
         oppdaterPacmanPos();
 
         clyde.flyttClyde();
@@ -235,6 +235,7 @@ public class BanePane extends BorderPane {
 
     public void start() {
         animasjon.play();
+        clyde.startKlokke();
     }
 
     public void stop() {

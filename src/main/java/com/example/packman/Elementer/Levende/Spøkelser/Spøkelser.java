@@ -2,25 +2,32 @@ package com.example.packman.Elementer.Levende.Spøkelser;
 
 import com.example.packman.Elementer.Levende.Levende;
 import com.example.packman.Rute.Rute;
+import com.example.packman.misc.ModusSamling;
+import com.example.packman.misc.ModusTid;
 import com.example.packman.misc.SpøkelsesModus;
 import com.example.packman.misc.Vector2D;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Vector;
 
-public class Spøkelser extends Levende {
+public abstract class Spøkelser extends Levende {
 
     protected SpøkelsesModus modus;
 
-    protected Vector2D pacmanPos, scatterPos, foranDørPos;
+    protected Vector2D chasePos, scatterPos, foranDørPos, pacmanPos;
 
     protected boolean harMål, ute;
     protected double endePosX, endePosY, sistRuteX, sistRuteY, sluttRuteX, sluttRuteY;
     protected int endeRuteX, endeRuteY;
     protected Retning sistRetning;
     protected ArrayList<Rectangle> veggUtenDørList;
+
+    protected ModusSamling modusStack;
+    protected ModusTid aktivModusTid;
+    protected Date modusKlokke;
 
     protected boolean bevegerSeg;
 
@@ -239,7 +246,7 @@ public class Spøkelser extends Levende {
         // hvis det er chase bruker vi pacman sine kordinater
         if(modus == SpøkelsesModus.CHASE) {
             harMål = true;
-            return pacmanPos;
+            return chasePos;
         } else if(modus == SpøkelsesModus.SCATTER){
             harMål = true;
             return scatterPos;
@@ -348,34 +355,6 @@ public class Spøkelser extends Levende {
         bildeSpøkelse.setLayoutY(currentPosY - radius);
     }
 
-    public void bevegChase(int x, int y) {
-        // CHASE MODE
-        // bruker kordinater x og y til packman for å sette mål til spøkelse
-        // x og y er i index form i grid
-        //  - må oppdateres hyppig
-        System.out.println("Spøkelse beveger seg i Chase mode");
-
-        // dette er uferdig kode hvor spøkelsene bare prøver å finne korteste vei vi velgRetning
-        // trenger egentlig egen pathfinding
-
-        endePosX = x * ruteStr + radius;
-        endePosY = y * ruteStr + radius;
-        endeRuteX = x;
-        endeRuteY = y;
-        harMål = true;
-        System.out.println("Spøkelse beveger seg til - x: " + endePosX + ", y: " + endePosY);
-
-    }
-    public void utAvHjem(){
-        // siden dør også er en del av veggene må vi ha en egen metode for at de skal kunne komme seg ut
-        // dette gjør vi ved å bruke en modus, så når denne modusen er på så går spøkelse ut også setter vi tilbake
-        // modus til hva den var eller hva den skal være
-
-        // vi må derfor lage en egen kollisjons tabell der dør ikke er en del av veggene(kollisjon flater)
-        // vi lager nye metoder for nå, så vi får sett om det funker
-
-
-    }
 
     public void byggKollisjonTab(){
         // metode som setter opp en tabell for kollisjoner uten dører
@@ -458,6 +437,55 @@ public class Spøkelser extends Levende {
 
     }
 
+
+
+    // abstrakte metoder
+
+    public void lagChasePoint(){
+        // denne er forskjellig fra hver spøkelse
+    }
+    public void lagScatterPoint(){
+        // denne er forskjellig fra hver spøkelse
+    }
+
+    /***            METODER FOR MODUSSLOGIKK            ***/
+    /* Vi bruker en egen klasse for å holde styr på hvilken modus som er aktiv
+     * vi må passe på at når spøkelse er FRIGHTEN må ikke dette ødelegge rekkefølgen
+     */
+    public void byggStack() {
+        // metoden er abstrakt
+
+    }
+
+    public void sjekkModus(){
+        if(modusStack.erTom()){
+            System.out.println("Stack er tom");
+            modus = SpøkelsesModus.CHASE;
+            return;
+        }
+
+        int sekSidenModusStart = (int)(new Date().getTime() - modusKlokke.getTime()) / 1000;
+        System.out.println("SekSidenModusStart:  - " + sekSidenModusStart);
+        System.out.println("AktivModusTid:       - " + aktivModusTid.getSekunder());
+        System.out.println("Modus:               - " + aktivModusTid.getModus());
+        if(sekSidenModusStart >= aktivModusTid.getSekunder()){ // vi må bytte modus
+            System.out.println("Modus blir byttet");
+            aktivModusTid = modusStack.pop();
+            modus = aktivModusTid.getModus();
+            modusKlokke = new Date();
+        }
+
+        if(aktivModusTid.getSekunder() == 0){
+            aktivModusTid = modusStack.pop();
+            modusKlokke = new Date();
+        }
+
+
+    }
+    public void startKlokke(){
+        modus = aktivModusTid.getModus();
+        modusKlokke = new Date();
+    }
 
 }
 
