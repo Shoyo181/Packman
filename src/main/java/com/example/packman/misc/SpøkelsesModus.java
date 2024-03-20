@@ -5,5 +5,6 @@ public enum SpøkelsesModus {
     CHASE,
     FRIGHTENED,
     ATHOME,
-    PÅVEIUT
+    PÅVEIUT,
+    EATEN
 }

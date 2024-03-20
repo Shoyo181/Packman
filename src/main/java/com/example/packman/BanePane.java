@@ -5,10 +5,7 @@ import com.example.packman.Elementer.IkkeLevende.Dots;
 import com.example.packman.Elementer.IkkeLevende.PowerUp;
 import com.example.packman.Elementer.Levende.Levende;
 import com.example.packman.Elementer.Levende.PacMan;
-import com.example.packman.Elementer.Levende.Spøkelser.Blinky;
-import com.example.packman.Elementer.Levende.Spøkelser.Clyde;
-import com.example.packman.Elementer.Levende.Spøkelser.Inky;
-import com.example.packman.Elementer.Levende.Spøkelser.Pinky;
+import com.example.packman.Elementer.Levende.Spøkelser.*;
 import com.example.packman.Rute.Rute;
 import com.example.packman.Rute.RuteSamling;
 import com.example.packman.misc.IkkeLevendeType;
@@ -64,6 +61,8 @@ public class BanePane extends BorderPane {
     private ArrayList<Dots> dotsListe;
     private ArrayList<PowerUp> powerListe;
     private ArrayList<Rectangle> veggListe;
+    private ArrayList<Spøkelser> spøkelseListe; // for alle spøkelsene, må lagre hitboxen deres
+    private ArrayList<HjerteContainer> hjerteListe;
     private HBox bunnPanel;
     private Cherry cherry;
     private boolean cherrySpawned = false;
@@ -83,7 +82,8 @@ public class BanePane extends BorderPane {
         banePlussSpiller();
         setCenter(banen);
         byggToppPanel();
-        bunnPanel();
+        byggBunnPanel();
+        setBottom(bunnPanel);
 
         // settter igang animasjon av spillet
 
@@ -107,10 +107,12 @@ public class BanePane extends BorderPane {
 
         // før vi kan bevege på spøkelsene må vi bestemme hvilken mode de skal ha
 
-        bestemMode();
+        //bestemMode();
         oppdaterPacmanPos();
 
         clyde.flyttClyde();
+
+        kollisjonMellomPacOgSpøkelse();
 
         if(pac.sjekkRetningLedig(nesteRetning, veggListe)) {
             pac.setRetning(nesteRetning);
@@ -245,6 +247,7 @@ public class BanePane extends BorderPane {
 
     public void start() {
         animasjon.play();
+        clyde.startKlokke();
     }
 
     public void stop() {
@@ -286,11 +289,15 @@ public class BanePane extends BorderPane {
 
         elementer.getChildren().addAll(pac.getPacman(), pac.getHitBox());
 
+        // setter opp spøkelsene
+        spøkelseListe = new ArrayList<>();
+
         clyde = new Clyde(grid);
         clyde.byggClyde();
         //legger clyde inn i elementer - husk hitboxen til clyde.
         //elementer.getChildren().add(clyde.getClyde());
         elementer.getChildren().addAll(clyde.getClyde() , clyde.getHitBox());
+        spøkelseListe.add(clyde);
         inky = new Inky(grid);
         inky.byggInky();
 
@@ -559,6 +566,30 @@ public class BanePane extends BorderPane {
         return g;
     }
 
+
+    /***            Kollisjoner            ***/
+
+    public void kollisjonMellomPacOgSpøkelse() {
+        // metode for å spise dots
+        for (Spøkelser s : spøkelseListe) {
+            // Sjekk kollisjon mellom sirkelen og hvert rektangel
+            Circle spøk = s.getHitBox();
+            Shape intersect = Shape.intersect(pac.getHitBox(), spøk);
+
+            if (intersect.getBoundsInLocal().getWidth() != -1) {
+                // Det er en kollisjon mellom pacman og en dot
+                //System.out.println("Kollisjon oppdaget med dot: " + dot);
+                spøk.setFill(Color.TRANSPARENT);
+                if(s.getModus() != SpøkelsesModus.FRIGHTENED) {
+                    bunnPanel.getChildren().remove(hjerteListe.size() - 1);
+                    hjerteListe.remove(hjerteListe.size() - 1);
+                }else{
+                    s.gotEaten();
+                }
+
+            }
+        }
+    }
     public boolean kollisjonMellomPacOgDots() {
         // metode for å spise dots
         for (Dots d : dotsListe) {
@@ -572,7 +603,6 @@ public class BanePane extends BorderPane {
                 dot.setFill(Color.TRANSPARENT);
                 dot.setStroke(Color.TRANSPARENT);
                 dotsListe.remove(d);
-
                 return true;
             }
         }
@@ -689,41 +719,38 @@ public class BanePane extends BorderPane {
     }
 
 
-    public HBox bunnPanel() {
-        HBox bunnInfo = new HBox();
-            livLabel = new Label();
-            try {
-                ImageView hjerte = new ImageView(new Image(new FileInputStream("src/main/resources/com/example/packman/bilder/Hjerte05.png")));
-                hjerte.setFitWidth(ruteStr);
-                hjerte.setFitHeight(ruteStr);
-                livLabel.setGraphic(hjerte);
-            } catch (Exception e) {
-                System.out.println("Noe gikk galt med filbehandling \n" + e);
-            }
-            livLabel1 = new Label();
-            try {
-                ImageView hjerte = new ImageView(new Image(new FileInputStream("src/main/resources/com/example/packman/bilder/Hjerte05.png")));
-                hjerte.setFitWidth(ruteStr);
-                hjerte.setFitHeight(ruteStr);
-                livLabel1.setGraphic(hjerte);
-            } catch (Exception e) {
-                System.out.println("Noe gikk galt med filbehandling \n" + e);
-            }
-            livLabel2 = new Label();
-            try {
-                ImageView hjerte = new ImageView(new Image(new FileInputStream("src/main/resources/com/example/packman/bilder/Hjerte05.png")));
-                hjerte.setFitWidth(ruteStr);
-                hjerte.setFitHeight(ruteStr);
-                livLabel2.setGraphic(hjerte);
-            } catch (Exception e) {
-                System.out.println("Noe gikk galt med filbehandling \n" + e);
-            }
-
-            bunnInfo.getChildren().addAll(livLabel, livLabel1, livLabel2);
-            setBottom(bunnInfo);
-            return bunnInfo;
+    public void byggBunnPanel() {
+        bunnPanel = new HBox();
+        hjerteListe = new ArrayList<>();
+        //bygger hjerter i bunnen
+        for (int i = 0; i < 3; i++) {
+            HjerteContainer h = new HjerteContainer();
+            hjerteListe.add(h);
+            bunnPanel.getChildren().add(h);
+            System.out.println("Hjerte bilde er lastet inn");
         }
+    }
+
+    private class HjerteContainer extends ImageView {
+        public HjerteContainer() {
+            byggBilde();
+        }
+        public void byggBilde() {
+            try {
+                new ImageView();
+                setImage(new Image(new FileInputStream("src/main/resources/com/example/packman/bilder/Hjerte05.png")));
+                setFitWidth(ruteStr);
+                setFitHeight(ruteStr);
+
+                System.out.println("Hjerte bilde er lastet inn");
+            }catch (Exception e) {
+                System.out.println("Noe gikk galt med filbehandling \n" + e);
+            }
+        }
+
+
+
+    }
+
 }
-
-
 
