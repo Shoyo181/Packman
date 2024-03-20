@@ -18,4 +18,8 @@ public class ModusTid {
         return sekunder;
     }
 
+    public void setSekunder(int sekunder){
+        this.sekunder = sekunder;
+    }
+
 }

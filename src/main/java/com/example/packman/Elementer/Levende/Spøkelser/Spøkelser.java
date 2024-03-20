@@ -19,7 +19,7 @@ public abstract class Spøkelser extends Levende {
 
     protected Vector2D chasePos, scatterPos, foranDørPos, pacmanPos;
 
-    protected boolean harMål, ute;
+    protected boolean harMål, sjekkOmFrightFirstTime;
     protected double endePosX, endePosY, sistRuteX, sistRuteY, sluttRuteX, sluttRuteY;
     protected int endeRuteX, endeRuteY;
     protected Retning sistRetning;
@@ -458,16 +458,40 @@ public abstract class Spøkelser extends Levende {
     }
 
     public void sjekkModus(){
-        if(modusStack.erTom()){
+        // metoden håndterer hvilken modus spøkelse er i og bytter mellom de
+
+
+
+        //må først sjekke om spøkelse er skremt eller ikke
+        if(modus == SpøkelsesModus.FRIGHTENED && sjekkOmFrightFirstTime){
+            //setter hvor mye tid det er igjen før vi byttet modus til FRIGHTENED
+            // (selvom stacken er tom - burde aktivt modus være CHASE med 100000 sek i seg)
+            aktivModusTid.setSekunder(aktivModusTid.getSekunder() - (int)(new Date().getTime() - modusKlokke.getTime()) / 1000);
+
+            //legger inn det som må til for at spøkelse går hjem og går ut igjen
+            modusStack.push(new ModusTid(SpøkelsesModus.ATHOME, 1));
+            modusStack.push(new ModusTid(SpøkelsesModus.PÅVEIUT, 3));
+            modusStack.push(aktivModusTid);
+            //setter aktivt modus til FRIGHTENED med tid denne gangen
+            aktivModusTid = new ModusTid(SpøkelsesModus.FRIGHTENED, 6);
+            // setter også inn en boolean så dette ikke skjer hver gang metoden kjører
+        }else if(modus == SpøkelsesModus.FRIGHTENED && !sjekkOmFrightFirstTime){
+
+        }
+
+
+
+        if(modusStack.erTom() && modus == SpøkelsesModus.FRIGHTENED){
             System.out.println("Stack er tom");
             modus = SpøkelsesModus.CHASE;
             return;
         }
-
+        // tid i sekunder for å sjekke om lengde på moduser
         int sekSidenModusStart = (int)(new Date().getTime() - modusKlokke.getTime()) / 1000;
-        System.out.println("SekSidenModusStart:  - " + sekSidenModusStart);
-        System.out.println("AktivModusTid:       - " + aktivModusTid.getSekunder());
-        System.out.println("Modus:               - " + aktivModusTid.getModus());
+
+        //System.out.println("SekSidenModusStart:  - " + sekSidenModusStart);
+        //System.out.println("AktivModusTid:       - " + aktivModusTid.getSekunder());
+        //System.out.println("Modus:               - " + aktivModusTid.getModus());
         if(sekSidenModusStart >= aktivModusTid.getSekunder()){ // vi må bytte modus
             System.out.println("Modus blir byttet");
             aktivModusTid = modusStack.pop();
@@ -485,6 +509,9 @@ public abstract class Spøkelser extends Levende {
     public void startKlokke(){
         modus = aktivModusTid.getModus();
         modusKlokke = new Date();
+    }
+    public void setFrightenModus(){
+
     }
 
 }
