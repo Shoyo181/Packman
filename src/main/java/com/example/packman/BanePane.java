@@ -556,9 +556,13 @@ public class BanePane extends BorderPane {
                         veggListe.add(nyRute.getTile());
                     }
                     // Vi lagrer også på de gulvflatene som er på enden til banen, hvor vi trenger de for å regne ut tuneller
-                    if(i == 0 || i == bredde-1 || linjeTeller == 0 || linjeTeller == høyde-1 && nyRute.getType() == Rute.RuteType.GULV) {
-                        sidenTilBanen.add(nyRute.getTile());
+                    if(nyRute.getType() == Rute.RuteType.GULV) {
+                        if(i == 0 || i == bredde-1 || linjeTeller == 0 || linjeTeller == høyde-1) {
+                            sidenTilBanen.add(nyRute.getTile());
+                            System.out.println("Siden til banen lakt til - i: " + i + ", linjeTeller: " + linjeTeller + ", type: " + nyRute.getType().toString() );
+                        }
                     }
+
 
                     // lager kopi av rektanglet i ruteklassen, siden vi ikke får lov til å legge inn
                     // duplikater i grid
