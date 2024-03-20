@@ -19,7 +19,7 @@ public abstract class Spøkelser extends Levende {
 
     protected Vector2D chasePos, scatterPos, foranDørPos, pacmanPos;
 
-    protected boolean harMål, sjekkOmFrightFirstTime;
+    protected boolean harMål, sjekkOmFrightFirstTime, bleSpist;
     protected double endePosX, endePosY, sistRuteX, sistRuteY, sluttRuteX, sluttRuteY;
     protected int endeRuteX, endeRuteY;
     protected Retning sistRetning;
@@ -256,6 +256,12 @@ public abstract class Spøkelser extends Levende {
         } else if (modus == SpøkelsesModus.PÅVEIUT){
             harMål = true;
             return foranDørPos;
+        } else if (modus == SpøkelsesModus.FRIGHTENED){
+            harMål = true;
+            return pacmanPos;
+        } else if (modus == SpøkelsesModus.EATEN){
+            harMål = true;
+            return eatenPos();
         }
         return null;
     }
@@ -274,6 +280,22 @@ public abstract class Spøkelser extends Levende {
         // velger en radom posisjon av tilgjengelige mål
         Vector2D randomPos = hjemPos.get((int)(Math.random()*hjemPos.size()));
         return randomPos;
+    }
+
+    public Vector2D eatenPos(){
+        // må modusen blir til EATEN som betyr at denne metoden blir kalt hver gang spøkelse prøver å finne kordinater å gå
+        // kordinatene vil være hjemmet deres
+
+        //burde være en sjekk her som sjekker om spøkelse kom hjem også bytter vi over modus igjen til PÅVEIUT
+        // men for nå gir vi bare ut et kordinat i hjemmet
+        return finnMålAtHome();
+
+    }
+    public void gotEaten(){
+        //setter modusen til EATEN
+        modus = SpøkelsesModus.EATEN;
+        //oppdaterer bildet til spøkelse
+        //bildeSpøkelse = pacmanBildeView;
     }
 
     public void setPackmanPos(Vector2D pacmanPos) {
@@ -460,8 +482,6 @@ public abstract class Spøkelser extends Levende {
     public void sjekkModus(){
         // metoden håndterer hvilken modus spøkelse er i og bytter mellom de
 
-
-
         //må først sjekke om spøkelse er skremt eller ikke
         if(modus == SpøkelsesModus.FRIGHTENED && sjekkOmFrightFirstTime){
             //setter hvor mye tid det er igjen før vi byttet modus til FRIGHTENED
@@ -475,13 +495,12 @@ public abstract class Spøkelser extends Levende {
             //setter aktivt modus til FRIGHTENED med tid denne gangen
             aktivModusTid = new ModusTid(SpøkelsesModus.FRIGHTENED, 6);
             // setter også inn en boolean så dette ikke skjer hver gang metoden kjører
-        }else if(modus == SpøkelsesModus.FRIGHTENED && !sjekkOmFrightFirstTime){
-
+            sjekkOmFrightFirstTime = false;
         }
 
 
 
-        if(modusStack.erTom() && modus == SpøkelsesModus.FRIGHTENED){
+        if(modusStack.erTom() && modus != SpøkelsesModus.FRIGHTENED){
             System.out.println("Stack er tom");
             modus = SpøkelsesModus.CHASE;
             return;
@@ -511,7 +530,8 @@ public abstract class Spøkelser extends Levende {
         modusKlokke = new Date();
     }
     public void setFrightenModus(){
-
+        modus = SpøkelsesModus.FRIGHTENED;
+        sjekkOmFrightFirstTime = true;
     }
 
 }
