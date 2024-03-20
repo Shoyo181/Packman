@@ -22,7 +22,7 @@ public abstract class Spøkelser extends Levende {
     protected boolean harMål, sjekkOmFrightFirstTime, bleSpist;
     protected double endePosX, endePosY, sistRuteX, sistRuteY, sluttRuteX, sluttRuteY;
     protected int endeRuteX, endeRuteY;
-    protected Retning sistRetning;
+    protected Retning pacmanRetning;
     protected ArrayList<Rectangle> veggUtenDørList;
 
     protected ModusSamling modusStack;
@@ -44,7 +44,9 @@ public abstract class Spøkelser extends Levende {
     public SpøkelsesModus getModus(){
         return modus;
     }
-
+    public void setPacmanRetning(Retning pacmanRetning){
+        this.pacmanRetning = pacmanRetning;
+    }
     public void plasserSpøkelse () {
         // Finner hjemmet i banen - lagrer grid pos
         ArrayList <Vector2D> hjemPos =  new ArrayList<>();

@@ -10,6 +10,7 @@ import com.example.packman.Elementer.Levende.Levende;
 import com.example.packman.editor.Editor;
 import com.example.packman.editor.MapEditor;
 import com.example.packman.editor.TileEditor;
+import com.example.packman.misc.Vector2D;
 import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
@@ -45,6 +46,7 @@ public class PackmanGui extends Application {
     final int WIN_Y = 850;
     BorderPane mainPane;
     VBox menu, editorMenu;
+    HBox venstre, høyre;
     BanePane bane;
     Levende.Retning r = Levende.Retning.INGEN;
     Editor edit;
@@ -123,6 +125,16 @@ public class PackmanGui extends Application {
         b1.setOnAction(e -> {
             byggBane2();
             mainPane.setCenter(bane);
+            Vector2D strIgjen = bane.getVinduStrIgjen();
+            høyre = new HBox();
+            venstre = new HBox();
+            høyre.setMinWidth(strIgjen.getX());
+            venstre.setMinWidth(strIgjen.getX());
+
+
+            mainPane.setRight(høyre);
+            mainPane.setLeft(venstre);
+
             bane.requestFocus();
             mainPane.setStyle("-fx-background-color: #181818");
         });
@@ -151,6 +163,15 @@ public class PackmanGui extends Application {
 
             byggBane();
             mainPane.setCenter(bane);
+            Vector2D strIgjen = bane.getVinduStrIgjen();
+            høyre = new HBox();
+            venstre = new HBox();
+            høyre.setMinWidth(strIgjen.getX());
+            venstre.setMinWidth(strIgjen.getX());
+
+
+            mainPane.setRight(høyre);
+            mainPane.setLeft(venstre);
             bane.requestFocus();
             mainPane.setStyle("-fx-background-color: #181818");
         });
@@ -181,6 +202,7 @@ public class PackmanGui extends Application {
         /*
          * Bygger første map, og setter knappene trykkbare.
          */
+
         bane = new BanePane("GrøntMap", WIN_X, WIN_Y);
         bane.setPadding(new Insets(5));
         bane.setOnKeyPressed(e -> {
