@@ -5,6 +5,7 @@ import com.example.packman.Rute.Rute;
 import com.example.packman.misc.Vector2D;
 import com.example.packman.misc.VectorDouble;
 
+import javafx.scene.Group;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -17,6 +18,8 @@ public class Levende extends Elementer {
     protected double startPosY;
     protected double currentPosX;
     protected double currentPosY;
+    protected double kopiX, kopiY;
+    protected boolean iTunell = false;
     protected Rute currentRute;
     protected double speed;
     protected Retning retning;
@@ -25,6 +28,7 @@ public class Levende extends Elementer {
     protected Circle lev;
     protected ImageView bildeSpøkelse;
     protected Rectangle levHitBox;
+    protected Group levende;
 
     //variabler for pixel plassering av levende
     protected int plasStartX, plasStartY, plasEndX, plasEndY;
@@ -371,6 +375,55 @@ public class Levende extends Elementer {
     }
     public VectorDouble getKordinatPosisjon(){
         return new VectorDouble(currentPosX, currentPosY);
+    }
+
+    public void tunellHåndtering() {
+        // metode for å håndtere tunellgjennomgang av pacman
+
+        //legger alt i en if som søker om pacman er nærme kanten til banen
+        //vis sjekker alle sidene samtidig
+        if (currentPosX <= 0 || ((ruteStr * gridBredde)) <= currentPosX || currentPosY <= 0 || ((ruteStr * gridHøyde)) <= currentPosY) {
+            // hvis dette er sant, er pacman nærme en kant
+            System.out.println("Nærme kant");
+            System.out.println("currentPosX: " + currentPosX);
+
+            // vi sjekker nå om vi allerede er i en tunell - hvis vi kom akuratt inn i en tunell nå, så må vi lage kopien
+            if (!iTunell) {
+                iTunell = true;
+                System.out.println("Tunell: " + iTunell);
+
+                // vi finner ut hvilken side pac går inn i tunell
+
+                //sjekker sidene først
+                if (currentPosX <= ruteStr) {
+                    //venstre
+                    System.out.println("Venstre side");
+                    //bredde er størrelse på grid uten index
+
+                    kopiX = currentPosX;
+                    kopiY = currentPosY;
+
+                    //pacman spawner på andre siden av banen
+                    currentPosX = ((gridBredde * ruteStr) - radius) + currentPosX - radius + ruteStr;
+                    currentPosY = currentPosY;
+                } else if (((ruteStr * gridBredde) - radius) <= currentPosX) {
+                    System.out.println("Høyre side");
+
+                    kopiX = currentPosX;
+                    kopiY = currentPosY;
+
+                    //pacman spawner på andre siden av banen
+                    currentPosX = ((gridBredde * ruteStr) - radius) - currentPosX + radius;
+                    currentPosY = currentPosY;
+
+                }
+            }
+
+        }else{
+            if(iTunell){
+                iTunell = false;
+            }
+        }
     }
 
 
