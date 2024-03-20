@@ -64,7 +64,7 @@ public class BanePane extends BorderPane {
     private ArrayList<Rectangle> veggListe, sidenTilBanen;
     private ArrayList<Spøkelser> spøkelseListe; // for alle spøkelsene, må lagre hitboxen deres
     private ArrayList<HjerteContainer> hjerteListe;
-    private HBox bunnPanel;
+    private HBox bunnPanel, tomSide;
     private Cherry cherry;
     private boolean cherrySpawned = false, erImun, iTunell;
 
@@ -84,7 +84,7 @@ public class BanePane extends BorderPane {
         byggToppPanel();
         byggBunnPanel();
         setBottom(bunnPanel);
-
+        //tomSide();
         // settter igang animasjon av spillet
 
         animasjon = new Timeline(
@@ -96,7 +96,21 @@ public class BanePane extends BorderPane {
 
     }
 
+/*public HBox tomSide() {
+        // bsnen tar bredde*ruteStr i x-aksen og høyde*ruteStr i y-aksen
+        // bunn tar høyde*ruteStr i x-aksen og høyde*ruteStr i y-aksen
 
+        double plassIgjenX = vinduStrX- (bredde * ruteStr) ;
+
+        tomSide = new HBox();
+        setLeft(tomSide);
+        tomSide.setPrefWidth(plassIgjenX/2);
+        tomSide.setPrefHeight(vinduStrY);
+        tomSide.setStyle("-fx-background-color: transparent;");
+
+        return tomSide;
+
+    }*/
     /***      Metoder       ***/
 
     public void bevegelse() {
@@ -111,6 +125,9 @@ public class BanePane extends BorderPane {
         oppdaterPacmanPos();
 
         clyde.flyttClyde();
+        pinky.flyttPinky();
+        blinky.flyttBlinky();
+        inky.flyttInky();
 
         kollisjonMellomPacOgSpøkelse();
         kollisjonMellomPacOgSidenTilBanen();
@@ -137,6 +154,15 @@ public class BanePane extends BorderPane {
 
 
     }
+
+    public Vector2D getVinduStrIgjen(){
+        // returnerer hvor mye plass som er igjen i begge akser
+        int x = (int) ((vinduStrX - (bredde * ruteStr)) /2);
+        int y = (int) ((vinduStrY - (høyde * ruteStr)) /2);
+        return new Vector2D(x, y);
+    }
+
+
     public void beregnTid() {
         // beregner tid spilt i spillet
         int min =(int) (new Date().getTime() - start.getTime()) / 1000 / 60;
@@ -199,7 +225,7 @@ public class BanePane extends BorderPane {
         grid.add(time, 4, 1);
 
 
-        toppInfo.setStyle("-fx-background-color: #000000;");
+        //toppInfo.setStyle("-fx-background-color: #000000;");
 
         toppInfo.getChildren().add(grid);
         setTop(toppInfo);
@@ -213,6 +239,12 @@ public class BanePane extends BorderPane {
     public void oppdaterPacmanPos(){
         // oppdaterer pacman posisjonen for spøkelsene
         clyde.setPackmanPos(pac.getPositionIGridIndex());
+        pinky.setPackmanPos(pac.getPositionIGridIndex());
+        pinky.setPacmanRetning(pac.getRetning());
+        blinky.setPackmanPos(pac.getPositionIGridIndex());
+        inky.hentBlinkyPos(blinky.getPositionIGridIndex());
+        inky.setPackmanPos(pac.getPositionIGridIndex());
+        inky.setPacmanRetning(pac.getRetning());
     }
 
     public void bestemMode(){
@@ -260,6 +292,9 @@ public class BanePane extends BorderPane {
     public void start() {
         animasjon.play();
         clyde.startKlokke();
+        pinky.startKlokke();
+        blinky.startKlokke();
+        inky.startKlokke();
     }
 
     public void stop() {
@@ -311,18 +346,21 @@ public class BanePane extends BorderPane {
         //elementer.getChildren().add(clyde.getClyde());
         elementer.getChildren().addAll(clyde.getClyde() , clyde.getHitBox());
         spøkelseListe.add(clyde);
+
         inky = new Inky(grid);
         inky.byggInky();
+        spøkelseListe.add(inky);
+        elementer.getChildren().addAll(inky.getInky(), inky.getHitBox());
 
         blinky = new Blinky(grid);
         blinky.byggBlinky();
+        spøkelseListe.add(blinky);
+        elementer.getChildren().addAll(blinky.getBlinky(), blinky.getHitBox());
 
         pinky = new Pinky(grid);
         pinky.byggPinky();
-
-
-        elementer.getChildren().addAll(inky.getInky(), blinky.getBlinky(), pinky.getPinky());
-
+        spøkelseListe.add(pinky);
+        elementer.getChildren().addAll(pinky.getPinky(), pinky.getHitBox());
 
         setUpElementer();
         banen.getChildren().add(elementer);
@@ -822,6 +860,7 @@ public class BanePane extends BorderPane {
     public void byggBunnPanel()
     {
         bunnPanel = new HBox();
+        bunnPanel.setMinHeight(getVinduStrIgjen().getY());
         hjerteListe = new ArrayList<>();
         //bygger hjerter i bunnen
         for (int i = 0; i < 3; i++) {

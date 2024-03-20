@@ -32,7 +32,7 @@ public class PacMan extends Levende{
 
         //lev.setFill(Paint.valueOf("yellow"));
         spiser = false;
-        pacmanDisign();
+        pacmanDesign();
 
     }
 
@@ -275,7 +275,7 @@ public class PacMan extends Levende{
         return pacOverLeppe;
     }
 
-    public void pacmanDisign(){
+    public void pacmanDesign(){
         // pacman gaper når han går, derfor vil vi også gjøre dette når han beveger på seg
         // vi bruker to arcer for å vise at han spiser
         pacUnderLeppe = new Arc(currentPosX, currentPosY, radius, radius, 359, 180);
@@ -356,6 +356,9 @@ public class PacMan extends Levende{
         return spiser;
     }
 
+    public Retning getRetning() {
+        return retning;
+    }
 
     public Vector2D getPosition() {
 
