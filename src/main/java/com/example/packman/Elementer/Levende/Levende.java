@@ -28,7 +28,6 @@ public class Levende extends Elementer {
     protected Circle lev;
     protected ImageView bildeSpøkelse;
     protected Rectangle levHitBox;
-    protected Group levende;
 
     //variabler for pixel plassering av levende
     protected int plasStartX, plasStartY, plasEndX, plasEndY;

@@ -35,15 +35,12 @@ public class PacMan extends Levende{
         //lev.setFill(Paint.valueOf("yellow"));
         spiser = false;
 
-        levende = new Group();
-        levende.getChildren().addAll(pacman);
-
         pacmanDesign();
-        
+
     }
 
     public Group getPacman(){
-        return levende;
+        return pacman;
     }
 
     public void plasserPacMan(){
