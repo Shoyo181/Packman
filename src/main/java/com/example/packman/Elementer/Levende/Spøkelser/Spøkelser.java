@@ -339,6 +339,7 @@ public abstract class Spøkelser extends Levende {
                     break;
                 }
                 currentPosY -= speed;
+                tunellHåndtering();
                 setSpøkelsePos();
                 break;
             case NED:
@@ -346,6 +347,7 @@ public abstract class Spøkelser extends Levende {
                     break;
                 }
                 currentPosY += speed;
+                tunellHåndtering();
                 setSpøkelsePos();
                 break;
             case HØYRE:
@@ -353,6 +355,7 @@ public abstract class Spøkelser extends Levende {
                     break;
                 }
                 currentPosX += speed;
+                tunellHåndtering();
                 setSpøkelsePos();
                 break;
             case VENSTRE:
@@ -360,6 +363,7 @@ public abstract class Spøkelser extends Levende {
                     break;
                 }
                 currentPosX -= speed;
+                tunellHåndtering();
                 setSpøkelsePos();
                 break;
             case INGEN:

@@ -2,6 +2,7 @@ package com.example.packman.Elementer.Levende;
 
 import com.example.packman.Rute.Rute;
 import com.example.packman.misc.Vector2D;
+import com.example.packman.misc.VectorDouble;
 import javafx.animation.Animation;
 import javafx.animation.ParallelTransition;
 import javafx.animation.RotateTransition;
@@ -27,17 +28,19 @@ public class PacMan extends Levende{
     private boolean spiser;
     private Group pacman;
 
+
     public PacMan(Rute[][] grid) {
         super(grid);
 
         //lev.setFill(Paint.valueOf("yellow"));
         spiser = false;
         pacmanDisign();
-
+        levende = new Group();
+        levende.getChildren().addAll(pacman);
     }
 
     public Group getPacman(){
-        return pacman;
+        return levende;
     }
 
     public void plasserPacMan(){
@@ -227,12 +230,14 @@ public class PacMan extends Levende{
 
     public void flyttPacManIgjen(){
 
+
         switch (retning) {
             case OPP:
                 if(sjekkKollisjon(currentPosX, currentPosY - speed, veggList)){
                     break;
                 }
                 currentPosY -= speed;
+                tunellHåndtering();
                 setPosisjon();
                 roterPacMan();
                 break;
@@ -241,6 +246,7 @@ public class PacMan extends Levende{
                     break;
                 }
                 currentPosY += speed;
+                tunellHåndtering();
                 setPosisjon();
                 roterPacMan();
                 break;
@@ -249,6 +255,7 @@ public class PacMan extends Levende{
                     break;
                 }
                 currentPosX += speed;
+                tunellHåndtering();
                 setPosisjon();
                 roterPacMan();
                 break;
@@ -257,6 +264,7 @@ public class PacMan extends Levende{
                     break;
                 }
                 currentPosX -= speed;
+                tunellHåndtering();
                 setPosisjon();
                 roterPacMan();
                 break;
@@ -271,9 +279,6 @@ public class PacMan extends Levende{
         pacOverLeppe.setCenterY(currentPosY);
     }
 
-    public Arc getPacOverLeppe(){
-        return pacOverLeppe;
-    }
 
     public void pacmanDisign(){
         // pacman gaper når han går, derfor vil vi også gjøre dette når han beveger på seg
@@ -355,6 +360,7 @@ public class PacMan extends Levende{
     public boolean spiserPacman(){
         return spiser;
     }
+
 
 
     public Vector2D getPosition() {

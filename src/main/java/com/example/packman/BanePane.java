@@ -89,7 +89,7 @@ public class BanePane extends BorderPane {
         // settter igang animasjon av spillet
 
         animasjon = new Timeline(
-                new KeyFrame(Duration.millis(20), e -> bevegelse())
+                new KeyFrame(Duration.millis(30), e -> bevegelse())
         );
         animasjon.setCycleCount(Timeline.INDEFINITE);
         //animasjon.play();
@@ -114,7 +114,8 @@ public class BanePane extends BorderPane {
         clyde.flyttClyde();
 
         kollisjonMellomPacOgSpøkelse();
-        kollisjonMellomPacOgSidenTilBanen();
+        //kollisjonMellomPacOgSidenTilBanen();
+        //tunellHåndtering();
 
         if(pac.sjekkRetningLedig(nesteRetning, veggListe)) {
             pac.setRetning(nesteRetning);
@@ -559,7 +560,9 @@ public class BanePane extends BorderPane {
                     if(nyRute.getType() == Rute.RuteType.GULV) {
                         if(i == 0 || i == bredde-1 || linjeTeller == 0 || linjeTeller == høyde-1) {
                             sidenTilBanen.add(nyRute.getTile());
-                            System.out.println("Siden til banen lakt til - i: " + i + ", linjeTeller: " + linjeTeller + ", type: " + nyRute.getType().toString() );
+                            System.out.println("Siden til sidenTilBanen - " + nyRute.getTile());
+                            System.out.println("i: " + i + ", linjeTeller: " + linjeTeller + ", tile: " + nyRute.getTile());
+                            System.out.println("");
                         }
                     }
 
@@ -739,6 +742,54 @@ public class BanePane extends BorderPane {
                     elementer.getChildren().removeAll(kopiPac.getPacman(), kopiPac.getHitBox());
                     kopiPac = null;
                 }
+            }
+        }
+    }
+    public void tunellHåndtering() {
+        // metode for å håndtere tunellgjennomgang av pacman
+
+
+        VectorDouble pacCurrKord = pac.getKordinatPosisjon();
+
+        //legger alt i en if som søker om pacman er nærme kanten til banen
+        //vis sjekker alle sidene samtidig
+        if (pacCurrKord.getX() <= ruteStr/2 || ((ruteStr * bredde) - ruteStr /2) <= pacCurrKord.getX() || pacCurrKord.getY() <= ruteStr/2 || ((ruteStr * høyde) - ruteStr /2) <= pacCurrKord.getY()) {
+            // hvis dette er sant, er pacman nærme en kant
+
+            // vi sjekker nå om vi allerede er i en tunell - hvis vi kom akuratt inn i en tunell nå, så må vi lage kopien
+            if (!iTunell) {
+                iTunell = true;
+                kopiPac = new PacMan(grid);
+                System.out.println("KopiPac er opprettet");
+                elementer.getChildren().addAll(kopiPac.getPacman(), kopiPac.getHitBox());
+            }
+            // vi finner ut hvilken side pac går inn i tunell
+            double kopiX = 0;
+            double kopiY = 0;
+
+            //sjekker sidene først
+            if (pacCurrKord.getX() <= ruteStr/2) {
+                //venstre
+                System.out.println("Venstre side");
+                //bredde er størrelse på grid uten index
+                kopiX = ((bredde * ruteStr) - ruteStr / 2) + pacCurrKord.getX() + ruteStr;
+                kopiY = pacCurrKord.getY();
+            } else if (((ruteStr * bredde) - ruteStr /2) <= pacCurrKord.getX()) {
+                System.out.println("Høyre side");
+                kopiX = ((bredde * ruteStr) - ruteStr / 2) - pacCurrKord.getX() - ruteStr;
+                kopiY = pacCurrKord.getY();
+            }
+            kopiPac.setKordinatPosisjon(new VectorDouble(kopiX, kopiY));
+            kopiPac.setPosisjon();
+            System.out.println("KopiPac er posisjonert på : " + kopiPac.getKordinatPosisjon().toString());
+        }else{
+            if(iTunell){
+                iTunell = false;
+            }
+            if(kopiPac != null){
+                pac = kopiPac;
+                elementer.getChildren().removeAll(kopiPac.getPacman(), kopiPac.getHitBox());
+                kopiPac = null;
             }
         }
     }
