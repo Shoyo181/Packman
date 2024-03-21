@@ -13,13 +13,15 @@ import java.io.FileNotFoundException;
 
 public class Inky extends Spøkelser {
     private ImageView inkyBildeView;
+    private Image bildeInky;
     Vector2D blinkyPos;
 
     public Inky(Rute[][] grid) {
         super(grid);
         lagScatterPoint();
         try {
-            inkyBildeView = new ImageView(new Image(new FileInputStream("src/main/resources/com/example/packman/bilder/Inky05.png")));
+            bildeInky = new Image(new FileInputStream("src/main/resources/com/example/packman/bilder/Inky05.png"));
+            inkyBildeView = new ImageView(bildeInky);
             inkyBildeView.setFitWidth(ruteStr);
             inkyBildeView.setFitHeight(ruteStr);
             inkyBildeView.setPreserveRatio(true);
@@ -38,6 +40,13 @@ public class Inky extends Spøkelser {
 
         if (modus == null) {
             return;
+        } else if (harVærtRedd) {
+            bildeSpøkelse.setImage(bildeInky);
+            harVærtRedd = false;
+        } else if(modus == SpøkelsesModus.ATHOME && bleSpist) {
+            bildeSpøkelse.setImage(bildeInky);
+            bleSpist = false;
+            harVærtRedd = false;
         } else if(modus == SpøkelsesModus.CHASE) {
             lagChasePoint();
         }

@@ -13,11 +13,13 @@ import java.io.FileNotFoundException;
 
 public class Blinky extends Spøkelser {
     private ImageView blinkyBildeView;
+    private Image bildeBlinky;
 
     public Blinky(Rute[][] grid) {
         super(grid);
         try {
-            blinkyBildeView = new ImageView(new Image(new FileInputStream("src/main/resources/com/example/packman/bilder/Blinky05.png")));
+            bildeBlinky = new Image(new FileInputStream("src/main/resources/com/example/packman/bilder/Blinky05.png"));
+            blinkyBildeView = new ImageView(bildeBlinky);
             blinkyBildeView.setFitWidth(ruteStr);
             blinkyBildeView.setFitHeight(ruteStr);
             blinkyBildeView.setPreserveRatio(true);
@@ -38,6 +40,13 @@ public class Blinky extends Spøkelser {
 
         if (modus == null) {
             return;
+        } else if (harVærtRedd) {
+            bildeSpøkelse.setImage(bildeBlinky);
+            harVærtRedd = false;
+        } else if(modus == SpøkelsesModus.ATHOME && bleSpist) {
+            bildeSpøkelse.setImage(bildeBlinky);
+            bleSpist = false;
+            harVærtRedd = false;
         } else if(modus == SpøkelsesModus.CHASE) {
             lagChasePoint();
         }

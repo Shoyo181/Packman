@@ -13,12 +13,14 @@ import java.io.FileNotFoundException;
 
 public class Pinky extends Spøkelser {
     private ImageView pinkyBildeView;
+    private Image bildePinky;
 
     public Pinky(Rute[][] grid) {
         super(grid);
         lagScatterPoint();
         try {
-            pinkyBildeView = new ImageView(new Image(new FileInputStream("src/main/resources/com/example/packman/bilder/Pinky05.png")));
+            bildePinky = new Image(new FileInputStream("src/main/resources/com/example/packman/bilder/Pinky05.png"));
+            pinkyBildeView = new ImageView(bildePinky);
             pinkyBildeView.setFitWidth(ruteStr);
             pinkyBildeView.setFitHeight(ruteStr);
             pinkyBildeView.setPreserveRatio(true);
@@ -38,6 +40,13 @@ public class Pinky extends Spøkelser {
 
         if (modus == null) {
             return;
+        } else if (harVærtRedd) {
+            bildeSpøkelse.setImage(bildePinky);
+            harVærtRedd = false;
+        } else if(modus == SpøkelsesModus.ATHOME && bleSpist) {
+            bildeSpøkelse.setImage(bildePinky);
+            bleSpist = false;
+            harVærtRedd = false;
         } else if(modus == SpøkelsesModus.CHASE) {
             lagChasePoint();
         }
