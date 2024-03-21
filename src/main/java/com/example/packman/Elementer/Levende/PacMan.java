@@ -31,6 +31,7 @@ public class PacMan extends Levende{
     private ParallelTransition openMouth;
     private boolean spiser;
     private Group pacman;
+    private Retning sistRetning = Retning.INGEN;
 
 
     public PacMan(Rute[][] grid) {
@@ -283,6 +284,10 @@ public class PacMan extends Levende{
         pacOverLeppe.setCenterY(currentPosY);
     }
 
+    public void setSistRetning(Retning r){
+        this.sistRetning = r;
+    }
+
 
     public void pacmanDesign(){
         // pacman gaper når han går, derfor vil vi også gjøre dette når han beveger på seg
@@ -331,25 +336,28 @@ public class PacMan extends Levende{
         // funker heller ikke nå - tror kanskje rotering må være en metode som kalles i banepane
         // også må man ta vek pacman fra panel og settet han inn igjen etter den er rotert
         // TODO: Fikse dette.
+        if(retning == sistRetning){
+            return;
+        }
 
+        double rot = 0;
+        pacman.setRotate(0);
         switch (retning) {
             case OPP:
-                pacUnderLeppe.rotateProperty().set(90);
-                pacOverLeppe.rotateProperty().set(90);
+                rot = 270;
                 break;
             case NED:
-                pacUnderLeppe.rotateProperty().set(270);
-                pacOverLeppe.rotateProperty().set(270);
+                rot = 90;
                 break;
             case HØYRE:
-                pacUnderLeppe.rotateProperty().set(0);
-                pacOverLeppe.rotateProperty().set(0);
+                rot = 0;
                 break;
             case VENSTRE:
-                pacUnderLeppe.rotateProperty().set(180);
-                pacOverLeppe.rotateProperty().set(180);
+                rot = 180;
                 break;
         }
+
+        pacman.setRotate(rot);
     }
     public void startSpiseing(){
         overLeppe.setCycleCount(Animation.INDEFINITE);

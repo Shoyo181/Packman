@@ -132,6 +132,7 @@ public class BanePane extends BorderPane {
             pac.setRetning(nesteRetning);
             pac.flyttPacManIgjen();
             sistRetning = nesteRetning;
+            pac.setSistRetning(sistRetning);
             if (!pac.spiserPacman()) {
                 pac.startSpiseing();
                 start = new Date();
@@ -589,7 +590,15 @@ public class BanePane extends BorderPane {
                         veggListe.add(nyRute.getTile());
                     }
                     if(nyRute.getType() == Rute.RuteType.HJEM) {
-                        hjemListe.add(nyRute.getTile());
+                        Rectangle hjemTile = new Rectangle(ruteStr, ruteStr);
+                        hjemTile.setFill(Color.TRANSPARENT);
+                        hjemTile.setX(nyRute.getTile().getX() + ruteStr);
+                        hjemTile.setY(nyRute.getTile().getY());
+                        hjemListe.add(hjemTile);
+                        System.out.println("Hjemliste sjekk - " + nyRute.getTile());
+
+                        System.out.println("Hjemliste sjekk (hjemTile) - " + hjemTile);
+                        System.out.println("");
                     }
                     // Vi lagrer også på de gulvflatene som er på enden til banen, hvor vi trenger de for å regne ut tuneller
                     if(nyRute.getType() == Rute.RuteType.GULV) {
@@ -736,10 +745,11 @@ public class BanePane extends BorderPane {
         // metoden går igjennom hjemkordinater og sjekker om spøkelse treffer en av de
         for(Spøkelser s : spøkelseListe) {
             if(s.getModus() == SpøkelsesModus.EATEN) {
+                //System.out.println("Spøkelse er spist leter etter home - (BanePane - sjekkOmSpøkelseKomHjem)");
                 for(Rectangle r : hjemListe) {
                     if(Shape.intersect(s.getHitBox(), r).getBoundsInLocal().getWidth() != -1) {
                         s.setNåddHjem();
-                        System.out.println("Spøkelse kom hjem");
+                        System.out.println("Spøkelse kom hjem ( BanePane - sjekkOmSpøkelseKomHjem)");
                     }
                 }
             }

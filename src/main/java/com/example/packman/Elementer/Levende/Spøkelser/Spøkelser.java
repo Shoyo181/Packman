@@ -27,10 +27,10 @@ public abstract class Spøkelser extends Levende {
 
     protected Vector2D chasePos, scatterPos, foranDørPos, pacmanPos;
 
-    protected boolean harMål, sjekkOmFrightFirstTime, bleSpist, harVærtRedd, bleSpistFirstTime, harNåddHjem;
-    protected double endePosX, endePosY, sistRuteX, sistRuteY, sluttRuteX, sluttRuteY;
+    protected boolean harMål, sjekkOmFrightFirstTime, bleSpist, harVærtRedd, bleSpistFirstTime, harNåddHjem, sjekkOmFrightFirstIRetning;
+    protected double endePosX, endePosY, sistRuteX, sistRuteY, sluttRuteX, sluttRuteY, backupRuteX, backupRuteY;
     protected int endeRuteX, endeRuteY;
-    protected Retning pacmanRetning, sistRetning;
+    protected Retning pacmanRetning, sistRetning, backupRetningFrighten;
     protected ArrayList<Rectangle> veggUtenDørList;
 
     protected ModusSamling modusStack;
@@ -120,6 +120,9 @@ public abstract class Spøkelser extends Levende {
         // dette gjør vi for å få noen kordinater hvis spøkelse kommer i FRIGHTENED
         sistRuteY = sluttRuteY;
         sistRuteX = sluttRuteX;
+        //ekstra sjekk for FRIGHTENED modus,
+
+
 
         ArrayList<Retning> retninger = new ArrayList<>(); // liste over alle retninger
         // vi legger inn alle retningene i listen
@@ -128,20 +131,23 @@ public abstract class Spøkelser extends Levende {
         retninger.add(Retning.NED);
         retninger.add(Retning.VENSTRE);
         Retning komFraRetning = Retning.INGEN;
+
         // vi fjerner den retningen spøkelse kom fra
-        if(retning == Retning.HØYRE){
+        if (retning == Retning.HØYRE) {
             retninger.remove(Retning.VENSTRE);
             komFraRetning = Retning.VENSTRE;
-        }else if(retning == Retning.VENSTRE){
+        } else if (retning == Retning.VENSTRE) {
             retninger.remove(Retning.HØYRE);
             komFraRetning = Retning.HØYRE;
-        } else if(retning == Retning.NED){
+        } else if (retning == Retning.NED) {
             retninger.remove(Retning.OPP);
             komFraRetning = Retning.OPP;
-        } else if(retning == Retning.OPP){
+        } else if (retning == Retning.OPP) {
             retninger.remove(Retning.NED);
             komFraRetning = Retning.NED;
         }
+
+
 
         // nå har vi fullført den ene reglen
         // Vi fjerner alle retningen de kolliderer med en vegg
@@ -152,6 +158,8 @@ public abstract class Spøkelser extends Levende {
         }
 
         sistRetning = komFraRetning;
+        backupRetningFrighten = retning;
+
 
 
         // da sitter vi igjen med antall retninger spøkelse kan ta
@@ -202,6 +210,8 @@ public abstract class Spøkelser extends Levende {
         //return retninger.get((int) (Math.random() * retninger.size()));
 
         Vector2D endeMål = bestemMål();
+
+        System.out.println("Modus: " + modus + " - Endemål: " + endeMål);
 
         // endemål er målet til spøkelsene, vi beregner hvilken retning som er kortest for spøkelse
         // med de resterende retningene i listen
@@ -285,6 +295,7 @@ public abstract class Spøkelser extends Levende {
             harMål = false;
             //System.out.println("spøkelse har et mål - test");
         }else if(modus == SpøkelsesModus.PÅVEIUT || modus == SpøkelsesModus.EATEN){
+
             flyttSøkelse(veggUtenDørList);
         }else{
             flyttSøkelse(veggList);
@@ -408,6 +419,12 @@ public abstract class Spøkelser extends Levende {
         switch (retning) {
             case OPP:
                 if(sjekkKollisjon(currentPosX, currentPosY - speed, liste)){
+                    if(retning == sistRetning){
+                        System.out.println("Bug - sitterfast i veggen");
+                        retning = backupRetningFrighten;
+                        sluttRuteY = backupRuteY;
+                        sluttRuteX = backupRuteX;
+                    }
                     break;
                 }
                 currentPosY -= speed;
@@ -416,6 +433,12 @@ public abstract class Spøkelser extends Levende {
                 break;
             case NED:
                 if(sjekkKollisjon(currentPosX, currentPosY + speed, liste)){
+                    if(retning == sistRetning){
+                        System.out.println("Bug - sitterfast i veggen");
+                        retning = backupRetningFrighten;
+                        sluttRuteY = backupRuteY;
+                        sluttRuteX = backupRuteX;
+                    }
                     break;
                 }
                 currentPosY += speed;
@@ -424,6 +447,12 @@ public abstract class Spøkelser extends Levende {
                 break;
             case HØYRE:
                 if (sjekkKollisjon(currentPosX + speed, currentPosY, liste)) {
+                    if(retning == sistRetning){
+                        System.out.println("Bug - sitterfast i veggen");
+                        retning = backupRetningFrighten;
+                        sluttRuteY = backupRuteY;
+                        sluttRuteX = backupRuteX;
+                    }
                     break;
                 }
                 currentPosX += speed;
@@ -432,6 +461,12 @@ public abstract class Spøkelser extends Levende {
                 break;
             case VENSTRE:
                 if (sjekkKollisjon(currentPosX - speed, currentPosY, liste)) {
+                    if(retning == sistRetning){
+                        System.out.println("Bug - sitterfast i veggen");
+                        retning = backupRetningFrighten;
+                        sluttRuteY = backupRuteY;
+                        sluttRuteX = backupRuteX;
+                    }
                     break;
                 }
                 currentPosX -= speed;
@@ -616,9 +651,13 @@ public abstract class Spøkelser extends Levende {
         modusKlokke = new Date();
     }
     public void setFrightenModus(){
-        if(!sjekkOmFrightFirstTime){
+        if(!sjekkOmFrightFirstTime && modus != SpøkelsesModus.FRIGHTENED && modus != SpøkelsesModus.EATEN) {
             modus = SpøkelsesModus.FRIGHTENED;
             sjekkOmFrightFirstTime = true;
+            sjekkOmFrightFirstIRetning = true;
+            backupRetningFrighten = retning;
+            backupRuteY = sluttRuteY;
+            backupRuteX = sluttRuteX;
             retning = sistRetning;
             sluttRuteX = sistRuteX;
             sluttRuteY = sistRuteY;

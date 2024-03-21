@@ -330,7 +330,7 @@ public class Levende extends Elementer {
     }
     public boolean sjekkKollisjon(double nestX, double nestY, ArrayList<Rectangle> liste) {
 
-        Circle levTest = new Circle(nestX, nestY, radius -1);
+        Circle levTest = new Circle(nestX, nestY, radius -2);
 
         for(Rectangle vegg: liste){
             if(levTest.getBoundsInParent().intersects(vegg.getBoundsInParent())){

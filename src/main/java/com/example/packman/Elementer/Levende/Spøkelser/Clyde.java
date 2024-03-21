@@ -51,13 +51,14 @@ public class Clyde extends Spøkelser {
         if (modus == null) {
             return;
         } else if ( harVærtRedd) {
-            System.out.println("Clyde har vært redd");
             bildeSpøkelse.setImage(bildeClyde);
             harVærtRedd = false;
+            speed = 2;
         } else if(harNåddHjem && bleSpist) {
             bildeSpøkelse.setImage(bildeClyde);
             bleSpist = false;
             harVærtRedd = false;
+            harNåddHjem = false;
             speed = 2;
         }else if(modus == SpøkelsesModus.CHASE){
             lagChasePoint();

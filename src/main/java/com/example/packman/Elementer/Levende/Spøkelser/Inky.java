@@ -46,10 +46,12 @@ public class Inky extends Spøkelser {
         } else if (harVærtRedd) {
             bildeSpøkelse.setImage(bildeInky);
             harVærtRedd = false;
+            speed = 2;
         } else if(harNåddHjem && bleSpist) {
             bildeSpøkelse.setImage(bildeInky);
             bleSpist = false;
             harVærtRedd = false;
+            harNåddHjem = false;
             speed = 2;
         } else if(modus == SpøkelsesModus.CHASE) {
             lagChasePoint();
