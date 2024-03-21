@@ -38,7 +38,7 @@ public class PacMan extends Levende{
 
         //lev.setFill(Paint.valueOf("yellow"));
         spiser = false;
-
+        speed = 4;
         pacmanDesign();
 
     }

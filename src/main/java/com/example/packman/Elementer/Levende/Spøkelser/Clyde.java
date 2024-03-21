@@ -43,7 +43,6 @@ public class Clyde extends Spøkelser {
         byggStack();
     }
 
-
     public void flyttClyde() {
         //metoden er til for å bevege dete spøkelse
         sjekkModus();
@@ -55,10 +54,11 @@ public class Clyde extends Spøkelser {
             System.out.println("Clyde har vært redd");
             bildeSpøkelse.setImage(bildeClyde);
             harVærtRedd = false;
-        } else if(modus == SpøkelsesModus.ATHOME && bleSpist) {
+        } else if(harNåddHjem && bleSpist) {
             bildeSpøkelse.setImage(bildeClyde);
             bleSpist = false;
             harVærtRedd = false;
+            speed = 2;
         }else if(modus == SpøkelsesModus.CHASE){
             lagChasePoint();
         }

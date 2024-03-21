@@ -46,10 +46,11 @@ public class Pinky extends Spøkelser {
         } else if (harVærtRedd) {
             bildeSpøkelse.setImage(bildePinky);
             harVærtRedd = false;
-        } else if(modus == SpøkelsesModus.ATHOME && bleSpist) {
+        } else if(harNåddHjem && bleSpist) {
             bildeSpøkelse.setImage(bildePinky);
             bleSpist = false;
             harVærtRedd = false;
+            speed = 2;
         } else if(modus == SpøkelsesModus.CHASE) {
             lagChasePoint();
         }

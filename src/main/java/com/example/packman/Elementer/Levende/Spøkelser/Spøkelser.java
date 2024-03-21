@@ -27,7 +27,7 @@ public abstract class Spøkelser extends Levende {
 
     protected Vector2D chasePos, scatterPos, foranDørPos, pacmanPos;
 
-    protected boolean harMål, sjekkOmFrightFirstTime, bleSpist, harVærtRedd, bleSpistFirstTime;
+    protected boolean harMål, sjekkOmFrightFirstTime, bleSpist, harVærtRedd, bleSpistFirstTime, harNåddHjem;
     protected double endePosX, endePosY, sistRuteX, sistRuteY, sluttRuteX, sluttRuteY;
     protected int endeRuteX, endeRuteY;
     protected Retning pacmanRetning, sistRetning;
@@ -46,6 +46,7 @@ public abstract class Spøkelser extends Levende {
         bevegerSeg = false;
         byggKollisjonTab();
         bildeSetUp();
+        speed = 2;
     }
 
     public void bildeSetUp(){
@@ -283,7 +284,7 @@ public abstract class Spøkelser extends Levende {
         if(currentPosX == sluttRuteX && currentPosY == sluttRuteY){
             harMål = false;
             //System.out.println("spøkelse har et mål - test");
-        }else if(modus == SpøkelsesModus.PÅVEIUT){
+        }else if(modus == SpøkelsesModus.PÅVEIUT || modus == SpøkelsesModus.EATEN){
             flyttSøkelse(veggUtenDørList);
         }else{
             flyttSøkelse(veggList);
@@ -346,11 +347,12 @@ public abstract class Spøkelser extends Levende {
         if(!bleSpist) {
             modus = SpøkelsesModus.EATEN;
             // den modusen spøkelsene har vært i før denne modusen er FRIGHTENED, så det betyr at vi ikke trenger å lagre på dette
-            ModusTid modusTid = new ModusTid(SpøkelsesModus.EATEN, 4);
+            ModusTid modusTid = new ModusTid(SpøkelsesModus.EATEN, 20);
             // hvis spøkelse blir spist må vi ordne litt på stacken
             modusStack.push(new ModusTid(SpøkelsesModus.PÅVEIUT, 3));
-            modusStack.push(new ModusTid(SpøkelsesModus.ATHOME, 1));
+            //modusStack.push(new ModusTid(SpøkelsesModus.ATHOME, 1));
             modusStack.push(modusTid);
+            speed = 4;
 
             //spøkelse har blitt spist
             bleSpist = true;
@@ -365,6 +367,9 @@ public abstract class Spøkelser extends Levende {
         this.pacmanPos = pacmanPos;
     }
 
+    public void setNåddHjem(){
+        harNåddHjem = true;
+    }
 
     public void bevegAtHome(){
         if(modus == SpøkelsesModus.ATHOME) {
@@ -543,7 +548,6 @@ public abstract class Spøkelser extends Levende {
      */
     public void byggStack() {
         // metoden er abstrakt
-
     }
 
     public void sjekkModus(){
@@ -571,6 +575,13 @@ public abstract class Spøkelser extends Levende {
             modusKlokke = new Date();
             bleSpistFirstTime = false;
         }
+        if(modus == SpøkelsesModus.EATEN && harNåddHjem){
+            // starter klokka for denne modusen på nytt
+            modusKlokke = new Date();
+            aktivModusTid = modusStack.pop();
+            harNåddHjem = false;
+            return;
+        }
 
         if(modusStack.erTom() && modus != SpøkelsesModus.FRIGHTENED){
             System.out.println("Stack er tom");
@@ -579,7 +590,6 @@ public abstract class Spøkelser extends Levende {
         }
         // tid i sekunder for å sjekke om lengde på moduser
         int sekSidenModusStart = (int)(new Date().getTime() - modusKlokke.getTime()) / 1000;
-        System.out.println("sekSidenModusStart:  - " + sekSidenModusStart);
 
         //System.out.println("SekSidenModusStart:  - " + sekSidenModusStart);
         //System.out.println("AktivModusTid:       - " + aktivModusTid.getSekunder());
@@ -587,7 +597,6 @@ public abstract class Spøkelser extends Levende {
         if(sekSidenModusStart >= aktivModusTid.getSekunder()){ // vi må bytte modus
             System.out.print("Modus blir byttet til - ");
             if(!harVærtRedd){
-                System.out.println("Er ikke redd?????????");
                 //når vi har byttet modus, betyr det at spøkelsene ikke trenger å være redde lenger (for å bytte utseende)
                 harVærtRedd = true;
             }
@@ -601,8 +610,6 @@ public abstract class Spøkelser extends Levende {
             aktivModusTid = modusStack.pop();
             modusKlokke = new Date();
         }
-
-
     }
     public void startKlokke(){
         modus = aktivModusTid.getModus();

@@ -68,7 +68,7 @@ public class BanePane extends BorderPane {
     private GridPane gridPanel;
     private ArrayList<Dots> dotsListe;
     private ArrayList<PowerUp> powerListe;
-    private ArrayList<Rectangle> veggListe, sidenTilBanen;
+    private ArrayList<Rectangle> veggListe, sidenTilBanen, hjemListe;
     private ArrayList<Spøkelser> spøkelseListe; // for alle spøkelsene, må lagre hitboxen deres
     private ArrayList<HjerteContainer> hjerteListe;
     private HBox bunnPanel, tomSide;
@@ -124,6 +124,7 @@ public class BanePane extends BorderPane {
         inky.flyttInky();
 
         kollisjonMellomPacOgSpøkelse();
+        sjekkOmSpøkelseKomHjem();
         //kollisjonMellomPacOgSidenTilBanen();
         //tunellHåndtering();
 
@@ -533,6 +534,7 @@ public class BanePane extends BorderPane {
             //oppretter også lister vi trenger senere for å beregne kollisjon
             veggListe = new ArrayList<>();
             sidenTilBanen = new ArrayList<>();
+            hjemListe = new ArrayList<>();
 
             //behandler resten av filen - selve banen
             int linjeTeller = 0; // teller linjer i filen (y eller høyden)
@@ -585,6 +587,9 @@ public class BanePane extends BorderPane {
                     if (nyRute.getType() != Rute.RuteType.GULV) {
                         //System.out.println("ikke gulv");
                         veggListe.add(nyRute.getTile());
+                    }
+                    if(nyRute.getType() == Rute.RuteType.HJEM) {
+                        hjemListe.add(nyRute.getTile());
                     }
                     // Vi lagrer også på de gulvflatene som er på enden til banen, hvor vi trenger de for å regne ut tuneller
                     if(nyRute.getType() == Rute.RuteType.GULV) {
@@ -645,7 +650,9 @@ public class BanePane extends BorderPane {
 
             if (intersect.getBoundsInLocal().getWidth() != -1) {
                 //System.out.println("Kollisjon oppdaget med dot: " + dot);
-                if(s.getModus() != SpøkelsesModus.FRIGHTENED) {
+                if(s.getModus() == SpøkelsesModus.EATEN) {
+                    System.out.println("Spøkelse er allerede spist");
+                } else if(s.getModus() != SpøkelsesModus.FRIGHTENED) {
                     bunnPanel.getChildren().remove(hjerteListe.size() - 1);
                     hjerteListe.remove(hjerteListe.size() - 1);
                     imunStart();
@@ -724,6 +731,19 @@ public class BanePane extends BorderPane {
             return true;
         }
         return false;
+    }
+    public void sjekkOmSpøkelseKomHjem() {
+        // metoden går igjennom hjemkordinater og sjekker om spøkelse treffer en av de
+        for(Spøkelser s : spøkelseListe) {
+            if(s.getModus() == SpøkelsesModus.EATEN) {
+                for(Rectangle r : hjemListe) {
+                    if(Shape.intersect(s.getHitBox(), r).getBoundsInLocal().getWidth() != -1) {
+                        s.setNåddHjem();
+                        System.out.println("Spøkelse kom hjem");
+                    }
+                }
+            }
+        }
     }
 
     private void setCherrySpawned() {

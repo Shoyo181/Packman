@@ -46,10 +46,11 @@ public class Blinky extends Spøkelser {
         } else if (harVærtRedd) {
             bildeSpøkelse.setImage(bildeBlinky);
             harVærtRedd = false;
-        } else if(modus == SpøkelsesModus.ATHOME && bleSpist) {
+        } else if(harNåddHjem && bleSpist) {
             bildeSpøkelse.setImage(bildeBlinky);
             bleSpist = false;
             harVærtRedd = false;
+            speed = 2;
         } else if(modus == SpøkelsesModus.CHASE) {
             lagChasePoint();
         }
