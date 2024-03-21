@@ -55,11 +55,11 @@ public class BanePane extends BorderPane {
     private RuteSamling tileset;
     private String filnavn;
     private Rute[][] grid;
-    private double ruteStr, sistPosX, sistPosY;
+    private double ruteStr;
     private Timeline animasjon;
     private StackPane banen;
     private Pane elementer;
-    private PacMan pac, kopiPac;
+    private PacMan pac;
     private Clyde clyde;
     private Inky inky;
     private Blinky blinky;
@@ -68,10 +68,10 @@ public class BanePane extends BorderPane {
     private GridPane gridPanel;
     private ArrayList<Dots> dotsListe;
     private ArrayList<PowerUp> powerListe;
-    private ArrayList<Rectangle> veggListe, sidenTilBanen, hjemListe;
+    private ArrayList<Rectangle> veggListe, hjemListe;
     private ArrayList<Spøkelser> spøkelseListe; // for alle spøkelsene, må lagre hitboxen deres
     private ArrayList<HjerteContainer> hjerteListe;
-    private HBox bunnPanel, tomSide;
+    private HBox bunnPanel;
     private Cherry cherry;
     private boolean cherrySpawned = false, erImun, iTunell;
     private int cherrySpawnCount = 0;
@@ -146,9 +146,7 @@ public class BanePane extends BorderPane {
         beregnTid();
         setCherrySpawned();
 
-
       //  System.out.println("Score: " + score + ", time (min, sek): " + (new Date().getTime() - start.getTime()) / 1000 / 60 + ", " + (new Date().getTime() - start.getTime()) / 1000 % 60);
-
 
     }
 
@@ -227,10 +225,7 @@ public class BanePane extends BorderPane {
         toppInfo.getChildren().add(grid);
         setTop(toppInfo);
 
-
-
         //System.out.println("Score: " + score + ", time (min, sek): " + (new Date().getTime() - start.getTime()) / 1000 / 60 + ", " + (new Date().getTime() - start.getTime()) / 1000 % 60);;
-
     }
 
     public void oppdaterPacmanPos(){
@@ -245,6 +240,10 @@ public class BanePane extends BorderPane {
     }
 
     public void bestemMode(){
+        // tidligere klasse for å teste ut modus for spøkelsene
+        // modus blir nå håndtert innad i klassene, men kan hende det er bedre å håndtere de her slik at alle spøkelsene
+        // har lik modus (CHASE, SHATTER), sletter derfor ikke metoden enda
+
         if(start == null){
             return;
         }
@@ -263,8 +262,6 @@ public class BanePane extends BorderPane {
 
 
         // hvis det er chase så må vi fore inn data til spøkelsene, hvilket kordinat pacman er på
-
-
     }
 
     public void spise() {
@@ -534,7 +531,6 @@ public class BanePane extends BorderPane {
 
             //oppretter også lister vi trenger senere for å beregne kollisjon
             veggListe = new ArrayList<>();
-            sidenTilBanen = new ArrayList<>();
             hjemListe = new ArrayList<>();
 
             //behandler resten av filen - selve banen
@@ -600,16 +596,6 @@ public class BanePane extends BorderPane {
                         System.out.println("Hjemliste sjekk (hjemTile) - " + hjemTile);
                         System.out.println("");
                     }
-                    // Vi lagrer også på de gulvflatene som er på enden til banen, hvor vi trenger de for å regne ut tuneller
-                    if(nyRute.getType() == Rute.RuteType.GULV) {
-                        if(i == 0 || i == bredde-1 || linjeTeller == 0 || linjeTeller == høyde-1) {
-                            sidenTilBanen.add(nyRute.getTile());
-                            System.out.println("Siden til sidenTilBanen - " + nyRute.getTile());
-                            System.out.println("i: " + i + ", linjeTeller: " + linjeTeller + ", tile: " + nyRute.getTile());
-                            System.out.println("");
-                        }
-                    }
-
 
                     // lager kopi av rektanglet i ruteklassen, siden vi ikke får lov til å legge inn
                     // duplikater i grid
@@ -641,7 +627,6 @@ public class BanePane extends BorderPane {
 
         return g;
     }
-
 
     /***            Kollisjoner            ***/
 
@@ -767,6 +752,8 @@ public class BanePane extends BorderPane {
             cherrySpawnCount++;
         }
     }
+
+
 /* Blir ikke brukt, i tilfelle vi vil sjekke tunellhåndtering i BanePane istedenfor i levende klasser.
     public void tunellHåndtering() {
         // metode for å håndtere tunellgjennomgang av pacman
@@ -819,6 +806,7 @@ public class BanePane extends BorderPane {
 */
 
     public RuteSamling hentTileset(String tileFilnavn) {
+
         RuteSamling samling = new RuteSamling();
         System.out.println("Henter tilset");
         try {
@@ -889,12 +877,11 @@ public class BanePane extends BorderPane {
     }
 
 
-    public void byggBunnPanel()
-    {
+    public void byggBunnPanel() {
         bunnPanel = new HBox();
         bunnPanel.setMinHeight(getVinduStrIgjen().getY());
         hjerteListe = new ArrayList<>();
-        //bygger hjerter i bunnen
+        //bygger hjerter i bunnen  -  (i < antLiv) når game loop er implementert
         for (int i = 0; i < 3; i++) {
             HjerteContainer h = new HjerteContainer();
             hjerteListe.add(h);
@@ -903,6 +890,8 @@ public class BanePane extends BorderPane {
         }
     }
 
+
+    // egen klasse for å lage hjerter i bunnen
     private class HjerteContainer extends ImageView {
         public HjerteContainer() {
             byggBilde();
@@ -919,9 +908,6 @@ public class BanePane extends BorderPane {
                 System.out.println("Noe gikk galt med filbehandling \n" + e);
             }
         }
-
-
-
     }
 
 }

@@ -31,6 +31,8 @@ public class Elementer {
 
 
 
+    // en del unyttige metoder per nå - ble brukt i forskjellige metoder tidligere, men endret på en del ting
+    // sletter det ikke hvor det kan være nyttig senere, hvor vi kommer til å fortsette å utvikle dette appen.
     // metoder som sjekker om hvordan type rute som er rundt elementet
     public Rute.RuteType getTypeOver(int x, int y) {
         return grid[x][y-1].getType();

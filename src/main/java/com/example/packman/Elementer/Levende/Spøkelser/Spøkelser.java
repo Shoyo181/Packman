@@ -26,19 +26,15 @@ public abstract class Spøkelser extends Levende {
     protected SpøkelsesModus modus;
 
     protected Vector2D chasePos, scatterPos, foranDørPos, pacmanPos;
-
     protected boolean harMål, sjekkOmFrightFirstTime, bleSpist, harVærtRedd, bleSpistFirstTime, harNåddHjem, sjekkOmFrightFirstIRetning;
-    protected double endePosX, endePosY, sistRuteX, sistRuteY, sluttRuteX, sluttRuteY, backupRuteX, backupRuteY;
-    protected int endeRuteX, endeRuteY;
+    protected double sistRuteX, sistRuteY, sluttRuteX, sluttRuteY, backupRuteX, backupRuteY;
     protected Retning pacmanRetning, sistRetning, backupRetningFrighten;
     protected ArrayList<Rectangle> veggUtenDørList;
-
     protected ModusSamling modusStack;
     protected ModusTid aktivModusTid;
     protected Date modusKlokke;
     protected ImageView bildeSpøkelse, bildeScaredView, bildeEatandView;
     protected Image bildeScared, bildeEatand;
-
     protected boolean bevegerSeg;
 
     public Spøkelser(Rute[][] grid) {
@@ -112,17 +108,14 @@ public abstract class Spøkelser extends Levende {
 
     public Retning bestemSpøkelseRetning () {
 
-        // utifra dette skal sjak metoden regne ut hvilken retning som er raskest men metoden har noen regler
+        // utifra dette skal metoden regne ut hvilken retning som er raskest for spøkelsene, men metoden har noen regler
         //  - spøkelse kan ikke gå den veien de kom fra
         //  - spøkelse kan ikke gå inn i en vegg
 
-        //vi lagrer på sis kordinater spøkelse hadde som mål, altså før de kom til denne metoden igjen
+        //vi lagrer siste kordinater spøkelse hadde som mål, altså før de kom til denne metoden igjen
         // dette gjør vi for å få noen kordinater hvis spøkelse kommer i FRIGHTENED
         sistRuteY = sluttRuteY;
         sistRuteX = sluttRuteX;
-        //ekstra sjekk for FRIGHTENED modus,
-
-
 
         ArrayList<Retning> retninger = new ArrayList<>(); // liste over alle retninger
         // vi legger inn alle retningene i listen
@@ -380,38 +373,6 @@ public abstract class Spøkelser extends Levende {
 
     public void setNåddHjem(){
         harNåddHjem = true;
-    }
-
-    public void bevegAtHome(){
-        if(modus == SpøkelsesModus.ATHOME) {
-            // hvis dette er sant vil vi at spøkelsene skal bevege seg bare i hjemmet sitt området
-            ArrayList <Vector2D> hjemPos =  new ArrayList<>();
-            for(int x = 0; x < gridBredde; x++) {
-                for(int y = 0; y < gridHøyde; y++) {
-                    if(grid[x][y].getType() == Rute.RuteType.HJEM) {
-                        Vector2D nyHjemPos = new Vector2D(x, y);
-                        hjemPos.add(nyHjemPos);
-                        System.out.println("(Ghost Home) - x: " + x + ", y: " + y);
-                    }
-                }
-            }
-
-
-            // velger en radom posisjon av tilgjengelige mål
-            Vector2D randomPos = hjemPos.get((int)(Math.random()*hjemPos.size()));
-
-            // setter nye ende posisjoner
-            endeRuteX = randomPos.getX();
-            endeRuteY = randomPos.getY();
-            endePosX = randomPos.getX()*ruteStr + radius;
-            endePosY = randomPos.getY()*ruteStr + radius;
-            harMål = true;
-
-            System.out.println("Spøkelse beveger seg til hjemmet ");
-            System.out.println("Spøkelse befinner seg nå - x: " + currentPosX + ", y: " + currentPosY );
-            System.out.println("Spøkelse beveger seg til - x: " + endePosX + ", y: " + endePosY);
-
-        }
     }
 
     public void flyttSøkelse(ArrayList <Rectangle> liste) {
