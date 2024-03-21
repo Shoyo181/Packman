@@ -10,3 +10,4 @@ PacMan2
 BlomsterTile
 BlomsterTile2
 Sommerfugl
+TEST
