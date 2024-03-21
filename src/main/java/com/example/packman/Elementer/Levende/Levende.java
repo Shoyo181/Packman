@@ -31,7 +31,6 @@ public class Levende extends Elementer {
     protected int radius;
     protected ArrayList<Rectangle> veggList;
     protected Circle lev;
-    protected ImageView bildeSpøkelse;
     protected Rectangle levHitBox;
 
     //variabler for pixel plassering av levende

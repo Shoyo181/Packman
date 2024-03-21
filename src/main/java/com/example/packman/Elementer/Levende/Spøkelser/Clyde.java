@@ -20,13 +20,15 @@ import java.util.Vector;
 
 public class Clyde extends Spøkelser {
     private ImageView clydeBildeView;
+    private Image bildeClyde;
     boolean chasePacman, chaseRandomPos;
 
     public Clyde(Rute[][] grid) {
         super(grid);
         lagScatterPoint();
         try {
-            clydeBildeView = new ImageView(new Image(new FileInputStream("src/main/resources/com/example/packman/bilder/Clyde05.png")));
+            bildeClyde = new Image(new FileInputStream("src/main/resources/com/example/packman/bilder/Clyde05.png"));
+            clydeBildeView = new ImageView(bildeClyde);
             clydeBildeView.setFitWidth(ruteStr);
             clydeBildeView.setFitHeight(ruteStr);
             clydeBildeView.setPreserveRatio(true);
@@ -49,6 +51,14 @@ public class Clyde extends Spøkelser {
         // dobbeltsjekk
         if (modus == null) {
             return;
+        } else if ( harVærtRedd) {
+            System.out.println("Clyde har vært redd");
+            bildeSpøkelse.setImage(bildeClyde);
+            harVærtRedd = false;
+        } else if(modus == SpøkelsesModus.ATHOME && bleSpist) {
+            bildeSpøkelse.setImage(bildeClyde);
+            bleSpist = false;
+            harVærtRedd = false;
         }else if(modus == SpøkelsesModus.CHASE){
             lagChasePoint();
         }

@@ -11,6 +11,9 @@ import com.example.packman.misc.ModusSamling;
 import com.example.packman.misc.ModusTid;
 import com.example.packman.misc.SpøkelsesModus;
 import com.example.packman.misc.Vector2D;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
@@ -24,15 +27,17 @@ public abstract class Spøkelser extends Levende {
 
     protected Vector2D chasePos, scatterPos, foranDørPos, pacmanPos;
 
-    protected boolean harMål, sjekkOmFrightFirstTime, bleSpist;
+    protected boolean harMål, sjekkOmFrightFirstTime, bleSpist, harVærtRedd, bleSpistFirstTime;
     protected double endePosX, endePosY, sistRuteX, sistRuteY, sluttRuteX, sluttRuteY;
     protected int endeRuteX, endeRuteY;
-    protected Retning pacmanRetning;
+    protected Retning pacmanRetning, sistRetning;
     protected ArrayList<Rectangle> veggUtenDørList;
 
     protected ModusSamling modusStack;
     protected ModusTid aktivModusTid;
     protected Date modusKlokke;
+    protected ImageView bildeSpøkelse, bildeScaredView, bildeEatandView;
+    protected Image bildeScared, bildeEatand;
 
     protected boolean bevegerSeg;
 
@@ -40,6 +45,26 @@ public abstract class Spøkelser extends Levende {
         super(grid);
         bevegerSeg = false;
         byggKollisjonTab();
+        bildeSetUp();
+    }
+
+    public void bildeSetUp(){
+        try{
+            bildeScared = new Image(getClass().getResourceAsStream("/com/example/packman/bilder/Scared05.png"));
+            bildeScaredView = new ImageView(bildeScared);
+            bildeScaredView.setFitWidth(ruteStr);
+            bildeScaredView.setFitHeight(ruteStr);
+            bildeScaredView.setPreserveRatio(true);
+
+            bildeEatand =new Image(getClass().getResourceAsStream("/com/example/packman/bilder/Eyes05.png"));
+            bildeEatandView = new ImageView(bildeEatand);
+            bildeEatandView.setFitWidth(ruteStr);
+            bildeEatandView.setFitHeight(ruteStr);
+            bildeEatandView.setPreserveRatio(true);
+
+        } catch (Exception e){
+            System.out.println("Fant ikke bilde");
+        }
     }
 
     public void setModus(SpøkelsesModus modus){
@@ -80,6 +105,8 @@ public abstract class Spøkelser extends Levende {
         currentPosX = startPosX;
         currentPosY = startPosY;
 
+        lev.setFill(Color.TRANSPARENT);
+        lev.setStroke(Color.TRANSPARENT);
     }
 
     public Retning bestemSpøkelseRetning () {
@@ -87,6 +114,11 @@ public abstract class Spøkelser extends Levende {
         // utifra dette skal sjak metoden regne ut hvilken retning som er raskest men metoden har noen regler
         //  - spøkelse kan ikke gå den veien de kom fra
         //  - spøkelse kan ikke gå inn i en vegg
+
+        //vi lagrer på sis kordinater spøkelse hadde som mål, altså før de kom til denne metoden igjen
+        // dette gjør vi for å få noen kordinater hvis spøkelse kommer i FRIGHTENED
+        sistRuteY = sluttRuteY;
+        sistRuteX = sluttRuteX;
 
         ArrayList<Retning> retninger = new ArrayList<>(); // liste over alle retninger
         // vi legger inn alle retningene i listen
@@ -109,6 +141,7 @@ public abstract class Spøkelser extends Levende {
             retninger.remove(Retning.NED);
             komFraRetning = Retning.NED;
         }
+
         // nå har vi fullført den ene reglen
         // Vi fjerner alle retningen de kolliderer med en vegg
         if(modus == SpøkelsesModus.PÅVEIUT){
@@ -116,6 +149,8 @@ public abstract class Spøkelser extends Levende {
         }else{
             retninger.removeIf(r -> !sjekkRetningLedig(r, veggList));
         }
+
+        sistRetning = komFraRetning;
 
 
         // da sitter vi igjen med antall retninger spøkelse kan ta
@@ -136,6 +171,17 @@ public abstract class Spøkelser extends Levende {
             sluttRuteY = (nestePos.getY() * ruteStr) - radius + ruteStr;
             return komFraRetning;
         }
+
+        // for FRIGHTENED velges alltid en random retning, vi lagrer også på siste retning for når de går inn i denne modusen
+
+        if(modus == SpøkelsesModus.FRIGHTENED){
+            int random = (int) (Math.random() * retninger.size());
+            Vector2D nestePos = regnUtNestePos(retninger.get(random));
+            sluttRuteX = (nestePos.getX() * ruteStr) - radius + ruteStr;
+            sluttRuteY = (nestePos.getY() * ruteStr) - radius + ruteStr;
+            return retninger.get(random);
+        }
+
 
         if (modus == SpøkelsesModus.ATHOME && retning == Retning.INGEN) {
             //velger vi bare en random vei, hvis spøkelse er hjemme (bare hvis den spawner i midten)
@@ -261,7 +307,7 @@ public abstract class Spøkelser extends Levende {
             return foranDørPos;
         } else if (modus == SpøkelsesModus.FRIGHTENED){
             harMål = true;
-            return pacmanPos;
+            return pacmanPos; // vil aldri bli valgt, har skal spøkelse bare velge random
         } else if (modus == SpøkelsesModus.EATEN){
             harMål = true;
             return eatenPos();
@@ -296,9 +342,23 @@ public abstract class Spøkelser extends Levende {
     }
     public void gotEaten(){
         //setter modusen til EATEN
-        modus = SpøkelsesModus.EATEN;
-        //oppdaterer bildet til spøkelse
-        //bildeSpøkelse = pacmanBildeView;
+
+        if(!bleSpist) {
+            modus = SpøkelsesModus.EATEN;
+            // den modusen spøkelsene har vært i før denne modusen er FRIGHTENED, så det betyr at vi ikke trenger å lagre på dette
+            ModusTid modusTid = new ModusTid(SpøkelsesModus.EATEN, 4);
+            // hvis spøkelse blir spist må vi ordne litt på stacken
+            modusStack.push(new ModusTid(SpøkelsesModus.PÅVEIUT, 3));
+            modusStack.push(new ModusTid(SpøkelsesModus.ATHOME, 1));
+            modusStack.push(modusTid);
+
+            //spøkelse har blitt spist
+            bleSpist = true;
+            bleSpistFirstTime = true;
+
+            //oppdaterer bildet til spøkelse
+            bildeSpøkelse.setImage(bildeEatand);
+        }
     }
 
     public void setPackmanPos(Vector2D pacmanPos) {
@@ -495,17 +555,22 @@ public abstract class Spøkelser extends Levende {
             // (selvom stacken er tom - burde aktivt modus være CHASE med 100000 sek i seg)
             aktivModusTid.setSekunder(aktivModusTid.getSekunder() - (int)(new Date().getTime() - modusKlokke.getTime()) / 1000);
 
-            //legger inn det som må til for at spøkelse går hjem og går ut igjen
-            modusStack.push(new ModusTid(SpøkelsesModus.ATHOME, 1));
-            modusStack.push(new ModusTid(SpøkelsesModus.PÅVEIUT, 3));
+            //Legger modus tilbake i stacken med resterende tid før spøkelse ble FRIGHTENED
             modusStack.push(aktivModusTid);
+
             //setter aktivt modus til FRIGHTENED med tid denne gangen
             aktivModusTid = new ModusTid(SpøkelsesModus.FRIGHTENED, 6);
             // setter også inn en boolean så dette ikke skjer hver gang metoden kjører
             sjekkOmFrightFirstTime = false;
+
+            modusKlokke = new Date();
+            System.out.println("Frighted modus startet");
         }
-
-
+        if(modus == SpøkelsesModus.EATEN && bleSpistFirstTime){
+            // starter klokka for denne modusen også
+            modusKlokke = new Date();
+            bleSpistFirstTime = false;
+        }
 
         if(modusStack.erTom() && modus != SpøkelsesModus.FRIGHTENED){
             System.out.println("Stack er tom");
@@ -514,14 +579,21 @@ public abstract class Spøkelser extends Levende {
         }
         // tid i sekunder for å sjekke om lengde på moduser
         int sekSidenModusStart = (int)(new Date().getTime() - modusKlokke.getTime()) / 1000;
+        System.out.println("sekSidenModusStart:  - " + sekSidenModusStart);
 
         //System.out.println("SekSidenModusStart:  - " + sekSidenModusStart);
         //System.out.println("AktivModusTid:       - " + aktivModusTid.getSekunder());
         //System.out.println("Modus:               - " + aktivModusTid.getModus());
         if(sekSidenModusStart >= aktivModusTid.getSekunder()){ // vi må bytte modus
-            System.out.println("Modus blir byttet");
+            System.out.print("Modus blir byttet til - ");
+            if(!harVærtRedd){
+                System.out.println("Er ikke redd?????????");
+                //når vi har byttet modus, betyr det at spøkelsene ikke trenger å være redde lenger (for å bytte utseende)
+                harVærtRedd = true;
+            }
             aktivModusTid = modusStack.pop();
             modus = aktivModusTid.getModus();
+            System.out.println(aktivModusTid.getModus());
             modusKlokke = new Date();
         }
 
@@ -537,8 +609,14 @@ public abstract class Spøkelser extends Levende {
         modusKlokke = new Date();
     }
     public void setFrightenModus(){
-        modus = SpøkelsesModus.FRIGHTENED;
-        sjekkOmFrightFirstTime = true;
+        if(!sjekkOmFrightFirstTime){
+            modus = SpøkelsesModus.FRIGHTENED;
+            sjekkOmFrightFirstTime = true;
+            retning = sistRetning;
+            sluttRuteX = sistRuteX;
+            sluttRuteY = sistRuteY;
+            bildeSpøkelse.setImage(bildeScared);
+        }
     }
 
 }
