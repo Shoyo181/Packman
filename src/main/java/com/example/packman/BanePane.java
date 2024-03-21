@@ -17,6 +17,7 @@ import javafx.animation.Timeline;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -67,6 +68,7 @@ public class BanePane extends BorderPane {
     private HBox bunnPanel, tomSide;
     private Cherry cherry;
     private boolean cherrySpawned = false, erImun, iTunell;
+    private int cherrySpawnCount = 0;
 
     Label scoreLabel, time;
 
@@ -96,21 +98,7 @@ public class BanePane extends BorderPane {
 
     }
 
-/*public HBox tomSide() {
-        // bsnen tar bredde*ruteStr i x-aksen og høyde*ruteStr i y-aksen
-        // bunn tar høyde*ruteStr i x-aksen og høyde*ruteStr i y-aksen
 
-        double plassIgjenX = vinduStrX- (bredde * ruteStr) ;
-
-        tomSide = new HBox();
-        setLeft(tomSide);
-        tomSide.setPrefWidth(plassIgjenX/2);
-        tomSide.setPrefHeight(vinduStrY);
-        tomSide.setStyle("-fx-background-color: transparent;");
-
-        return tomSide;
-
-    }*/
     /***      Metoder       ***/
 
     public void bevegelse() {
@@ -650,13 +638,12 @@ public class BanePane extends BorderPane {
             Shape intersect = Shape.intersect(pac.getHitBox(), spøk);
 
             if (intersect.getBoundsInLocal().getWidth() != -1) {
-                // Det er en kollisjon mellom pacman og en dot
                 //System.out.println("Kollisjon oppdaget med dot: " + dot);
-                spøk.setFill(Color.TRANSPARENT);
                 if(s.getModus() != SpøkelsesModus.FRIGHTENED) {
                     bunnPanel.getChildren().remove(hjerteListe.size() - 1);
                     hjerteListe.remove(hjerteListe.size() - 1);
                     imunStart();
+
                 }else if(s.getModus() == SpøkelsesModus.FRIGHTENED){
                     s.gotEaten();
                 }
@@ -664,6 +651,7 @@ public class BanePane extends BorderPane {
             }
         }
     }
+
 
     public void imunStart(){
         erImun = true;
@@ -673,7 +661,6 @@ public class BanePane extends BorderPane {
     public boolean kollisjonMellomPacOgDots() {
         // metode for å spise dots
         for (Dots d : dotsListe) {
-            // Sjekk kollisjon mellom sirkelen og hvert rektangel
             Circle dot = d.getDot();
             Shape intersect = Shape.intersect(pac.getHitBox(), dot);
 
@@ -690,7 +677,7 @@ public class BanePane extends BorderPane {
     }
 
     public boolean kollisjonMellomPacOgPower() {
-        // metode for å sjekke om pacman spsier en powerup
+        // metode for å sjekke om pacman spiser en powerup
         for (PowerUp p : powerListe) {
             // Sjekk kollisjon mellom sirkelen og hvert rektangel
             Circle power = p.getPowerUp();
@@ -715,7 +702,7 @@ public class BanePane extends BorderPane {
         }
     }
     public boolean kollisjonMellomPacOgCherry() {
-        // Metode for å sjekke om PacMan spsier en cherry
+        // Metode for å sjekke om PacMan spiser en cherry
 
         if (cherry == null){
             return false;
@@ -734,59 +721,17 @@ public class BanePane extends BorderPane {
     }
 
     private void setCherrySpawned() {
-        if (!cherrySpawned) {
-           Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(15), e -> spawnCherry()));
-           timeline.play();
+        Timeline timeline;
+        if (! cherrySpawned && cherrySpawnCount < 3) {
+            timeline = new Timeline(new KeyFrame(Duration.seconds(15), e ->
+                   spawnCherry()));
+            cherrySpawned = false;
+            timeline.play();
             cherrySpawned = true;
+            cherrySpawnCount++;
         }
     }
-    public void kollisjonMellomPacOgSidenTilBanen() {
-        // metode for å sjekke kollisjon mellom pacman og siden til banen - altså en tunell
-        // blir egentlig ikke en kollisjon men heller
-
-        for (Rectangle r : sidenTilBanen) {
-            Shape intersect = Shape.intersect(pac.getHitBox(), r);
-            if (intersect.getBoundsInLocal().getWidth() != -1) {
-                System.out.println("Kollisjon oppdaget med siden til banen: " + r);
-                // når vi oppdater en kollisjon spawner vi denne eniniteten på andre siden av banen også ved hjelp av en metode
-                VectorDouble pacCurrKord = pac.getKordinatPosisjon();
-
-                if (!iTunell) {
-                    iTunell = true;
-                    kopiPac = new PacMan(grid);
-                    System.out.println("KopiPac er opprettet");
-                    elementer.getChildren().addAll(kopiPac.getPacman(), kopiPac.getHitBox());
-                }
-                // vi finner ut hvilken side pac går inn i tunell
-                double kopiX = 0;
-                double kopiY = 0;
-                if (r.getX() == 0) {
-                    //venstre
-                    System.out.println("Venstre side");
-                    //bredde er størrelse på grid uten index
-                    kopiX = ((bredde * ruteStr) - ruteStr / 2) + pacCurrKord.getX() + ruteStr;
-                    kopiY = pacCurrKord.getY();
-                } else if (r.getX() == (bredde - 1)*ruteStr) {
-                    System.out.println("Høyre side");
-                    kopiX = ((bredde * ruteStr) - ruteStr / 2) - pacCurrKord.getX() - ruteStr;
-                    kopiY = pacCurrKord.getY();
-                }
-                kopiPac.setKordinatPosisjon(new VectorDouble(kopiX, kopiY));
-                kopiPac.setPosisjon();
-                System.out.println("KopiPac er posisjonert på : " + kopiPac.getKordinatPosisjon().toString());
-
-            }else{
-                if(iTunell){
-                    iTunell = false;
-                }
-                if(kopiPac != null){
-                    pac = kopiPac;
-                    elementer.getChildren().removeAll(kopiPac.getPacman(), kopiPac.getHitBox());
-                    kopiPac = null;
-                }
-            }
-        }
-    }
+/* Blir ikke brukt, i tilfelle vi vil sjekke tunellhåndtering i BanePane istedenfor i levende klasser.
     public void tunellHåndtering() {
         // metode for å håndtere tunellgjennomgang av pacman
 
@@ -835,7 +780,7 @@ public class BanePane extends BorderPane {
             }
         }
     }
-
+*/
 
     public RuteSamling hentTileset(String tileFilnavn) {
         RuteSamling samling = new RuteSamling();

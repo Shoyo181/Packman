@@ -28,7 +28,7 @@ public class Cherry extends IkkeLevende {
         hitBox.setCenterX(spawnPoint.getX()*ruteStr + ruteStr/2);
         hitBox.setCenterY(spawnPoint.getY()*ruteStr + ruteStr/2);
         hitBox.setRadius(ruteStr/4);
-        hitBox.setFill(Color.PINK);
+        hitBox.setFill(Color.TRANSPARENT);
         cherry.setFitWidth(ruteStr);
         cherry.setFitHeight(ruteStr);
         cherry.setLayoutX(spawnPoint.getX()*ruteStr);
