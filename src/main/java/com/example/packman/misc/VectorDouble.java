@@ -1,3 +1,10 @@
+/**
+ * VectorDouble klasse.
+ * VectorDouble er samme som Vector2D, men ikke like mye brukt. 
+ * Blir bare brukt for tunellgjennomgang. 
+ * Denne tar vare på to double verdier, isteden for int. 
+ * Brukt for kordinater i panel. 
+ */
 package com.example.packman.misc;
 
 public class VectorDouble {

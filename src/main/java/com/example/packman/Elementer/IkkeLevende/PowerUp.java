@@ -1,3 +1,6 @@
+/**
+ * Klasse for PowerUps. 
+ */
 package com.example.packman.Elementer.IkkeLevende;
 
 import com.example.packman.Rute.Rute;

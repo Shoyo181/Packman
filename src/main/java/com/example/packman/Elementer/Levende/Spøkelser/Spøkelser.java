@@ -1,3 +1,8 @@
+/**
+ * Klasse for Spøkelser.
+ * Inneholder alle metoder som spøkelse har.
+ * Også abstrakt.
+ */
 package com.example.packman.Elementer.Levende.Spøkelser;
 
 import com.example.packman.Elementer.Levende.Levende;

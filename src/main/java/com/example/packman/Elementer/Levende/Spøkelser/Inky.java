@@ -1,3 +1,6 @@
+/**
+ * Klasse for Inky.
+ */
 package com.example.packman.Elementer.Levende.Spøkelser;
 
 import com.example.packman.Rute.Rute;

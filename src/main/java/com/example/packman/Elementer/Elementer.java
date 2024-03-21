@@ -1,3 +1,7 @@
+/**
+ *  Klasse for alle elementer.
+ * Inneholder metoder som alle elementer har.
+ */ 
 package com.example.packman.Elementer;
 
 import com.example.packman.Rute.Rute;

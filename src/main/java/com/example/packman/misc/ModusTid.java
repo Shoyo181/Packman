@@ -1,3 +1,7 @@
+/**
+ * Klasse for ModusTid.
+ * Blir brukt for spøkelser. 
+ */
 package com.example.packman.misc;
 
 import java.util.Date;

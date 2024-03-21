@@ -1,3 +1,11 @@
+/**
+ * Rute er klasse for selve designet til hver tile. 
+ * Rute er en stackpane.Vi har også brukt enum nederst, 
+ * for å holde styr på hva slags rute det er. 
+ * Stackpane blir brukt siden rute har to funksjoner, det visuelle 
+ * og regne ut kollisjon i PacMan spill.
+ * Rute sitt design blir laget med en todimensjonal tabell av rektangler.
+ */
 package com.example.packman.Rute;
 
 import com.example.packman.misc.IkkeLevendeType;

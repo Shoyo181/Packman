@@ -1,3 +1,6 @@
+/**
+ * Klasse for IkkeLevende. Altså de tingene som ikke skal bevege seg på kartet. 
+ */
 package com.example.packman.Elementer.IkkeLevende;
 
 import com.example.packman.Elementer.Elementer;

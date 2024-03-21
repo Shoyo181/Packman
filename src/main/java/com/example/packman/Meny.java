@@ -1,3 +1,8 @@
+/**
+ * Meny klasse. 
+ * Denne skulle vi egentlig bruke på PackManGUI, 
+ * men vi valgte heller løse det der. 
+ */
 package com.example.packman;
 
 import javafx.scene.control.Button;

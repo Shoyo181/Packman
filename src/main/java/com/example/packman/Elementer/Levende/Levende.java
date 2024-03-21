@@ -1,3 +1,8 @@
+/**
+ * Klasse for Levende.
+ * Inneholder metoder som levene trenger. 
+ * Spøkelser og pacman bruker denne.
+ */
 package com.example.packman.Elementer.Levende;
 
 import com.example.packman.Elementer.Elementer;

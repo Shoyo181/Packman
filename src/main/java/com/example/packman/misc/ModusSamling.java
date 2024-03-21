@@ -1,3 +1,8 @@
+/**
+ * Klasse for ModusSamling.
+ * Inneholder modus for spøkelser, og en gang i banePane
+ * for å sjekke kollisjon mellom spøkelser og PacMan.  
+ */
 package com.example.packman.misc;
 
 import java.util.LinkedList;

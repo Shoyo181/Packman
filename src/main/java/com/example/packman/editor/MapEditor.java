@@ -1,5 +1,7 @@
 /**
- *
+ * Map editor klasse.
+ * Denne blir brukt for å lage baner, ved hjelp av tilsets som er laget. 
+ * De blir også lagret, slik at man senere kan hente dem opp. 
  */
 package com.example.packman.editor;
 

@@ -1,3 +1,9 @@
+/**
+ * BanePane klasse. 
+ * Denne setter opp selve banene, og håndterer 
+ * spillregler og hva som skal inn av ulike levende 
+ * og ikke levende elementer. 
+ */
 package com.example.packman;
 
 import com.example.packman.Elementer.IkkeLevende.Cherry;

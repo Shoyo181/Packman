@@ -1,3 +1,7 @@
+/**
+ * Klasse for PacMan.
+ * Inneholder metoder som pacman trenger.
+ */
 package com.example.packman.Elementer.Levende;
 
 import com.example.packman.Rute.Rute;

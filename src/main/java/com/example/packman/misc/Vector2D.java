@@ -1,3 +1,9 @@
+/**
+ * Klasse for Vector2D. 
+ * Grunnen til at vi har brukt dette, er at 
+ * det er veldig kjekt å kunne plassere to verdier i en datatype.
+ * Blir mest brukt til posisjoner i Grid. 
+ */
 package com.example.packman.misc;
 
 public class Vector2D {

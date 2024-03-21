@@ -1,6 +1,6 @@
 /**
- * Dette er en super klasse som har generelle metoder
- * begge editorene vi har laget, siden de har mange likhetstrekk.
+ * Dette er en super klasse som brukes som basis for alle generelle metoder
+ * for editorene vi har laget, siden de har mange likhetstrekk.
  *
  */
 
