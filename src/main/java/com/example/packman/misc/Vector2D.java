@@ -28,6 +28,9 @@ public class Vector2D {
     public void setY(int y) {
         this.y = y;
     }
+    public void kjartan (Kjartan k) {
+        this.kjartan = k;
+    }
 
     //Hei test
 }
