@@ -1,3 +1,8 @@
+/**
+ * Map editor klasse.
+ * Denne blir brukt for å lage baner, ved hjelp av tilsets som er laget. 
+ * De blir også lagret, slik at man senere kan hente dem opp. 
+ */
 package com.example.packman.editor;
 
 import com.example.packman.Rute.Rute;
@@ -15,6 +20,7 @@ import javafx.scene.text.Font;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class MapEditor extends Editor {
@@ -37,23 +43,24 @@ public class MapEditor extends Editor {
     private Rute[][] ruteMap;
     private GridPane rutePanel;
 
-    //test
-
     public MapEditor(int vinduStrX, int vinduStrY) {
         super(vinduStrX, vinduStrY);
 
-        // regner ut rutestr til map editor
+        // Regner ut rutestr til map editor.
         regnUtRuteStrMap();
         byggViderePallet();
         byggVidereInfoPanel();
 
+
     }
+    /**
+     * Metode for å regne ut rutestr til map editor.
+     */
     public void regnUtRuteStrMap() {
-        //regner ut rutestr til map editor
-        // pallet ruteStr har bare 150 px(for lite) og vi vil gå opp i 16 gangen (og litt mellomrom)
+        // palletRuteStr har bare 150 px(for lite) og vi vil gå opp i 16 gangen (og litt mellomrom).
 
         palettRuteStr = (150 -10) / 16;
-        palettRuteStr = (palettRuteStr * 16 )/ 3; // i tileknapper i pallet
+        palettRuteStr = (palettRuteStr * 16 )/ 3; // I tileknapper i pallet
         // blei feil, se på det senere
         palettRuteStr = 16*3;
         System.out.println("palettRuteStr: " + palettRuteStr);
@@ -64,31 +71,36 @@ public class MapEditor extends Editor {
     /***               Canvas              ***/
     /* Metoder for å lage canvas for mapedit */
 
-    public void byggVidereCanvas() {
-        // før vi kan bygge canvas må vi regne ut hvor store rutene kan være
+    /**
+     * Metode for å bygge videre på canvaset.
+     */
 
-        //husk at målet vi ender opp med må kunne deles på 16
+    public void byggVidereCanvas() {
+        // Før vi kan bygge canvas må vi regne ut hvor store rutene kan være.
+        // Husk at målet vi ender opp med må kunne deles på 16.
         regnUtRuteStr();
 
         byggCanvas();
 
-        // vedhjelp av tidliegere metoder har vi laget grid og tile, dette er rektangel 2dim tabeller
-        // men siden vi ikke skal male med carger og heller tiles, må vi lage en ny 2dim tabell med ruter
-        // tar bort tidligere canvas
+        // Ved hjelp av tidligere metoder har vi laget grid og tile.
+        // Dette er rektangel i 2dim tabeller, men siden vi ikke skal male med farger og heller tiles,
+        // må vi lage en ny 2dim tabell med ruter.
+
+        // Tar bort tidligere canvas.
         midt.getChildren().clear();
         canvas.getChildren().clear();
 
-        // lager nytt panel som vi trenger for denne jobben, og legger inn i canvas
+        // Lager nytt panel som vi trenger for dette, og legger inn i canvas.
         byggRutePanel();
         //rutePanel.setAlignment(Pos.CENTER);
         //rutePanel.setStyle("-fx-background-color: white; -fx-padding: 20px;");
         canvas.getChildren().addAll(rutePanel, gridPane);
 
-        //legger til canvas i midten igjen, og setter midten i mainPane
+        //Legger til canvas i midten igjen, og setter midten i mainPane.
         midt.getChildren().add(canvas);
         setCenter(midt);
 
-        // når bruker trykker på gridPane så skal det males i rutePanel istedenfor
+        // Når bruker trykker på gridPane så skal det males i rutePanel istedenfor
         gridPane.setOnMousePressed(e -> {
             tileClick(e);
         });
@@ -96,9 +108,13 @@ public class MapEditor extends Editor {
             tileClick(e);
         });
 
-        //lager en bane med ruter
+        //Lager en bane med ruter
         System.out.println("Lag bane!!");
     }
+    /**
+     * Metode for å håndtere klikk på rute som er valgt.
+     * @param e ser hvor ruten er klikket.
+     */
     public void tileClick(MouseEvent e) {
         //valgtfarge = fargerSamling.get(0);
 
@@ -112,21 +128,23 @@ public class MapEditor extends Editor {
             System.out.println("Trykket utenfor canvas");
         }
     }
+    /**
+     * Metode for å farge rutene i canvas.
+     */
     public void maling(int x, int y) {
-        //farger valgt rute
-        //oppdaterer ruteMap så vi husker hvor ting er plassert
+        //Farger rute som er valgt.
+        //Oppdaterer ruteMap så vi husker hvor ting er plassert.
         //System.out.println("lengden på utseende i tileset" + tileset.getRuteFraSamling(valgtRuteId).getUtseende().length);
 
-        // lager en ny rute med info fra tileset
-        //tile
+        // Lager en ny rute med info fra tilesetet.
         Rectangle tile = new Rectangle(ruteStr, ruteStr);
         tile.setFill(Color.TRANSPARENT);
 
-        //henter utseende
+        //Henter utseende.
         Rectangle[][] utseendeSjekk = tileset.getRuteFraSamling(valgtRuteId).getUtseende();
 
         Rectangle[][] utseende = new Rectangle[pxPerRute][pxPerRute];
-        //utseende
+        //Utseende.
         for(int i = 0; i < utseende.length; i++) {
             for(int j = 0; j < utseende[i].length; j++) {
                 utseende[i][j] = new Rectangle(ruteStr/16, ruteStr/16);
@@ -158,17 +176,21 @@ public class MapEditor extends Editor {
         }*/
 
 
-        //legger til rute i rutePanel
+        //Legger til rute i rutePanel.
         System.out.println("valgtruteId: " + valgtRuteId + " -  x: " + x + " y: " + y);
 
         oppdaterRutePanel();
     }
+    /**
+     * Metode for å oppdatere rutePanel.
+     * Fjerner først alle komponenter i rutePanel.
+     */
     public void oppdaterRutePanel() {
-        //oppdaterer rutePanel
-        //fjerner først alle komponenter i rutePanel
+        //Oppdaterer rutePanel.
+        //Fjerner først alle komponenter i rutePanel.
         rutePanel.getChildren().clear();
 
-        // Legger til oppdaterte ruter fra ruteMap i rutePanel
+        // Legger til oppdaterte ruter fra ruteMap i rutePanel.
         for (int i = 0; i < bredde; i++) {
             for (int j = 0; j < høyde; j++) {
                 //System.out.println("bygger rutePanel, i: " + i + " j: " + j + ",type " + ruteMap[i][j].getType().toString());
@@ -176,19 +198,21 @@ public class MapEditor extends Editor {
             }
         }
     }
-
+    /**
+     *  Metode for å lage Lage grid panel for map-editor.
+     */
     public void byggRutePanel() {
-        // lager grid panel for map-editor
-        // oppretter det vi trenge
+
+        // Oppretter det vi trenger.
         System.out.println("bygger rutePanel");
 
         ruteMap = new Rute[bredde][høyde];
         rutePanel = new GridPane();
 
-        // når vi legger inn ruter i tabellen må den ha en verdi, og den vil være null altså id alt for høy slik at vi kan teste på den senere
+        // Når vi legger inn ruter i tabellen må den ha en verdi,
+        // og den vil være null, altså id alt for høy slik at vi kan teste på den senere.
 
-
-        // fyller inn det som skal inn i grid pane
+        // Fyller inn det som skal inn i grid pane.
         for(int i = 0; i < høyde; i++) {
             for(int j = 0; j <bredde; j++) {
 
@@ -197,13 +221,12 @@ public class MapEditor extends Editor {
                 Rectangle[][] utseende = new Rectangle[pxPerRute][pxPerRute];
                 Rute.RuteType type = Rute.RuteType.INGEN;
 
-                // lager ruter i ruteMap
+                // Lager ruter i ruteMap.
                 for(int o = 0; o < pxPerRute; o++) {
                     for(int l = 0; l < pxPerRute; l++) {
                         utseende[o][l] = new Rectangle(ruteStr/16, ruteStr/16, Color.TRANSPARENT);
                     }
                 }
-
 
                 ruteMap[j][i] = new Rute(id, type, tile, utseende, ruteStr);
                 rutePanel.add(ruteMap[j][i].getRute(), j, i);
@@ -212,20 +235,21 @@ public class MapEditor extends Editor {
         System.out.println("bygget rutePanel");
     }
 
+
     public void lagCanvas() {
-        //lager en bane med ruter
-        // for nå bare gir verdien som er i sliderene
+        // Bygger bane med ruter, og for nå så blir bare verdien
+        // det som er i sliderene.
         System.out.println("Lag bane!!");
         System.out.println("X: " + (int) sliderX.getValue());
         System.out.println("Y: " + (int) sliderY.getValue());
 
-        //dobbeltsjekker om at bruker har tastet inn tall
+        // Dobbeltsjekker om bruker har tastet inn tall.
         try{
             int x = (int) sliderX.getValue();
             int y = (int) sliderY.getValue();
             bredde = x;
             høyde = y;
-            // nå som vi har fått vite hvor mange ruter ruter vi skal ha (x*y), kan vi endelig bygge canvas
+            // Nå som vi har fått vite hvor mange ruter ruter vi skal ha (x*y), kan vi endelig bygge canvas.
             byggVidereCanvas();
 
         }catch (Exception e){
@@ -237,9 +261,13 @@ public class MapEditor extends Editor {
 
     /***               InfoPanel              ***/
     /* Metoder/klasse for bygging av info panel */
+
+    /**
+     * Metode for å bygge et infopanel.
+     */
     public void byggVidereInfoPanel() {
-        // det vi trenger først i infoPanel er endten slidere eller to tekstbokser som bestemmer hvor stort canvas skal være
-        // og en knapp for å genirere canvas, med disse målene
+        // Det vi trenger først i infoPanel er endten slidere eller to tekstbokser som bestemmer hvor stort canvas skal være,
+        // og en knapp for å generere canvas, med disse målene.
         sliderX = new Slider();
         sliderX.setMin(10);
         sliderX.setMax(50);
@@ -259,8 +287,8 @@ public class MapEditor extends Editor {
         sliderY.setShowTickLabels(true);
         sliderY.setShowTickMarks(true);
 
-        //lager en knapp som setter opp banen med ruter
-        //lager også teksbokser for x og y størrelse som bruker kan endre i hvis de vil
+        // Lager en knapp som setter opp banen med ruter.
+        // Lager også teksbokser for x og y størrelse som bruker kan endre i hvis de vil.
         btLagBane = new Button("Lag bane");
         btLagBane.setOnAction(e -> lagCanvas());
 
@@ -272,7 +300,7 @@ public class MapEditor extends Editor {
         tfHøyde.setText((int) sliderX.getValue() + "");
         tfBredde.setText((int) sliderY.getValue() + "");
 
-        //legger til litt funksjonalitet
+        // Legger til litt funksjonalitet.
         sliderX.valueChangingProperty().addListener((obs, oldValue, isChanging) -> {
             if (!isChanging) {
                 double finalValue = sliderX.getValue();
@@ -288,7 +316,7 @@ public class MapEditor extends Editor {
             }
         });
         tfBredde.textProperty().addListener((observable, oldValue, newValue) -> {
-            // Gjør noe med den nye teksten (newValue) her
+            // Gjør noe med den nye teksten (newValue) her.
             System.out.println("Ny tekst: " + newValue);
             try{
                 if((Double.parseDouble(newValue) > 10.0) && (Double.parseDouble(newValue) < 50.0)){
@@ -299,7 +327,7 @@ public class MapEditor extends Editor {
             }
         });
         tfHøyde.textProperty().addListener((observable, oldValue, newValue) -> {
-            // Gjør noe med den nye teksten (newValue) her
+            // Gjør noe med den nye teksten (newValue) her.
             System.out.println("Ny tekst: " + newValue);
             try{
                 if((Double.parseDouble(newValue) > 10.0) && (Double.parseDouble(newValue) < 50.0)){
@@ -309,64 +337,69 @@ public class MapEditor extends Editor {
                 System.out.println("Ikke et tall");
             }
         });
-        // med denne funksjonaliteten vil tekstbokser og slider "snakke" sammen
+        // Med denne funksjonaliteten vil tekstbokser og slider "snakke" sammen.
 
-        // legger disse txt boksene og knappen inn i egen hbox
+        // Legger disse txt boksene og knappen inn i egen HBox.
         HBox baneInfo = new HBox();
         baneInfo.getChildren().addAll(tfBredde, tfHøyde, btLagBane);
 
-        //legger alle komponenter inn i info panel
+        // Legger alle komponenter inn i info panelet.
         info.getChildren().addAll(sliderX, sliderY, baneInfo);
 
-        // vi trenger også en knapp for å lagre det man har gjort med kartet
-        // Vi trenger også en tesktboks for å skrive inn navnet til kartet
+        // Vi trenger også en knapp for å lagre det man har gjort med kartet,
+        // og en tesktboks for å skrive inn navnet til kartet.
         btLagreMap = new Button("Lagre kart");
         btLagreMap.setOnAction(e -> lagreMap());
 
         tfMapNavn = new TextField();
         tfMapNavn.setPrefColumnCount(10);
 
-        // legger disse sammen i en hbox
+        // Legger disse sammen i en HBox.
         HBox mapInfoPanel = new HBox();
         mapInfoPanel.getChildren().addAll(tfMapNavn, btLagreMap);
 
         info.getChildren().add(mapInfoPanel);
 
-        // når bruker har valgt en rute vil vi kunne vise frem hvordan type rute det er
+        // Når bruker har valgt en rute vil vi kunne vise frem hvordan type rute det er.
 
         lRuteTypeInfo = new Label();
         lRuteTypeInfo.setFont(new Font(20)); // Setter skriftstørrelsen til 20
         lRuteTypeInfo.setTextFill(Color.LIGHTGRAY);
         info.getChildren().add(lRuteTypeInfo);
 
-        //skal vi ha en funksjon for å hente tidligere baner også?
+        // Skal vi ha en funksjon for å hente tidligere baner også?
 
     }
-
+    /**
+     * Metode for å Lagre baner.
+     */
     public void lagreMap() {
         System.out.println("Prøver å lagre bane");
-        //sjekker først om det kartet har et navn
+        // Sjekker først om det kartet har et navn.
         String filnavn = tfMapNavn.getText();
+
         if (filnavn.equals("")) {
             System.out.println("Du ma først skrive inn navnet til mappet din");
+
             return;
         }
         try{
-            //åpner datastrøm
+            // Åpner datastrøm.
             PrintWriter writer = new PrintWriter(LENKE_BANER + filnavn + ".txt");
-            // behandler datastrøm
-            // I filen skal det først stå hvor stor banen er bredde,høyde så skal det stå hvilket tileset den bruker
-            // skiller med ";"
+
+            // Behandler datastrøm.
+            // I filen skal det først stå hvor stor banen er bredde, så høyde, så skal det stå hvilket tileset den bruker.
+            // Skiller med de ulike tingene i banen med ";"
             writer.println(bredde + ";" + høyde + ";" + cbTilesetPallet.getValue());
             System.out.println(bredde + ";" + høyde + ";" + cbTilesetPallet.getValue());
 
-            // deretter skriver vi inn banen fra ruteMap
+            // Deretter skriver vi inn banen fra ruteMap.
             for(int y = 0; y < høyde; y++){
                 for(int x = 0; x < bredde; x++){
                     //vi siller hver dute id med ";"
                     writer.print(ruteMap[x][y].getRuteId());
                     System.out.print(ruteMap[x][y].getRuteId());
-                    if( y < bredde){
+                    if( x < bredde -1){
                         writer.print(";");
                         System.out.print(";");
                     }
@@ -376,9 +409,11 @@ public class MapEditor extends Editor {
                     System.out.println();
                 }
             }
-            // lukker datastrøm
+            // Lukker datastrøm.
             writer.close();
+
             System.out.println("Mappet har blitt lagret");
+
         }catch (Exception e){
             System.out.println("Karte ikke å lagre mappet");
             return;
@@ -389,28 +424,32 @@ public class MapEditor extends Editor {
 
     /***              Pallet              ***/
     /* Metoder/klasse for bygging av pallet */
-    public void byggViderePallet() {
-        // palletet til map editor handler om å vise frem tilsets ikke farger
-        // derfor trenger vi først en combobox som viser frem de tilesetsene vi har også henter vi de senere
 
-        //vi henter info combobox trenger
+    /**
+     * Metode for å hente tilsets.
+     */
+    public void byggViderePallet() {
+        // Palletet til MapEditor handler om å vise frem tilsets, ikke farger.
+        // Derfor trenger vi først en combobox som viser frem de tilesetsene som er lagret,  også henter vi de senere.
+
+        // Vi henter info ComboBox trenger.
         hentTilsetsSamlingOversikt();
-        // vi lager comboboxen og gir den de funksjonene vi vil
+        // Vi lager ComboBox og gir den de funksjonene vi ønsker der.
         cbTilesetPallet = new ComboBox<>();
         cbTilesetPallet.getItems().addAll(alleTilesetSamlinger);
         cbTilesetPallet.setPromptText("Velg tileset");
-        // vi lager knapp for å hente tilsets
+        // Vi lager knapp for å hente tilsets.
         btHentTileset = new Button("Hent");
         btHentTileset.setOnAction(e -> hentTileset());
-        //legger knapp og comboboxen inn i et pane
+        //Llegger knapp og legger ComboBox inn i et pane.
         samletTilesetPallet = new HBox();
         samletTilesetPallet.getChildren().addAll(cbTilesetPallet, btHentTileset);
 
 
-        // setter opp en info label hvis bruker gjør noe feil
+        // Setter opp en info label hvis bruker gjør feil.
         lTilesetInfo = new Label();
 
-        // når bruke har hentet tilset, må vi også vise det frem, vi viser det frem i form av knapper i en gridpane
+        // Når bruken har hentet tilset, må vi også vise det frem, vi viser det frem i form av knapper i en GridPane.
         tilePalletPane = new GridPane();
         tilePalletPane.setHgap(2);
         tilePalletPane.setVgap(2);
@@ -418,35 +457,40 @@ public class MapEditor extends Editor {
 
         pallet.getChildren().addAll(samletTilesetPallet,lTilesetInfo, tilePalletPane);
     }
+
+    /**
+     * Metode for å hente tilsets.
+     */
+
     public void hentTileset() {
-        // her henter vi valgt tilset of legger det inn i en Rutesamling (tileset)
-        //sjekker først om det er lovelig verdi i combobox
+        // Her henter vi valgt tileset og legger det inn i en RuteSamling (tileset).
+        // Sjekker først om det er lovlig verdi i ComboBox.
         String valgtTileset = cbTilesetPallet.getValue();
         if(valgtTileset == null || valgtTileset.equals("Velg tileset")) {
-            lTilesetInfo.setText("Velg en tileset");
-            System.out.println("Velg en tileset");
+            lTilesetInfo.setText("Velg et tileset");
+            System.out.println("Velg et tileset");
             return;
         }
         lTilesetInfo.setText("");
-        // lager ny rutesamling
+        // Lager ny rutesamling.
         System.out.println("Henter tilset fra: " + valgtTileset);
         tileset = new RuteSamling();
-        System.out.println("opprettet nytt tileset");
-        // henter verdi å legge inn i rutesamling
+        System.out.println("Opprettet nytt tileset");
+        // Henter verdi å legge inn i RuteSamling.
         try{
             Scanner scanner = new Scanner(new File(LENKE_TILESET + valgtTileset + ".txt"));
             //System.out.println("Leter inn fra fil");
             while(scanner.hasNextLine()) {
-                //id
+                //Id.
                 String linje = scanner.nextLine();
                 //System.out.println(linje);
                 String datTab[] = linje.split(":");
                 int id = Integer.parseInt(datTab[0]);
-                // type
+                // Type.
                 linje = scanner.nextLine();
                 //System.out.println(linje);
                 Rute.RuteType type = Rute.RuteType.valueOf(linje);
-                // design til ruta
+                // Design til ruten.
                 Rectangle[][] utseende = new Rectangle[pxPerRute][pxPerRute];
                 for (int i = 0; i < pxPerRute; i++) {
                     linje = scanner.nextLine();
@@ -461,11 +505,11 @@ public class MapEditor extends Editor {
                 Rectangle tile = new Rectangle();
                 tile.setFill(Color.TRANSPARENT);
                 //System.out.println("all info er hentet ");
-                // legger inn til rutesamling
+                // Legger inn til RuteSamling.
                 tileset.leggTil( new Rute(id, type, tile, utseende, palettRuteStr));
                 //System.out.println("tileset er lagt til i samling");
-                // nå har vi hentet et helt rute objekt
-                // men leseren er fortsatt på feil plass
+                // Nå har vi hentet et helt rute objekt,
+                // men leseren er fortsatt på feil plass.
                 linje =scanner.nextLine();
                 //System.out.println("linje i tilesethenting, skal være ':', og er - " + linje);
             }
@@ -481,11 +525,15 @@ public class MapEditor extends Editor {
         }
 
     }
+    /**
+     * Metode for å oppdatere tilepalletet.
+     */
+
     public void oppdaterTilePallet() {
-        // oppdaterer tilepalletet
+        // Oppdaterer tilepalletet.
         tilePalletPane.getChildren().clear();
         int tellerKol = 0, tellerRad = 0;
-        // henter den informasjonen vi trenger fra tileset
+        // Henter den informasjonen vi trenger fra tileset.
         for(int i = 0; i < tileset.hentSamlingStr(); i++) {
             if(tellerKol == 3) {
                 tellerKol = 0;
@@ -495,11 +543,14 @@ public class MapEditor extends Editor {
             tellerKol++;
         }
     }
+
+    /**
+     * Metode for å hente tilsets-samling, og lagrer det i en String-array,
+     * slik at de senere kan vises frem.
+     */
     public void hentTilsetsSamlingOversikt() {
-        // denne metoden henter alle tilsets slik at vi kan senere vis de frem
-        // lagrer det i en String-array
         try {
-            //teller først hvor mange tilsets vi har i oversikten
+            // Teller først hvor mange tilsets vi har i oversikten.
             Scanner scanner = new Scanner(new File(LENKE_OVERSIKT + "tilesetSamling.txt"));
             int teller = 0;
             while (scanner.hasNextLine()) {
@@ -507,7 +558,7 @@ public class MapEditor extends Editor {
                 teller++;
             }
             scanner.close();
-            //lager en String-array med alle tilsets
+            // Lager en String-array med alle tilsets.
             alleTilesetSamlinger = new String[teller];
             teller = 0;
             scanner = new Scanner(new File(LENKE_OVERSIKT + "tilesetSamling.txt"));
@@ -523,8 +574,9 @@ public class MapEditor extends Editor {
         }
 
     }
-
-    // vi bruker en klasse for å få frem knappene i palleten
+    /**
+     * Metode for å få frem knappene i palettet.
+     */
     private class PalletKnapp extends Button {
         private Rute rute;
         public PalletKnapp(Rute rute) {
@@ -535,7 +587,7 @@ public class MapEditor extends Editor {
             setOnAction(e -> {
                 // valgtRute = this.rute;
                 valgtRuteId = this.rute.getRuteId();
-                // viser hvordan type ruten er til bruker
+                // Viser hvordan type ruten er til bruker.
                 lRuteTypeInfo.setText("");
                 lRuteTypeInfo.setText("RuteType = " + this.rute.getType().toString());
                 System.out.println("Ny valgt rute/tile sin id = " + rute.getRuteId());

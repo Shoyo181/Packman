@@ -1,3 +1,9 @@
+/**
+ * RuteSamling klasse. 
+ * En liste med forskjellige typer. 
+ * Brukes for å samle tilesets, tilsets er en samling av
+ * forskjellige ruter som brukes til baner og til editor. 
+ */
 package com.example.packman.Rute;
 
 import javafx.scene.layout.GridPane;

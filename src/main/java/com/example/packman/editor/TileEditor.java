@@ -1,6 +1,6 @@
 /* Denne klassen skal levere en tile editor.
  * Her bruker vi superklassen Editor og bygger videre på den
- * Vi skal vise frem frager på venstre side og gjære andre tiles i samme samling over
+ * Vi skal vise frem farger på venstre side og gjøre andre tiles i samme samling over
  * Høyre side skal ha noen knapper og comboboxser som vi lager her
  */
 
